@@ -1,71 +1,61 @@
-import { router } from "@inertiajs/react";
-import { clsx } from "clsx";
-import { toast, Toaster } from "sonner";
-import { twMerge } from "tailwind-merge"
-import {format, parseISO} from 'date-fns';
-import {id} from 'date-fns/locale';
+import { router } from '@inertiajs/react';
+import { clsx } from 'clsx';
+import { format, parseISO } from 'date-fns';
+import { id } from 'date-fns/locale';
+import { Toaster } from 'sonner';
+import { twMerge } from 'tailwind-merge';
 
 function cn(...inputs) {
-  return twMerge(clsx(inputs));
+    return twMerge(clsx(inputs));
 }
 
 function flashMessage(params) {
-
-  return params.props.flashMessage; 
-
+    return params.props.flashMessage;
 }
 
-const deleteAction = (url, {closeModal, ...options} = {}) => {
+const deleteAction = (url, { closeModal, ...options } = {}) => {
+    const defaultOptions = {
+        preserveScroll: true,
+        preserveState: true,
 
-  const defaultOptions = {
-    preserveScroll: true,
-    preserveState: true,
+        onSuccess: (success) => {
+            const flash = flashMessage(success);
 
-    onSuccess: (success) => {
+            if (flash) {
+                Toaster[flash.type](flash.message);
+            }
 
-        const flash = flashMessage(success);
+            if (closeModal && typeof closeModal === 'function') {
+                closeModal();
+            }
+        },
 
-        if (flash) {
-            Toaster[flash.type](flash.message);
-        }
+        ...options,
+    };
 
-        if (closeModal && typeof closeModal === 'function') {
-
-            closeModal();
-        }
-    },
-
-    ...options,
-  };
-
-  router.delete(url, defaultOptions);
-}
-
+    router.delete(url, defaultOptions);
+};
 
 // format ke jam indo
 const formatDateIndo = (dateString) => {
     if (!dateString) return '-';
 
     return format(parseISO(dateString), 'eeee', 'dd', 'MMMM', 'yyyy', {
-        locale: id
+        locale: id,
     });
-}
-
+};
 
 // convert ke rupiah
 const formatToRupiah = (amount) => {
     const formatter = new Intl.NumberFormat('id-ID', {
-
-        style: "currency",
-        currency: "IDR",
+        style: 'currency',
+        currency: 'IDR',
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
-
     });
 
     return formatter.format(amount);
-}
-
+};
 
 // objek budget type
 const BUDGETTYPE = {
@@ -76,15 +66,13 @@ const BUDGETTYPE = {
     SHOPPING: 'Belanja',
 };
 
-
 const BUDGETTYPEVARIANT = {
     [BUDGETTYPE.INCOME]: 'emerald',
     [BUDGETTYPE.SAVING]: 'orange',
     [BUDGETTYPE.DEBT]: 'red',
     [BUDGETTYPE.BILL]: 'sky',
     [BUDGETTYPE.SHOPPING]: 'purple',
-}
-
+};
 
 // objek month type
 const MONTHTYPE = {
@@ -99,9 +87,8 @@ const MONTHTYPE = {
     SEPTEMBER: 'September',
     OKTOBER: 'Oktober',
     NOVEMBER: 'November',
-    DESEMBER: 'Desember'
+    DESEMBER: 'Desember',
 };
-
 
 const MONTHTYPEVARIANT = {
     [MONTHTYPE.JANUARI]: 'fuchsia',
@@ -116,9 +103,7 @@ const MONTHTYPEVARIANT = {
     [MONTHTYPE.OKTOBER]: 'blue',
     [MONTHTYPE.NOVEMBER]: 'lime',
     [MONTHTYPE.DESEMBER]: 'teal',
-}
-
-
+};
 
 // objek asset type
 const ASSETTYPE = {
@@ -129,16 +114,13 @@ const ASSETTYPE = {
     LONGTERM: 'Investasi Jangka Panjang',
 };
 
-
 const ASSETTYPEVARIANT = {
     [ASSETTYPE.CASH]: 'emerald',
     [ASSETTYPE.PERSONAL]: 'orange',
     [ASSETTYPE.SHORTERM]: 'red',
     [ASSETTYPE.MIDTERM]: 'sky',
     [ASSETTYPE.LONGTERM]: 'purple',
-}
-
-
+};
 
 // objek liability type
 const LIABILITYTPE = {
@@ -147,29 +129,23 @@ const LIABILITYTPE = {
     LONGTERMDEBT: 'Hutang Jangka Panjang',
 };
 
-
 const LIABILITYTPEVARIANT = {
     [LIABILITYTPE.SHORTERMDEBT]: 'emerald',
     [LIABILITYTPE.MIDTERMDEBT]: 'orange',
     [LIABILITYTPE.LONGTERMDEBT]: 'red',
-}
-
-
+};
 
 const LIABILITYDESCRIPTION = {
     [LIABILITYTPE.SHORTERMDEBT]: 'Tenor 1-5 Tahun',
     [LIABILITYTPE.MIDTERMDEBT]: 'Tenor 5-10 Tahun',
     [LIABILITYTPE.LONGTERMDEBT]: 'Tenor > 10 Tahun',
-}
-
-
+};
 
 const messages = {
-    
     503: {
         title: 'Service Unavailable',
         description: 'Maaf sedang maintenance. Silahkan cek berkala...',
-        status: 503
+        status: 503,
     },
     500: {
         title: 'Server Error',
@@ -195,25 +171,23 @@ const messages = {
         title: 'To Many Request',
         description: 'Segera ulangi lagi dalam beberapa saat...',
         status: 429,
-    }
-}
-
-
+    },
+};
 
 export {
-  cn,
-  flashMessage,
-  deleteAction,
-  formatDateIndo,
-  formatToRupiah,
-  BUDGETTYPE,
-  BUDGETTYPEVARIANT,
-  MONTHTYPE,
-  MONTHTYPEVARIANT,
-  ASSETTYPE,
-  ASSETTYPEVARIANT,
-  LIABILITYTPE,
-  LIABILITYTPEVARIANT,
-  LIABILITYDESCRIPTION,
-  messages
-}
+    ASSETTYPE,
+    ASSETTYPEVARIANT,
+    BUDGETTYPE,
+    BUDGETTYPEVARIANT,
+    cn,
+    deleteAction,
+    flashMessage,
+    formatDateIndo,
+    formatToRupiah,
+    LIABILITYDESCRIPTION,
+    LIABILITYTPE,
+    LIABILITYTPEVARIANT,
+    messages,
+    MONTHTYPE,
+    MONTHTYPEVARIANT,
+};

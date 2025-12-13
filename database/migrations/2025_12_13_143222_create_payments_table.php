@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('goals', function (Blueprint $table) {
+        Schema::create('payments', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->string('name');
-            $table->decimal('percentage', total: 5, places: 2)->default(value: 0);
-            $table->unsignedInteger('nominal');
-            $table->unsignedInteger('monthly_saving')->default(value: 0);
-            $table->date('deadline');
-            $table->unsignedInteger('beginning_balance')->default(value: 0);
+            $table->string('type');
+            $table->string('account_number')->nullable();
+            $table->string('account_owner')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('goals');
+        Schema::dropIfExists('payments');
     }
 };

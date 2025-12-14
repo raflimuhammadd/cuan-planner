@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class NetWorthAsset extends Model
 {
@@ -16,4 +17,11 @@ class NetWorthAsset extends Model
         'transaction_date',
         'nominal',
     ];
+
+
+    // define relation
+    public function asset(): BelongsTo 
+    {
+        return $this->belongsTo(related: Asset::class);
+    }
 }

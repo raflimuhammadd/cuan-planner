@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Balance extends Model
 {
@@ -16,4 +17,15 @@ class Balance extends Model
         'goal_id',
         'amount',
     ];
+
+
+    // define relation
+    public function user(): BelongsTo {
+        return $this->belongsTo(related: User::class);
+    }
+
+    // define relation
+    public function goal(): BelongsTo {
+        return $this->belongsTo(related: Goal::class);
+    }
 }

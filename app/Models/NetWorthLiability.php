@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class NetWorthLiability extends Model
 {
@@ -17,4 +18,11 @@ class NetWorthLiability extends Model
         'nominal',
 
     ];
+
+
+    // define relation
+    public function liability(): BelongsTo 
+    {
+        return $this->belongsTo(related: Liability::class);
+    }
 }

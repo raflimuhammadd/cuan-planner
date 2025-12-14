@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Enums\LiabilityType;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Liability extends Model
 {
@@ -27,5 +29,24 @@ class Liability extends Model
         return [
             'type' => LiabilityType::class,
         ];
+    }
+
+
+    // define relation
+    public function user(): BelongsTo 
+    {
+        return $this->belongsTo(related: User::class);
+    }
+
+    // define relation
+    public function netWorth(): BelongsTo 
+    {
+        return $this->belongsTo(related: NetWorth::class);
+    }
+
+    // define relation
+    public function netWorthLiabilities(): HasMany 
+    {
+        return $this->hasMany(related: NetWorthLiability::class);
     }
 }

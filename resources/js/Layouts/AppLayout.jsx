@@ -1,3 +1,4 @@
+import ThemeSwitcher from '@/Components/Dark/ThemeSwitcher';
 import { Avatar, AvatarFallback } from '@/Components/ui/avatar';
 import { Dialog, Transition } from '@headlessui/react';
 import { Head, Link, usePage } from '@inertiajs/react';
@@ -99,6 +100,10 @@ export default function AppLayout({ title, children }) {
 
                 <main className="py-4 dark:bg-background lg:pl-72">
                     <div className="px-4">{children}</div>
+
+                    <div className="fixed bottom-5 end-5 flex w-full justify-center lg:justify-end">
+                        <ThemeSwitcher />
+                    </div>
                 </main>
             </div>
         </>

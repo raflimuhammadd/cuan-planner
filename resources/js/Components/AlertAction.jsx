@@ -1,11 +1,20 @@
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/Components/ui/alert-dialog";
-
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/Components/ui/alert-dialog';
 
 export default function AlertAction({
     trigger,
     action,
-    title = "Apakah anda sudah yakin?",
-    description = "Tindakan ini tidak dapat dibatalkan dan menghaspus data secara permanen",
+    title = 'Apakah anda sudah yakin?',
+    description = 'Tindakan ini tidak dapat dibatalkan dan menghaspus data secara permanen',
 }) {
     return (
         <AlertDialog>
@@ -21,5 +30,5 @@ export default function AlertAction({
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
-    )
+    );
 }

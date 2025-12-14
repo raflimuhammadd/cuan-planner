@@ -1,9 +1,5 @@
-import AppLayout from "@/Layouts/AppLayout";
+import AppLayout from '@/Layouts/AppLayout';
 
 export default function Testing() {
-    return (
-        <AppLayout title='Testing`'>
-            This is testing
-        </AppLayout>
-    )
+    return <AppLayout title="Testing`">This is testing</AppLayout>;
 }

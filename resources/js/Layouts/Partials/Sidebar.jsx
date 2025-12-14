@@ -14,7 +14,7 @@ import {
     IconMoneybag,
 } from '@tabler/icons-react';
 
-export default function Sidebar({ url }) {
+export default function Sidebar({ auth, url }) {
     return (
         <nav className="flex flex-1 flex-col gap-y-6">
             <ApplicationLogo url="#" />
@@ -22,14 +22,14 @@ export default function Sidebar({ url }) {
             <Card>
                 <CardContent className="flex items-center gap-x-3 p-3">
                     <Avatar>
-                        <AvatarImage src="#" />
-                        <AvatarFallback>X</AvatarFallback>
+                        <AvatarImage src={auth.avatar} />
+                        <AvatarFallback>{auth.name.substring(0, 1)}</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
                         <span className="line-clamp-1 text-sm font-medium leading-relaxed tracking-tighter">
-                            Tahu Tek
+                            {auth.name}
                         </span>
-                        <span className="text-ss line-clamp-1 font-light">1236969</span>
+                        <span className="text-ss line-clamp-1 font-light">{auth.id}</span>
                     </div>
                 </CardContent>
             </Card>

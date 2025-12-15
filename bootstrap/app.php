@@ -3,6 +3,9 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Inertia\Inertia;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -19,5 +22,24 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+
+        $exceptions->respond(function(Response $response, Throwable $exception, Request $request) {
+            if (!app()->environment(['local', 'testing']) && in_array($response->getStatusCode(), 
+            [500, 503, 404, 403,401])) {
+                return Inertia::render('ErrorHandling', [
+                    'status' => $response->getStatusCode()
+                ])
+                ->toResponse($request)
+                ->setStatusCode($response->getStatusCode());
+            } else if ($response->getStatusCode() === 419) {
+                return back()->with([
+                    'message' => 'The page expired, please try again...'
+                ]);
+            }
+            
+            return $response;
+
+        });
+        
     })->create();
+

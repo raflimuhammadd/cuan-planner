@@ -1,4 +1,4 @@
-const { values } = require("lodash");
+const { values } = ("lodash");
 
 function setMetaThemeColor(setting) {
     const metaThemeColor = document.getElementById('theme-color-meta');

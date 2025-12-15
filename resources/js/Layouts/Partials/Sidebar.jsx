@@ -47,7 +47,7 @@ export default function Sidebar({ auth, url }) {
                 />
 
                 <div className="px-3 py-2 text-sm font-medium text-muted-foreground">Rencana</div>
-                <NavLink url="#" active={url.startsWith('/goals')} title="Tujuan" icon={IconMoneybag} />
+                <NavLink url={route('goals.index')} active={url.startsWith('/goals')} title="Tujuan" icon={IconMoneybag} />
 
                 <div className="px-3 py-2 text-sm font-medium text-muted-foreground">Pelacakan</div>
                 <NavLink url="#" active={url.startsWith('/budgets')} title="Anggaran" icon={IconChartArrowsVertical} />

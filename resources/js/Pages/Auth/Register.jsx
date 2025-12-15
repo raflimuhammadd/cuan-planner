@@ -111,7 +111,7 @@ export default function Register() {
                         <img
                             src="/images/bg.jpg"
                             alt="Image"
-                            className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.65] dark:grayscale"
+                            className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.75] dark:grayscale"
                         />
                     </div>
                 </CardContent>

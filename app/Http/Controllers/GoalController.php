@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\MessageType;
+use App\Http\Requests\GoalRequest;
 use App\Http\Resources\GoalResource;
 use App\Models\Goal;
 use Illuminate\Http\Request;
@@ -9,6 +11,8 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Inertia\Response;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Throwable;
 
 class GoalController extends Controller implements HasMiddleware
 {
@@ -82,5 +86,28 @@ class GoalController extends Controller implements HasMiddleware
                     ['label' => 'Tambah Tujuan Menabung'],
             ],
         ]);
+    }
+
+
+    // method store
+    public function store(GoalRequest $request): RedirectResponse
+    {
+        try {
+            Goal::create([
+                'user_id' => Auth::id(),
+                'name' => $request->name,
+                'nominal' => $request->nominal,
+                'monthly_saving' => $request->monthly_saving,
+                'deadline' => $request->deadline,
+                'beginning_balance' => $request->beginning_balance,
+            ]);
+
+            flashMessage(MessageType::CREATED->message('Tujuan'));
+            return to_route('goals.index');
+
+        } catch (Throwable $e) {
+            flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
+            return to_route('goals.index');
+        }
     }
 }

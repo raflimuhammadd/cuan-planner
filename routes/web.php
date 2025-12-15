@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GoalController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -19,8 +20,19 @@ Route::get('/', function () {
 Route::get('testing', fn() => Inertia::render('Testing'));
 
 
+// Controller:Dashboard
 Route::controller(DashboardController::class)->group(function() {
     Route::get('dashboard', 'index')->name('dashboard');
+});
+
+// Controller:Goal
+Route::controller(GoalController::class)->group(function() {
+    Route::get('goals', 'index')->name('goals.index');
+    Route::get('goals/create', 'create')->name('goals.index');
+    Route::post('goals/create', 'store')->name('goals.index');
+    Route::get('goals/{goal}/edit', 'edit')->name('goals.index');
+    Route::put('goals/{goal}/update', 'update')->name('goals.index');
+    Route::delete('goals/{goal}/destroy', 'destroy')->name('goals.index');
 });
 
 Route::middleware('auth')->group(function () {

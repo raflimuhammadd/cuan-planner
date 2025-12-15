@@ -63,4 +63,24 @@ class GoalController extends Controller implements HasMiddleware
                 'year' => fn() => now()->year,
             ]);
     }
+
+
+    // method create
+    public function create(): Response
+    {
+        return inertia('Savings/Create', [
+            'pageSettings' => fn() => [
+                'title' => 'Mulai tetapkan tujuan sekarang',
+                'subtitle' => 'Dengan tujuan yang jelas, setiap langkah kecil menabung membawa anda
+                lebih dekat ke impian besar anda',
+                'method' => 'POST',
+                'action' => route('goals.store'),
+            ],
+            'items' => fn() => [
+                    ['label' => 'Cuan+', 'href' => route('dashboard')],
+                    ['label' => 'Tabungan', 'href' => route('goals.index')],
+                    ['label' => 'Tambah Tujuan Menabung'],
+            ],
+        ]);
+    }
 }

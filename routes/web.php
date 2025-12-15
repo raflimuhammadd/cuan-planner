@@ -28,11 +28,11 @@ Route::controller(DashboardController::class)->group(function() {
 // Controller:Goal
 Route::controller(GoalController::class)->group(function() {
     Route::get('goals', 'index')->name('goals.index');
-    Route::get('goals/create', 'create')->name('goals.index');
-    Route::post('goals/create', 'store')->name('goals.index');
-    Route::get('goals/{goal}/edit', 'edit')->name('goals.index');
-    Route::put('goals/{goal}/update', 'update')->name('goals.index');
-    Route::delete('goals/{goal}/destroy', 'destroy')->name('goals.index');
+    Route::get('goals/create', 'create')->name('goals.create');
+    Route::post('goals/create', 'store')->name('goals.store');
+    Route::get('goals/{goal}/edit', 'edit')->name('goals.edit');
+    Route::put('goals/{goal}/update', 'update')->name('goals.update');
+    Route::delete('goals/{goal}/destroy', 'destroy')->name('goals.destroy');
 });
 
 Route::middleware('auth')->group(function () {

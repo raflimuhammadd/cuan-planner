@@ -35,7 +35,7 @@ export default function AppLayout({ title, children }) {
                             <Transition.Child
                                 as={Fragment}
                                 enter="transition ease-in-out duration-300 transform"
-                                enterFrom="-trasnlate-x-full"
+                                enterFrom="-translate-x-full"
                                 enterTo="translate-x-0"
                                 leave="transition ease-in-out duration-300 transform"
                                 leaveFrom="translate-x-0"
@@ -74,14 +74,14 @@ export default function AppLayout({ title, children }) {
                 </Transition.Root>
 
                 <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
-                    <div className="dark:boder-r flex grow flex-col gap-y-5 overflow-y-auto bg-slate-50 px-4 dark:border-r-card dark:bg-background">
+                    <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-slate-50 px-4 dark:border-r dark:border-r-card dark:bg-background">
                         {/* Sidebar */}
 
                         <Sidebar auth={auth} url={url} />
                     </div>
                 </div>
 
-                <div className="dark:bg-backgrouond sticky top-0 z-40 flex items-center gap-x-6 bg-white p-4 shadow-sm sm:px-6 lg:hidden">
+                <div className="sticky top-0 z-40 flex items-center gap-x-6 bg-white p-4 shadow-sm dark:bg-background sm:px-6 lg:hidden">
                     <button
                         type="button"
                         className="m-2.5 p-2.5 text-gray-700 lg:hidden"

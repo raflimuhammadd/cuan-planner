@@ -12,7 +12,7 @@ export function UseFilter({ route, values, only, wait = 300 }) {
                 preserveState: true,
                 preserveScroll: true,
             });
-        }, wait()),
+        }, wait),
         [],
     );
 

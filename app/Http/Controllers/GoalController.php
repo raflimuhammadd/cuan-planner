@@ -33,7 +33,7 @@ class GoalController extends Controller implements HasMiddleware
             ->sorting(request()->only(['field', 'direction']))
             ->paginate(request()->load ?? 10);
 
-            return inertia('Savings/index', [
+            return inertia('Savings/Index', [
                 'pageSettings' => fn() => [
                     'title' => 'Tujuan Menabung',
                     'subtitle' => 'Menabung untuk pendidikan, Liburan atau Investasi Masa Depan.',
@@ -51,7 +51,7 @@ class GoalController extends Controller implements HasMiddleware
 
                 'state' => fn()=>[
                     'page' => request()->page ?? 1,
-                    'search' => request()->serch ?? '',
+                    'search' => request()->search ?? '',
                     'load' => 10,
                 ],
 

@@ -12,7 +12,7 @@ export default function BreadcrumbHeader({ items }) {
     return (
         <Breadcrumb>
             <BreadcrumbList>
-                {items.map((item, index) => {
+                {items.map((item, index) => (
                     <Fragment key={index}>
                         <BreadcrumbItem>
                             {item.href ? (
@@ -22,8 +22,8 @@ export default function BreadcrumbHeader({ items }) {
                             )}
                         </BreadcrumbItem>
                         {index < items.length - 1 && <BreadcrumbSeparator />}
-                    </Fragment>;
-                })}
+                    </Fragment>
+                ))}
             </BreadcrumbList>
         </Breadcrumb>
     );

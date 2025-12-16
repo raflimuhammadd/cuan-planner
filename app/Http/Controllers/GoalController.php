@@ -158,4 +158,21 @@ class GoalController extends Controller implements HasMiddleware
         }
     }
 
+
+
+        // method delete
+    public function destroy(Goal $goal): RedirectResponse
+    {
+        try {
+            $goal->delete();
+
+            flashMessage(MessageType::DELETED->message('Tujuan'));
+            return to_route('goals.index');
+
+        } catch (Throwable $e) {
+            flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
+            return to_route('goals.index');
+        }
+    }
+
 }

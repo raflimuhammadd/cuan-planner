@@ -2,7 +2,7 @@ import { router } from '@inertiajs/react';
 import { clsx } from 'clsx';
 import { format, parseISO } from 'date-fns';
 import { id } from 'date-fns/locale';
-import { Toaster } from 'sonner';
+import { toast } from 'sonner';
 import { twMerge } from 'tailwind-merge';
 
 function cn(...inputs) {
@@ -22,7 +22,7 @@ const deleteAction = (url, { closeModal, ...options } = {}) => {
             const flash = flashMessage(success);
 
             if (flash) {
-                Toaster[flash.type](flash.message);
+                toast[flash.type](flash.message);
             }
 
             if (closeModal && typeof closeModal === 'function') {

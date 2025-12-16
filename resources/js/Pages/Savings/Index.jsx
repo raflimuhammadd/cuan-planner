@@ -12,7 +12,7 @@ import { Progress } from '@/Components/ui/progress';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import { UseFilter } from '@/Hooks/UseFilter';
 import AppLayout from '@/Layouts/AppLayout';
-import { formatDateIndo, formatToRupiah } from '@/lib/utils';
+import { deleteAction, formatDateIndo, formatToRupiah } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { IconArrowsDownUp, IconMoneybag, IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
@@ -214,7 +214,8 @@ export default function Index(props) {
                                                             <IconTrash className="size-4" />
                                                         </Button>
                                                     }
-                                                    action={() => console.log('delete')}
+                                                    
+                                                    action={() => deleteAction(route('goals.destroy', [goal]))}
                                                 />
                                             </div>
                                         </TableCell>

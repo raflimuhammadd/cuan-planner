@@ -60,274 +60,172 @@ export default function Index(props) {
                                 icon={IconMoneybag}
                             />
                         </CardHeader>
+                        <CardContent>
+                            <dl className='-my-3 text-sm leading-6 divide-y
+                            divide-gray-100'>
+                                <div className='flex justify-between py-3 gap-x-4'>
+                                    <dt className='text-foreground'>Tujuan</dt>
+                                    <dd className='font-medium text-foreground'>
+                                        {props.goal.name}
+                                    </dd>
+                                </div>
+
+                                <div className='flex justify-between py-3 gap-x-4'>
+                                    <dt className='text-foreground'>Progress</dt>
+                                    <dd className='font-medium text-foreground'>
+                                        <Progress value={props.goal.percentage} />
+                                        {props.goal.percentage} %
+                                    </dd>
+                                </div>
+
+                                <div className='flex justify-between py-3 gap-x-4'>
+                                    <dt className='text-foreground'>Nominal</dt>
+                                    <dd className='font-medium text-foreground'>
+                                        {formatToRupiah(props.goal.nominal)}
+                                    </dd>
+                                </div>
+
+                                <div className='flex justify-between py-3 gap-x-4'>
+                                    <dt className='text-foreground'>Tabungan per Bulan</dt>
+                                    <dd className='font-medium text-foreground'>
+                                        {formatToRupiah(props.goal.monthly_saving)}
+                                    </dd>
+                                </div>
+
+                                <div className='flex justify-between py-3 gap-x-4'>
+                                    <dt className='text-foreground'>Saldo Awal</dt>
+                                    <dd className='font-medium text-foreground'>
+                                        {formatToRupiah(props.goal.beginning_balance)}
+                                    </dd>
+                                </div>
+
+                                <div className='flex justify-between py-3 gap-x-4'>
+                                    <dt className='text-foreground'>Deadline</dt>
+                                    <dd className='font-medium text-foreground'>
+                                        {formatDateIndo(props.goal.deadline)}
+                                    </dd>
+                                </div>
+
+
+                            </dl>
+                        </CardContent>
                     </Card>
                 </div>
                 <div className='col-span-2 space-y-4'>
                     <Card>
-                        <CardHeader>
-                            <div className='flex flex-col items-start justify-between p-4
-                            gap-y-4 lg:flex-row lg:items-center'>
+                        <CardHeader className='p-0'>
+                            <div className='flex flex-col items-start 
+                            justify-between p-4 gap-y-4 lg:flex-row 
+                            lg:items-center'>
                                 <HeaderTitle
-                                title={props.pageSettings.title}
-                                subtitle={props.pageSettings.subtitle}
-                                icon={IconMoneybag}
-                            />
-                            <Button variant='emerald' size='xl' asChild>
-                                <Link href={route('balances.create', props.goal)}>
-                                <IconPlus className='size-4' />
-                                    Tambah
-                                </Link>
-                            </Button>
+                                    title={props.pageSettings.title}
+                                    subtitle={props.pageSettings.subtitle}
+                                    icon={IconMoneybag}
+                                />
+                                <Button variant='emerald' size='xl' asChild>
+                                    <Link href={route('balances.create', props.goal)}>
+                                        <IconPlus className='size-4' />
+                                        Tambah
+                                    </Link>
+                                </Button>
                             </div>
+
+                            <Filter params={params} setParams={setParams} />
+                            <ShowFilter params={params} />
+
                         </CardHeader>
+
+                        <CardContent className="p-0 [&-td]:whitespace-nowrap [&-td]:px-6 [&-th]:px-6">
+                            {balances.length === 0 ? (
+                                <EmptyState
+                                    icon={IconMoneybag}
+                                    title="Tidak ada saldo"
+                                    subtitle="Mulailah dengan menambahkan saldo"
+                                />
+                            ) : (
+                                <Table className="w-full">
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>
+                                                <Button
+                                                    variant="ghost"
+                                                    className="group inline-flex"
+                                                    onClick={() => onSortable('id')}
+                                                >
+                                                    #
+                                                    <span className="ml-2 flex-none rounded text-muted-foreground">
+                                                        <IconArrowsDownUp className="size-4" />
+                                                    </span>
+                                                </Button>
+                                            </TableHead>
+                                            <TableHead>
+                                                <Button
+                                                    variant="ghost"
+                                                    className="group inline-flex"
+                                                    onClick={() => onSortable('percentage')}
+                                                >
+                                                    Progress
+                                                    <span className="ml-2 flex-none rounded text-muted-foreground">
+                                                        <IconArrowsDownUp className="size-4" />
+                                                    </span>
+                                                </Button>
+                                            </TableHead>
+                                            <TableHead>
+                                                <Button
+                                                    variant="ghost"
+                                                    className="group inline-flex"
+                                                    onClick={() => onSortable('created_at')}
+                                                >
+                                                    Tanggal Menabung
+                                                    <span className="ml-2 flex-none rounded text-muted-foreground">
+                                                        <IconArrowsDownUp className="size-4" />
+                                                    </span>
+                                                </Button>
+                                            </TableHead>
+                                            <TableHead>Aksi</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+
+                                    <TableBody>
+                                        {balances.map((balance, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell>{index + 1 + (meta.current_page - 1) * meta.per_page}</TableCell>
+                                                <TableCell>{balance.month}</TableCell>
+                                                <TableCell>{formatDateIndo(balance.created_at)}</TableCell>
+                                                <TableCell>
+                                                    <div className="flex items-center gap-x-1">
+                                                        <AlertAction
+                                                            trigger={
+                                                                <Button variant="red" size="sm">
+                                                                    <IconTrash className="size-4" />
+                                                                </Button>
+                                                            }
+                                                            action={() => console.log('hapus saldo')}
+                                                        />
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            )}
+                        </CardContent>
+
+                        <CardFooter className="flex w-full flex-col items-center justify-between gap-y-2 border-t py-3 lg:flex-row">
+                            <p className="text-sm text-muted-foreground">
+                                Menampilkan <span className="font-medium text-emerald-600">{meta.from ?? 0}</span> dari{' '}
+                                {meta.total} saldo
+                            </p>
+                            <div className="overflow-x-auto">
+                                {meta.has_pages && <PaginationTable meta={meta} links={links} />}
+                            </div>
+                        </CardFooter>
                     </Card>
                 </div>
-
-
             </div>
 
-            {/* <Banner title={props.pageSettings.banner.title} subtitle={props.pageSettings.banner.subtitle} /> */}
 
-            {/* <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
-                <CardStat
-                    data={{
-                        title: 'Total Tujuan',
-                        icon: IconMoneybag,
-                        background: 'text-white bg-gradient-to-r from-orange-400 via-orange-500 to-orange-500',
-                        iconClassName: 'text-whire',
-                    }}
-                >
-                    <div className="text-2xl font-bold">{props.count.countGoal}</div>
-                </CardStat>
 
-                <CardStat
-                    data={{
-                        title: 'Total Tercapai',
-                        icon: IconCheck,
-                        background: 'text-white bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-500',
-                        iconClassName: 'text-whire',
-                    }}
-                >
-                    <div className="text-2xl font-bold">{props.count.countGoalAchieved}</div>
-                </CardStat>
-
-                <CardStat
-                    data={{
-                        title: 'Total Tidak Tercapai',
-                        icon: IconX,
-                        background: 'text-white bg-gradient-to-r from-red-400 via-red-500 to-red-500',
-                        iconClassName: 'text-whire',
-                    }}
-                >
-                    <div className="text-2xl font-bold">{props.count.countGoalNotAchieved}</div>
-                </CardStat>
-
-                <CardStat
-                    data={{
-                        title: 'Total Tabungan',
-                        icon: IconCash,
-                        background: 'text-white bg-gradient-to-r from-blue-400 via-blue-500 to-blue-500',
-                        iconClassName: 'text-whire',
-                    }}
-                >
-                    <div className="text-2xl font-bold">{formatToRupiah(props.count.countBalance)}</div>
-                </CardStat>
-            </div> */}
-
-            {/* <Card>
-                <CardHeader className="p-0">
-                    <div className="flex flex-col items-start justify-between gap-y-4 p-4 lg:flex-row lg:items-center">
-                        <HeaderTitle
-                            title={props.pageSettings.title}
-                            subtitle={props.pageSettings.subtitle}
-                            icon={IconMoneybag}
-                        />
-
-                        <Button variant="emerald" size="xl" asChild>
-                            <Link href={route('goals.create')}>
-                                <IconPlus size="4" />
-                                Tambah
-                            </Link>
-                        </Button>
-                    </div>
-
-                    <Filter params={params} setParams={setParams} />
-
-                    <ShowFilter params={params} />
-                </CardHeader>
-
-                <CardContent className="p-0 [&-td]:whitespace-nowrap [&-td]:px-6 [&-th]:px-6">
-                    {goals.length === 0 ? (
-                        <EmptyState
-                            icon={IconMoneybag}
-                            title="Tidak ada tujuan.."
-                            subtitle="Mulailah dengan membuat tujuan baru"
-                        />
-                    ) : (
-                        <Table className="w-full">
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>
-                                        <Button
-                                            variant="ghost"
-                                            className="group inline-flex"
-                                            onClick={() => onSortable('id')}
-                                        >
-                                            #
-                                            <span className="ml-2 flex-none rounded text-muted-foreground">
-                                                <IconArrowsDownUp className="size-4" />
-                                            </span>
-                                        </Button>
-                                    </TableHead>
-                                    <TableHead>
-                                        <Button
-                                            variant="ghost"
-                                            className="group inline-flex"
-                                            onClick={() => onSortable('percentage')}
-                                        >
-                                            Progress
-                                            <span className="ml-2 flex-none rounded text-muted-foreground">
-                                                <IconArrowsDownUp className="size-4" />
-                                            </span>
-                                        </Button>
-                                    </TableHead>
-                                    <TableHead>
-                                        <Button
-                                            variant="ghost"
-                                            className="group inline-flex"
-                                            onClick={() => onSortable('name')}
-                                        >
-                                            Tujuan
-                                            <span className="ml-2 flex-none rounded text-muted-foreground">
-                                                <IconArrowsDownUp className="size-4" />
-                                            </span>
-                                        </Button>
-                                    </TableHead>
-                                    <TableHead>
-                                        <Button
-                                            variant="ghost"
-                                            className="group inline-flex"
-                                            onClick={() => onSortable('percentage')}
-                                        >
-                                            Presentase
-                                            <span className="ml-2 flex-none rounded text-muted-foreground">
-                                                <IconArrowsDownUp className="size-4" />
-                                            </span>
-                                        </Button>
-                                    </TableHead>
-                                    <TableHead>
-                                        <Button
-                                            variant="ghost"
-                                            className="group inline-flex"
-                                            onClick={() => onSortable('nominal')}
-                                        >
-                                            Nominal (Rp)
-                                            <span className="ml-2 flex-none rounded text-muted-foreground">
-                                                <IconArrowsDownUp className="size-4" />
-                                            </span>
-                                        </Button>
-                                    </TableHead>
-                                    <TableHead>
-                                        <Button
-                                            variant="ghost"
-                                            className="group inline-flex"
-                                            onClick={() => onSortable('monthly_saving')}
-                                        >
-                                            Tabungan / Bulan (Rp)
-                                            <span className="ml-2 flex-none rounded text-muted-foreground">
-                                                <IconArrowsDownUp className="size-4" />
-                                            </span>
-                                        </Button>
-                                    </TableHead>
-                                    <TableHead>
-                                        <Button
-                                            variant="ghost"
-                                            className="group inline-flex"
-                                            onClick={() => onSortable('deadline')}
-                                        >
-                                            Deadline
-                                            <span className="ml-2 flex-none rounded text-muted-foreground">
-                                                <IconArrowsDownUp className="size-4" />
-                                            </span>
-                                        </Button>
-                                    </TableHead>
-                                    <TableHead>
-                                        <Button
-                                            variant="ghost"
-                                            className="group inline-flex"
-                                            onClick={() => onSortable('beginnning')}
-                                        >
-                                            Saldo Awal (Rp)
-                                            <span className="ml-2 flex-none rounded text-muted-foreground">
-                                                <IconArrowsDownUp className="size-4" />
-                                            </span>
-                                        </Button>
-                                    </TableHead>
-                                    <TableHead>
-                                        <Button
-                                            variant="ghost"
-                                            className="group inline-flex"
-                                            onClick={() => onSortable('created_at')}
-                                        >
-                                            Dibuat Pada
-                                            <span className="ml-2 flex-none rounded text-muted-foreground">
-                                                <IconArrowsDownUp className="size-4" />
-                                            </span>
-                                        </Button>
-                                    </TableHead>
-
-                                    <TableHead>Aksi</TableHead>
-                                </TableRow>
-                            </TableHeader>
-
-                            <TableBody>
-                                {goals.map((goal, index) => (
-                                    <TableRow key={index}>
-                                        <TableCell>{index + 1 + (meta.current_page - 1) * meta.per_page}</TableCell>
-                                        <TableCell>
-                                            <Progress value={goal.percentage} />
-                                        </TableCell>
-                                        <TableCell>{goal.name}</TableCell>
-                                        <TableCell>{goal.percentage} %</TableCell>
-                                        <TableCell>{formatToRupiah(goal.nominal)}</TableCell>
-                                        <TableCell>{formatToRupiah(goal.monthly_saving)}</TableCell>
-                                        <TableCell>{formatDateIndo(goal.deadline)}</TableCell>
-                                        <TableCell>{formatToRupiah(goal.beginning_balance)}</TableCell>
-                                        <TableCell>{formatDateIndo(goal.created_at)}</TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center gap-x-1">
-                                                <Button variant="blue" size="sm" asChild>
-                                                    <Link href={route('goals.edit', goal)}>
-                                                        <IconPencil className="size-4" />
-                                                    </Link>
-                                                </Button>
-                                                <AlertAction
-                                                    trigger={
-                                                        <Button variant="red" size="sm">
-                                                            <IconTrash className="size-4" />
-                                                        </Button>
-                                                    }
-                                                    action={() => deleteAction(route('goals.destroy', [goal]))}
-                                                />
-                                            </div>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    )}
-                </CardContent>
-
-                <CardFooter className="flex w-full flex-col items-center justify-between gap-y-2 border-t py-3 lg:flex-row">
-                    <p className="text-sm text-muted-foreground">
-                        Menampilkan <span className="font-medium text-emerald-600">{meta.from ?? 0}</span> dari{' '}
-                        {meta.total} tujuan
-                    </p>
-                    <div className="overflow-x-auto">
-                        {meta.has_pages && <PaginationTable meta={meta} links={links} />}
-                    </div>
-                </CardFooter>
-            </Card> */}
         </div>
     );
 }

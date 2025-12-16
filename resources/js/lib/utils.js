@@ -40,7 +40,7 @@ const deleteAction = (url, { closeModal, ...options } = {}) => {
 const formatDateIndo = (dateString) => {
     if (!dateString) return '-';
 
-    return format(parseISO(dateString), 'eeee', 'dd', 'MMMM', 'yyyy', {
+    return format(parseISO(dateString), 'eeee, dd MMMM yyyy', {
         locale: id,
     });
 };

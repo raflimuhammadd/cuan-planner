@@ -22,6 +22,8 @@ class GoalController extends Controller implements HasMiddleware
     {
         return [
             new Middleware('auth'),
+            new Middleware('can:update,goal', only:['edit', 'update']),
+            new Middleware('can:delete,goal', only:['destroy']),
         ];
     }
 

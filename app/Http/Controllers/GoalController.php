@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\MessageType;
 use App\Http\Requests\GoalRequest;
 use App\Http\Resources\GoalResource;
+use App\Models\Balance;
 use App\Models\Goal;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -65,6 +66,18 @@ class GoalController extends Controller implements HasMiddleware
                 ],
 
                 'year' => fn() => now()->year,
+
+                'count' => fn() => [
+                    'countGoal' => fn() => Goal::query()->where('user_id',
+                    Auth::id())->count(),
+                    'countGoalAchieved' => fn() => Goal::query()->where('user_id',
+                    Auth::id())->where('percentage', 100)->count(),
+                    'countGoalNotAchieved' => fn() => Goal::query()->where('user_id',
+                    Auth::id())->where('percentage', '<', 100)->count(),
+                    'countBalance' => fn() => Balance::query()->whereHas('goal', fn($query) => $query->where(
+                        'user_id', Auth::id()
+                    ))->sum('amount') + Goal::query()->where('user_id', Auth::id())->sum('beginning_balance')
+                ]
             ]);
     }
 
@@ -100,7 +113,6 @@ class GoalController extends Controller implements HasMiddleware
                 'monthly_saving' => $request->monthly_saving,
                 'deadline' => $request->deadline,
                 'beginning_balance' => $request->beginning_balance,
-                'percentage' => round(num: ($request->beginning_balance / $request->nominal) * 100, precision: 2)
             ]);
 
             flashMessage(MessageType::CREATED->message('Tujuan'));

@@ -1,6 +1,7 @@
 import AlertAction from '@/Components/AlertAction';
 import Banner from '@/Components/Banner';
 import BreadcrumbHeader from '@/Components/BreadcrumbHeader';
+import CardStat from '@/Components/CardStat';
 import Filter from '@/Components/Datatable/Filter';
 import PaginationTable from '@/Components/Datatable/PaginationTable';
 import ShowFilter from '@/Components/Datatable/ShowFilter';
@@ -14,7 +15,16 @@ import { UseFilter } from '@/Hooks/UseFilter';
 import AppLayout from '@/Layouts/AppLayout';
 import { deleteAction, formatDateIndo, formatToRupiah } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
-import { IconArrowsDownUp, IconMoneybag, IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
+import {
+    IconArrowsDownUp,
+    IconCash,
+    IconCheck,
+    IconMoneybag,
+    IconPencil,
+    IconPlus,
+    IconTrash,
+    IconX,
+} from '@tabler/icons-react';
 import { useState } from 'react';
 
 export default function Index(props) {
@@ -40,6 +50,52 @@ export default function Index(props) {
             <BreadcrumbHeader items={props.items} />
 
             <Banner title={props.pageSettings.banner.title} subtitle={props.pageSettings.banner.subtitle} />
+
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
+                <CardStat
+                    data={{
+                        title: 'Total Tujuan',
+                        icon: IconMoneybag,
+                        background: 'text-white bg-gradient-to-r from-orange-400 via-orange-500 to-orange-500',
+                        iconClassName: 'text-whire',
+                    }}
+                >
+                    <div className="text-2xl font-bold">{props.count.countGoal}</div>
+                </CardStat>
+
+                <CardStat
+                    data={{
+                        title: 'Total Tercapai',
+                        icon: IconCheck,
+                        background: 'text-white bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-500',
+                        iconClassName: 'text-whire',
+                    }}
+                >
+                    <div className="text-2xl font-bold">{props.count.countGoalAchieved}</div>
+                </CardStat>
+
+                <CardStat
+                    data={{
+                        title: 'Total Tidak Tercapai',
+                        icon: IconX,
+                        background: 'text-white bg-gradient-to-r from-red-400 via-red-500 to-red-500',
+                        iconClassName: 'text-whire',
+                    }}
+                >
+                    <div className="text-2xl font-bold">{props.count.countGoalNotAchieved}</div>
+                </CardStat>
+
+                <CardStat
+                    data={{
+                        title: 'Total Tabungan',
+                        icon: IconCash,
+                        background: 'text-white bg-gradient-to-r from-blue-400 via-blue-500 to-blue-500',
+                        iconClassName: 'text-whire',
+                    }}
+                >
+                    <div className="text-2xl font-bold">{formatToRupiah(props.count.countBalance)}</div>
+                </CardStat>
+            </div>
 
             <Card>
                 <CardHeader className="p-0">
@@ -214,7 +270,6 @@ export default function Index(props) {
                                                             <IconTrash className="size-4" />
                                                         </Button>
                                                     }
-                                                    
                                                     action={() => deleteAction(route('goals.destroy', [goal]))}
                                                 />
                                             </div>

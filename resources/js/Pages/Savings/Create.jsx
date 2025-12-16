@@ -71,7 +71,7 @@ export default function Create(props) {
                             {errors.name && <InputError message={errors.name} />}
                         </div>
 
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-2 dark:text-white">
                             <Label htmlFor="deadline">Deadline</Label>
                             <Input
                                 type="date"

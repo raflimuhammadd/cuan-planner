@@ -188,23 +188,23 @@ export default function Index(props) {
                             </TableHeader>
 
                             <TableBody>
-                                {goals.map((goals, index) => (
+                                {goals.map((goal, index) => (
                                     <TableRow key={index}>
                                         <TableCell>{index + 1 + (meta.current_page - 1) * meta.per_page}</TableCell>
                                         <TableCell>
-                                            <Progress value="goal.percentage" />
+                                            <Progress value={goal.percentage} />
                                         </TableCell>
-                                        <TableCell>{goals.name}</TableCell>
-                                        <TableCell>{goals.percentage}</TableCell>
-                                        <TableCell>{formatToRupiah(goals.nominal)}</TableCell>
-                                        <TableCell>{formatToRupiah(goals.monthly_saving)}</TableCell>
-                                        <TableCell>{formatDateIndo(goals.deadline)}</TableCell>
-                                        <TableCell>{formatToRupiah(goals.beginning_balance)}</TableCell>
-                                        <TableCell>{formatDateIndo(goals.created_at)}</TableCell>
+                                        <TableCell>{goal.name}</TableCell>
+                                        <TableCell>{goal.percentage} %</TableCell>
+                                        <TableCell>{formatToRupiah(goal.nominal)}</TableCell>
+                                        <TableCell>{formatToRupiah(goal.monthly_saving)}</TableCell>
+                                        <TableCell>{formatDateIndo(goal.deadline)}</TableCell>
+                                        <TableCell>{formatToRupiah(goal.beginning_balance)}</TableCell>
+                                        <TableCell>{formatDateIndo(goal.created_at)}</TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-x-1">
                                                 <Button variant="blue" size="sm" asChild>
-                                                    <Link href={route('goals.edit', ['goal'])}>
+                                                    <Link href={route('goals.edit', goal)}>
                                                         <IconPencil className="size-4" />
                                                     </Link>
                                                 </Button>

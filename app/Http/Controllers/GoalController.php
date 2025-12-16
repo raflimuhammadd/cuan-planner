@@ -100,6 +100,7 @@ class GoalController extends Controller implements HasMiddleware
                 'monthly_saving' => $request->monthly_saving,
                 'deadline' => $request->deadline,
                 'beginning_balance' => $request->beginning_balance,
+                'percentage' => round(num: ($request->beginning_balance / $request->nominal) * 100, precision: 2)
             ]);
 
             flashMessage(MessageType::CREATED->message('Tujuan'));
@@ -110,4 +111,51 @@ class GoalController extends Controller implements HasMiddleware
             return to_route('goals.index');
         }
     }
+
+    // method edit
+    public function edit(Goal $goal): Response
+    {
+        return inertia('Savings/Edit', [
+            'pageSettings' => fn() => [
+                'title' => 'Mulai tetapkan tujuan sekarang',
+                'subtitle' => 'Dengan tujuan yang jelas, setiap langkah kecil menabung membawa anda
+                lebih dekat ke impian besar anda',
+                'method' => 'PUT',
+                'action' => route('goals.update', $goal),
+            ],
+
+            'goal' => fn() => $goal,
+
+            'items' => fn() => [
+                    ['label' => 'Cuan+', 'href' => route('dashboard')],
+                    ['label' => 'Tabungan', 'href' => route('goals.index')],
+                    ['label' => 'Perbarui Tujuan Menabung'],
+            ],
+        ]);
+    }
+
+
+    // method update
+    public function update(Goal $goal, GoalRequest $request): RedirectResponse
+    {
+        try {
+            $goal->update([
+                'name' => $request->name,
+                'nominal' => $request->nominal,
+                'monthly_saving' => $request->monthly_saving,
+                'deadline' => $request->deadline,
+                'beginning_balance' => $request->beginning_balance,
+                'percentage' => $goal->calculatePercentage($request->beginning_balance,
+                                                            $request->nominal, Auth::id()),
+            ]);
+
+            flashMessage(MessageType::UPDATED->message('Tujuan'));
+            return to_route('goals.index');
+
+        } catch (Throwable $e) {
+            flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
+            return to_route('goals.index');
+        }
+    }
+
 }

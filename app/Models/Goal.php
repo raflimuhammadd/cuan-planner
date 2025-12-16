@@ -50,4 +50,21 @@ class Goal extends Model
         });
     }
 
+
+    // calculate balance
+    public function calculateBalance(string $user_id): int
+    {
+        return Balance::query()
+            ->where('user_id', $user_id)
+            ->where('goal_id', $this->id)
+            ->sum('amount');
+
+    }
+
+    // method percentage
+    public function calculatePercentage(int $beginning_balance, int $nominal, string $user_id): float
+    {
+        return round((($beginning_balance + $this->calculateBalance($user_id)) / $nominal) * 100, precision: 2);
+    }
+
 }

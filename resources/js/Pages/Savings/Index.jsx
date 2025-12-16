@@ -259,7 +259,6 @@ export default function Index(props) {
                                         <TableCell>{formatDateIndo(goal.created_at)}</TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-x-1">
-
                                                 <Button variant="yellow" size="sm" asChild>
                                                     <Link href={route('balances.index', goal)}>
                                                         <IconMoneybag className="size-4" />

@@ -22,12 +22,12 @@ Route::get('testing', fn() => Inertia::render('Testing'));
 
 
 // Controller:Dashboard
-Route::controller(DashboardController::class)->group(function() {
+Route::controller(DashboardController::class)->group(function () {
     Route::get('dashboard', 'index')->name('dashboard');
 });
 
 // Controller:Goal
-Route::controller(GoalController::class)->group(function() {
+Route::controller(GoalController::class)->group(function () {
     Route::get('goals', 'index')->name(name: 'goals.index');
     Route::get('goals/create', 'create')->name('goals.create');
     Route::post('goals/create', 'store')->name(name: 'goals.store');
@@ -37,11 +37,11 @@ Route::controller(GoalController::class)->group(function() {
 });
 
 // Controller:Balance Controller
-Route::controller(BalanceController::class)->group(function() {
+Route::controller(BalanceController::class)->group(function () {
     Route::get('goals/{goal}/balances', 'index')->name(name: 'balances.index');
     Route::get('goals/{goal}/balances/create', 'create')->name('balances.create');
     Route::post('goals/{goal}/balances/create', 'store')->name(name: 'balances.store');
-    Route::delete('goals/{goal}/balances/destroy', 'destroy')->name('balances.destroy');
+    Route::delete('goals/{goal}/balances/{balance}', 'destroy')->name('balances.destroy');
 });
 
 Route::middleware('auth')->group(function () {

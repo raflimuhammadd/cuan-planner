@@ -17,70 +17,86 @@ use Throwable;
 
 class GoalController extends Controller implements HasMiddleware
 {
-    
+
     public static function middleware(): array
     {
         return [
             new Middleware('auth'),
-            new Middleware('can:update,goal', only:['edit', 'update']),
-            new Middleware('can:delete,goal', only:['destroy']),
+            new Middleware('can:update,goal', only: ['edit', 'update']),
+            new Middleware('can:delete,goal', only: ['destroy']),
         ];
     }
 
-    
+
     // create method index
     public function index(): Response
     {
         $goals = Goal::query()
-            ->select(['id', 'user_id', 'name', 'percentage', 'nominal', 'monthly_saving',
-            'deadline', 'beginning_balance', 'created_at'])
+            ->select([
+                'id',
+                'user_id',
+                'name',
+                'percentage',
+                'nominal',
+                'monthly_saving',
+                'deadline',
+                'beginning_balance',
+                'created_at'
+            ])
 
             ->where('user_id', Auth::id())
             ->filter(request()->only(['search']))
             ->sorting(request()->only(['field', 'direction']))
             ->paginate(request()->load ?? 10);
 
-            return inertia('Savings/Index', [
-                'pageSettings' => fn() => [
-                    'title' => 'Tujuan Menabung',
-                    'subtitle' => 'Menabung untuk pendidikan, Liburan atau Investasi Masa Depan.',
-                    'banner'=> [
-                        'title' => 'Tabungan',
-                        'subtitle' => 'Wujudkan Impian dengan menabung. Langkah kecil menuju cita cita
+        return inertia('Savings/Index', [
+            'pageSettings' => fn() => [
+                'title' => 'Tujuan Menabung',
+                'subtitle' => 'Menabung untuk pendidikan, Liburan atau Investasi Masa Depan.',
+                'banner' => [
+                    'title' => 'Tabungan',
+                    'subtitle' => 'Wujudkan Impian dengan menabung. Langkah kecil menuju cita cita
                         yang besar',
-                    ],
                 ],
-                'goals' => fn() => GoalResource::collection($goals)->additional([
-                    'meta' => [
-                        'has_pages' => $goals->hasPages(),
-                    ],
-                ]),
-
-                'state' => fn()=>[
-                    'page' => request()->page ?? 1,
-                    'search' => request()->search ?? '',
-                    'load' => 10,
+            ],
+            'goals' => fn() => GoalResource::collection($goals)->additional([
+                'meta' => [
+                    'has_pages' => $goals->hasPages(),
                 ],
+            ]),
 
-                'items' => fn() => [
-                    ['label' => 'Cuan+', 'href' => route('dashboard')],
-                    ['label' => 'Tabungan'],
-                ],
+            'state' => fn() => [
+                'page' => request()->page ?? 1,
+                'search' => request()->search ?? '',
+                'load' => 10,
+            ],
 
-                'year' => fn() => now()->year,
+            'items' => fn() => [
+                ['label' => 'Cuan+', 'href' => route('dashboard')],
+                ['label' => 'Tabungan'],
+            ],
 
-                'count' => fn() => [
-                    'countGoal' => fn() => Goal::query()->where('user_id',
-                    Auth::id())->count(),
-                    'countGoalAchieved' => fn() => Goal::query()->where('user_id',
-                    Auth::id())->where('percentage', 100)->count(),
-                    'countGoalNotAchieved' => fn() => Goal::query()->where('user_id',
-                    Auth::id())->where('percentage', '<', 100)->count(),
-                    'countBalance' => fn() => Balance::query()->whereHas('goal', fn($query) => $query->where(
-                        'user_id', Auth::id()
-                    ))->sum('amount') + Goal::query()->where('user_id', Auth::id())->sum('beginning_balance')
-                ]
-            ]);
+            'year' => fn() => now()->year,
+
+            'count' => fn() => [
+                'countGoal' => fn() => Goal::query()->where(
+                    'user_id',
+                    Auth::id()
+                )->count(),
+                'countGoalAchieved' => fn() => Goal::query()->where(
+                    'user_id',
+                    Auth::id()
+                )->where('percentage', 100)->count(),
+                'countGoalNotAchieved' => fn() => Goal::query()->where(
+                    'user_id',
+                    Auth::id()
+                )->where('percentage', '<', 100)->count(),
+                'countBalance' => fn() => Balance::query()->whereHas('goal', fn($query) => $query->where(
+                    'user_id',
+                    Auth::id()
+                ))->sum('amount') + Goal::query()->where('user_id', Auth::id())->sum('beginning_balance')
+            ]
+        ]);
     }
 
 
@@ -96,9 +112,9 @@ class GoalController extends Controller implements HasMiddleware
                 'action' => route('goals.store'),
             ],
             'items' => fn() => [
-                    ['label' => 'Cuan+', 'href' => route('dashboard')],
-                    ['label' => 'Tabungan', 'href' => route('goals.index')],
-                    ['label' => 'Tambah Tujuan Menabung'],
+                ['label' => 'Cuan+', 'href' => route('dashboard')],
+                ['label' => 'Tabungan', 'href' => route('goals.index')],
+                ['label' => 'Tambah Tujuan Menabung'],
             ],
         ]);
     }
@@ -119,7 +135,6 @@ class GoalController extends Controller implements HasMiddleware
 
             flashMessage(MessageType::CREATED->message('Tujuan'));
             return to_route('goals.index');
-
         } catch (Throwable $e) {
             flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
             return to_route('goals.index');
@@ -141,9 +156,9 @@ class GoalController extends Controller implements HasMiddleware
             'goal' => fn() => $goal,
 
             'items' => fn() => [
-                    ['label' => 'Cuan+', 'href' => route('dashboard')],
-                    ['label' => 'Tabungan', 'href' => route('goals.index')],
-                    ['label' => 'Perbarui Tujuan Menabung'],
+                ['label' => 'Cuan+', 'href' => route('dashboard')],
+                ['label' => 'Tabungan', 'href' => route('goals.index')],
+                ['label' => 'Perbarui Tujuan Menabung'],
             ],
         ]);
     }
@@ -159,13 +174,15 @@ class GoalController extends Controller implements HasMiddleware
                 'monthly_saving' => $request->monthly_saving,
                 'deadline' => $request->deadline,
                 'beginning_balance' => $request->beginning_balance,
-                'percentage' => $goal->calculatePercentage($request->beginning_balance,
-                                                            $request->nominal, Auth::id()),
+                'percentage' => $goal->calculatePercentage(
+                    $request->beginning_balance,
+                    $request->nominal,
+                    Auth::id()
+                ),
             ]);
 
             flashMessage(MessageType::UPDATED->message('Tujuan'));
             return to_route('goals.index');
-
         } catch (Throwable $e) {
             flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
             return to_route('goals.index');
@@ -174,7 +191,7 @@ class GoalController extends Controller implements HasMiddleware
 
 
 
-        // method delete
+    // method delete
     public function destroy(Goal $goal): RedirectResponse
     {
         try {
@@ -182,11 +199,9 @@ class GoalController extends Controller implements HasMiddleware
 
             flashMessage(MessageType::DELETED->message('Tujuan'));
             return to_route('goals.index');
-
         } catch (Throwable $e) {
             flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
             return to_route('goals.index');
         }
     }
-
 }

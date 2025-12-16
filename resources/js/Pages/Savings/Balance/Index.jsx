@@ -164,7 +164,7 @@ export default function Index(props) {
                                                     className="group inline-flex"
                                                     onClick={() => onSortable('percentage')}
                                                 >
-                                                    Progress
+                                                    Jumlah (Rp)
                                                     <span className="ml-2 flex-none rounded text-muted-foreground">
                                                         <IconArrowsDownUp className="size-4" />
                                                     </span>
@@ -190,7 +190,7 @@ export default function Index(props) {
                                         {balances.map((balance, index) => (
                                             <TableRow key={index}>
                                                 <TableCell>{index + 1 + (meta.current_page - 1) * meta.per_page}</TableCell>
-                                                <TableCell>{balance.month}</TableCell>
+                                                <TableCell>{formatToRupiah(balance.amount)}</TableCell>
                                                 <TableCell>{formatDateIndo(balance.created_at)}</TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center gap-x-1">
@@ -200,7 +200,7 @@ export default function Index(props) {
                                                                     <IconTrash className="size-4" />
                                                                 </Button>
                                                             }
-                                                            action={() => console.log('hapus saldo')}
+                                                            action={() => deleteAction(route('balances.destroy', [props.goal, balance]))}
                                                         />
                                                     </div>
                                                 </TableCell>

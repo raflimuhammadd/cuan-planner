@@ -15,9 +15,9 @@ class BalanceResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'=>$this->id,
-            'amount'=>$this->amout,
-            'created_at'=>$this->created_at,
+            'id' => $this->id,
+            'amount' => $this->amount,
+            'created_at' => $this->created_at,
         ];
     }
 }

@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\MessageType;
+use App\Http\Requests\BalanceRequest;
 use App\Http\Resources\BalanceResource;
 use App\Models\Balance;
 use App\Models\Goal;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
+use Throwable;
 
 class BalanceController extends Controller
 {
@@ -29,33 +33,100 @@ class BalanceController extends Controller
             ->sorting(request()->only(['field', 'direction']))
             ->paginate(request()->load ?? 10);
 
-            return inertia('Savings/Balance/Index', [
-                'pageSettings' => fn()=> [
-                    'title' => 'Saldo Anda',
-                    'subtitle' => "Menampilkan semua tabungan anda pada tujuan {$goal->name}",
+        return inertia('Savings/Balance/Index', [
+            'pageSettings' => fn() => [
+                'title' => 'Saldo Anda',
+                'subtitle' => "Menampilkan semua tabungan anda pada tujuan {$goal->name}",
+            ],
+
+            'balances' => fn() => BalanceResource::collection($balances)->additional([
+                'meta' => [
+                    'has_pages' => $balances->hasPages(),
                 ],
+            ]),
 
-                'balances' => fn() => BalanceResource::collection($balances)->additional([
-                    'meta' => [
-                        'has_pages' => $balances->hasPages(),
-                    ],
-                ]),
+            'goal' => fn() => $goal,
+            'state' => fn() => [
+                'page' => request()->page ?? 1,
+                'search' => request()->search ?? '',
+                'load' => 10,
+            ],
 
-                'goal' => fn() => $goal,
-                'state' => fn() => [
-                    'page' => request()->page ?? 1,
-                    'search' => request()->search ?? '',
-                    'load' => 10,
-                ],
+            'items' => fn() => [
+                ['label' => 'Cuan+', 'href' => route('dashboard')],
+                ['label' => 'Tabungan', 'href' => route('goals.index')],
+                ['label' => $goal->id, 'href' => route('goals.index')],
+                ['label' => 'Saldo'],
 
-                'items' => fn() => [
-                    ['label'=> 'Cuan+', 'href' => route('dashboard')],
-                    ['label'=> 'Tabungan', 'href' => route('goals.index')],
-                    ['label'=> $goal->id, 'href' => route('goals.index')],
-                    ['label'=> 'Saldo'],
+            ]
+        ]);
+    }
 
-                ]
+
+    public function create(Goal $goal): Response
+    {
+        return inertia('Savings/Balance/Create', [
+            'pageSettings' => fn() => [
+                'title' => 'Tambah Saldo',
+                'subtitle' => "Menabung sekarang untuk mencapai tujuan anda",
+                'method' => 'POST',
+                'action' => route('balances.store', $goal),
+            ],
+            'goal' => fn() => $goal,
+            'items' => fn() => [
+                ['label' => 'Cuan+', 'href' => route('dashboard')],
+                ['label' => 'Tabungan', 'href' => route('goals.index')],
+                ['label' => $goal->id, 'href' => route('goals.index')],
+                ['label' => 'Saldo', 'href' => route('balances.index', $goal)],
+                ['label' => 'Tambah Saldo'],
+            ]
+        ]);
+    }
+
+    // method store
+    public function store(Goal $goal, BalanceRequest $request): RedirectResponse
+    {
+        try {
+            $realized = ($goal->nominal - ($goal->beginning_balance + $goal->calculateBalance(Auth::id())));
+            if ($request->amount > $realized) {
+                $excess = $request->amount - $realized;
+                flashMessage("Tabungan anda melebihi target sebesar "
+                    . number_format($excess, 0, '.', '.'), 'warning');
+                return to_route('balances.index', $goal);
+            }
+
+            Balance::create([
+                'user_id' => Auth::id(),
+                'goal_id' => $goal->id,
+                'amount' => $request->amount,
             ]);
-            
+
+            $goal->update([
+                'percentage' => $goal->calculatePercentage($goal->beginning_balance, $goal->nominal, Auth::id())
+            ]);
+
+            flashMessage(MessageType::CREATED->message('Saldo'));
+            return to_route('balances.index', $goal);
+        } catch (Throwable $e) {
+            flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
+            return to_route('balances.index', $goal);
+        }
+    }
+
+    // method delete
+    public function destroy(Goal $goal, Balance $balance): RedirectResponse
+    {
+        try {
+            $balance->delete();
+            $goal->update([
+                'percentage' => $goal->calculatePercentage($goal->beginning_balance, $goal->nominal, Auth::id())
+            ]);
+
+            flashMessage(MessageType::DELETED->message('Saldo'));
+            return to_route('balances.index', $goal);
+        } catch (Throwable $e) {
+            flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
+            return to_route('balances.index', $goal);
+        }
     }
 }

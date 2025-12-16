@@ -28,7 +28,7 @@ import {
 import { useState } from 'react';
 
 export default function Index(props) {
-    const { data: goals, meta, links } = props.goals;
+    const { data: balances, meta, links } = props.balances;
     const [params, setParams] = useState(props.state);
 
     const onSortable = (field) => {
@@ -40,18 +40,55 @@ export default function Index(props) {
     };
 
     UseFilter({
-        route: route('goals.index'),
+        route: route('balances.index', props.goal),
         values: params,
-        only: ['goals'],
+        only: ['balances'],
     });
 
     return (
         <div className="flex w-full flex-col gap-y-6 pb-32">
             <BreadcrumbHeader items={props.items} />
 
-            <Banner title={props.pageSettings.banner.title} subtitle={props.pageSettings.banner.subtitle} />
 
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
+            <div className='grid w-full grid-cols-1 gap-y-4 lg:grid-cols-3 lg:gap-x-6'>
+                <div className='col-span-1 space-y-4'>
+                    <Card>
+                        <CardHeader>
+                            <HeaderTitle
+                                title='Tujuan Menabung'
+                                subtitle='Menampilkan detail tujuan menabung'
+                                icon={IconMoneybag}
+                            />
+                        </CardHeader>
+                    </Card>
+                </div>
+                <div className='col-span-2 space-y-4'>
+                    <Card>
+                        <CardHeader>
+                            <div className='flex flex-col items-start justify-between p-4
+                            gap-y-4 lg:flex-row lg:items-center'>
+                                <HeaderTitle
+                                title={props.pageSettings.title}
+                                subtitle={props.pageSettings.subtitle}
+                                icon={IconMoneybag}
+                            />
+                            <Button variant='emerald' size='xl' asChild>
+                                <Link href={route('balances.create', props.goal)}>
+                                <IconPlus className='size-4' />
+                                    Tambah
+                                </Link>
+                            </Button>
+                            </div>
+                        </CardHeader>
+                    </Card>
+                </div>
+
+
+            </div>
+
+            {/* <Banner title={props.pageSettings.banner.title} subtitle={props.pageSettings.banner.subtitle} /> */}
+
+            {/* <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
                 <CardStat
                     data={{
                         title: 'Total Tujuan',
@@ -95,9 +132,9 @@ export default function Index(props) {
                 >
                     <div className="text-2xl font-bold">{formatToRupiah(props.count.countBalance)}</div>
                 </CardStat>
-            </div>
+            </div> */}
 
-            <Card>
+            {/* <Card>
                 <CardHeader className="p-0">
                     <div className="flex flex-col items-start justify-between gap-y-4 p-4 lg:flex-row lg:items-center">
                         <HeaderTitle
@@ -259,13 +296,6 @@ export default function Index(props) {
                                         <TableCell>{formatDateIndo(goal.created_at)}</TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-x-1">
-
-                                                <Button variant="yellow" size="sm" asChild>
-                                                    <Link href={route('balances.index', goal)}>
-                                                        <IconMoneybag className="size-4" />
-                                                    </Link>
-                                                </Button>
-
                                                 <Button variant="blue" size="sm" asChild>
                                                     <Link href={route('goals.edit', goal)}>
                                                         <IconPencil className="size-4" />
@@ -297,7 +327,7 @@ export default function Index(props) {
                         {meta.has_pages && <PaginationTable meta={meta} links={links} />}
                     </div>
                 </CardFooter>
-            </Card>
+            </Card> */}
         </div>
     );
 }

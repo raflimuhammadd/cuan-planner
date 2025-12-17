@@ -45,7 +45,12 @@ class BalanceController extends Controller
                 ],
             ]),
 
-            'goal' => fn() => $goal,
+            'goal' => fn() => $goal->loadSum('balances', 'amount')->loadSum([
+                'balances as balances_sum_amount' => function($query) {
+                    $query->whereMonth('created_at', now()->month)
+                        ->whereYear('created_at', now()->year);
+                },
+            ], 'amount'),
             'state' => fn() => [
                 'page' => request()->page ?? 1,
                 'search' => request()->search ?? '',

@@ -19,9 +19,12 @@ import {
     IconArrowsDownUp,
     IconCash,
     IconCheck,
+    IconList,
     IconMoneybag,
     IconPencil,
     IconPlus,
+    IconReportMoney,
+    IconTimeline,
     IconTrash,
     IconX,
 } from '@tabler/icons-react';
@@ -48,6 +51,61 @@ export default function Index(props) {
     return (
         <div className="flex w-full flex-col gap-y-6 pb-32">
             <BreadcrumbHeader items={props.items} />
+
+                        <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
+                            <CardStat
+                                data={{
+                                    title: 'Saldo Awal',
+                                    icon: IconCash,
+                                    background: 'text-white bg-gradient-to-r from-red-400 via-red-500 to-red-500',
+                                    iconClassName: 'text-whire',
+                                }}
+                            >
+                                <div className="text-2xl font-bold">{formatToRupiah(props.goal.beginning_balance)}</div>
+                            </CardStat>
+            
+                            <CardStat
+                                data={{
+                                    title: 'Sudah ditabung',
+                                    icon: IconList,
+                                    background: 'text-white bg-gradient-to-r from-orange-400 via-orange-500 to-orange-500',
+                                    iconClassName: 'text-whire',
+                                }}
+                            >
+                                <div className="text-2xl font-bold">{formatToRupiah(props.goal.balances_sum_amount)}</div>
+                            </CardStat>
+            
+                            <CardStat
+                                data={{
+                                    title: 'Total Tabungan (Saldo awal + Sudah ditabung)',
+                                    icon: IconReportMoney,
+                                    background: 'text-white bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-500',
+                                    iconClassName: 'text-whire',
+                                }}
+                            >
+                                <div className="text-2xl font-bold">{formatToRupiah(
+                                        Number(props.goal.balances_sum_amount)+ Number(props.goal.beginning_balance)
+                                    )}
+                                </div>
+                            </CardStat>
+            
+                            <CardStat
+                                data={{
+                                    title: 'Realisasi (Tabungan yang dicapai)',
+                                    icon: IconTimeline,
+                                    background: 'text-white bg-gradient-to-r from-blue-400 via-blue-500 to-blue-500',
+                                    iconClassName: 'text-whire',
+                                }}
+                            >
+                                <div className="text-2xl font-bold">{formatToRupiah(
+                                    Math.max(
+                                        0,
+                                        Number(props.goal.nominal) -Number(props.goal.balances_sum_amount) +
+                                        Number(props.goal.beginning_balance)
+                                    )
+                                )}</div>
+                            </CardStat>
+                        </div>
 
 
             <div className='grid w-full grid-cols-1 gap-y-4 lg:grid-cols-3 lg:gap-x-6'>

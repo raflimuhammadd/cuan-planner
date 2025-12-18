@@ -20,6 +20,9 @@ class BalanceController extends Controller
     {
         return [
             new Middleware('auth'),
+            new Middleware('can:view,goal', only: ['index']),
+            new Middleware('can:create,goal', only: ['create','index']),
+            new Middleware('can:delete,balance', only: ['destroy']),
         ];
     }
 

@@ -7,6 +7,7 @@ import PaginationTable from '@/Components/Datatable/PaginationTable';
 import ShowFilter from '@/Components/Datatable/ShowFilter';
 import EmptyState from '@/Components/EmptyState';
 import HeaderTitle from '@/Components/HeaderTitle';
+import { Alert, AlertDescription, AlertTitle } from '@/Components/ui/alert';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/Components/ui/card';
 import { Progress } from '@/Components/ui/progress';
@@ -100,13 +101,30 @@ export default function Index(props) {
                                 <div className="text-2xl font-bold">{formatToRupiah(
                                     Math.max(
                                         0,
-                                        Number(props.goal.nominal) -Number(props.goal.balances_sum_amount) +
-                                        Number(props.goal.beginning_balance)
+                                        Number(props.goal.nominal) - (Number(props.goal.balances_sum_amount) +
+                                        Number(props.goal.beginning_balance))
                                     )
                                 )}</div>
                             </CardStat>
                         </div>
 
+                        {/* alert */}
+                        <Alert
+                            variant={props.goal.balances_sum_amount >= props.goal.monthly_saving 
+                                ? 'success' 
+                                : 'destructive'
+                            }
+                        >
+                            <AlertTitle className="dark:text-white">
+                                {props.goal.balances_sum_amount >= props.goal.monthly_saving ? 'Ntapss' : 'Weitss'}
+                                <AlertDescription>
+                                    {props.goal.balances_sum_amount >= props.goal.monthly_saving 
+                                    ? "Anda sudah berhasil mencapai target tabungan bulanan"
+                                    : "Anda belum berhasil mencapai target tabungan bulanan" 
+                                }
+                                </AlertDescription>
+                            </AlertTitle>
+                        </Alert>
 
             <div className='grid w-full grid-cols-1 gap-y-4 lg:grid-cols-3 lg:gap-x-6'>
                 <div className='col-span-1 space-y-4'>
@@ -164,11 +182,11 @@ export default function Index(props) {
                                     </dd>
                                 </div>
 
-
                             </dl>
                         </CardContent>
                     </Card>
                 </div>
+
                 <div className='col-span-2 space-y-4'>
                     <Card>
                         <CardHeader className='p-0'>
@@ -190,9 +208,8 @@ export default function Index(props) {
 
                             <Filter params={params} setParams={setParams} />
                             <ShowFilter params={params} />
-
                         </CardHeader>
-
+                        
                         <CardContent className="p-0 [&-td]:whitespace-nowrap [&-td]:px-6 [&-th]:px-6">
                             {balances.length === 0 ? (
                                 <EmptyState

@@ -7,6 +7,7 @@ use App\Http\Requests\GoalRequest;
 use App\Http\Resources\GoalResource;
 use App\Models\Balance;
 use App\Models\Goal;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -14,6 +15,7 @@ use Inertia\Response;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Throwable;
+
 
 class GoalController extends Controller implements HasMiddleware
 {
@@ -76,7 +78,7 @@ class GoalController extends Controller implements HasMiddleware
                 ['label' => 'Tabungan'],
             ],
 
-            'year' => fn() => now()->year,
+            'year' => fn() => Carbon::now()->year,
 
             'count' => fn() => [
                 'countGoal' => fn() => Goal::query()->where(
@@ -95,7 +97,10 @@ class GoalController extends Controller implements HasMiddleware
                     'user_id',
                     Auth::id()
                 ))->sum('amount') + Goal::query()->where('user_id', Auth::id())->sum('beginning_balance')
-            ]
+                ],
+
+                'productivityCount' => fn() => $this->getProductivityCount(),
+                
         ]);
     }
 
@@ -203,5 +208,42 @@ class GoalController extends Controller implements HasMiddleware
             flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
             return to_route('goals.index');
         }
+    }
+
+    // method contributor
+    public function getProductivityCount():array
+    {
+        $startDate = Carbon::create(Carbon::now()->year, 1, 1);
+        $endDate = Carbon::create(Carbon::now()->year, 12, 31);
+
+
+        $balance = Balance::query()
+            ->where('user_id', Auth::id())
+            ->selectRaw('DATE(created_at) as transaction_date, count(*) as count')
+            ->wherebetween('created_at', [$startDate, $endDate])
+            ->groupBy('transaction_date')
+            ->orderBy('transaction_date', 'asc')
+            ->get();
+
+        $dates = [];
+        $currentDate = $startDate->copy();
+
+        while($currentDate <= $endDate){
+            $dates[] = $currentDate->format('Y-m-d');
+            $currentDate->addDay();
+        }
+
+        $result = [];
+
+        foreach($dates as $date){
+            $transactions = $balance->firstWhere('transaction_date', $date);
+            $result[] = [
+                'transaction_date' => $date,
+                'count' => $transactions ? $transactions->count : 0,
+            ];
+        }
+
+        return $result;
+
     }
 }

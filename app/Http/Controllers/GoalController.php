@@ -236,14 +236,13 @@ class GoalController extends Controller implements HasMiddleware
         $result = [];
 
         foreach($dates as $date){
-            $transactions = $balance->firstWhere('transaction_date', $date);
+            $transaction = $balance->firstWhere('transaction_date', $date);
             $result[] = [
                 'transaction_date' => $date,
-                'count' => $transactions ? $transactions->count : 0,
+                'count' => $transaction ? $transaction->count : 0,
             ];
         }
 
         return $result;
-
     }
 }

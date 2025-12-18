@@ -1,5 +1,4 @@
 import AlertAction from '@/Components/AlertAction';
-import Banner from '@/Components/Banner';
 import BreadcrumbHeader from '@/Components/BreadcrumbHeader';
 import CardStat from '@/Components/CardStat';
 import Filter from '@/Components/Datatable/Filter';
@@ -19,15 +18,12 @@ import { Link } from '@inertiajs/react';
 import {
     IconArrowsDownUp,
     IconCash,
-    IconCheck,
     IconList,
     IconMoneybag,
-    IconPencil,
     IconPlus,
     IconReportMoney,
     IconTimeline,
     IconTrash,
-    IconX,
 } from '@tabler/icons-react';
 import { useState } from 'react';
 
@@ -53,154 +49,143 @@ export default function Index(props) {
         <div className="flex w-full flex-col gap-y-6 pb-32">
             <BreadcrumbHeader items={props.items} />
 
-                        <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
-                            <CardStat
-                                data={{
-                                    title: 'Saldo Awal',
-                                    icon: IconCash,
-                                    background: 'text-white bg-gradient-to-r from-red-400 via-red-500 to-red-500',
-                                    iconClassName: 'text-whire',
-                                }}
-                            >
-                                <div className="text-2xl font-bold">{formatToRupiah(props.goal.beginning_balance)}</div>
-                            </CardStat>
-            
-                            <CardStat
-                                data={{
-                                    title: 'Sudah ditabung',
-                                    icon: IconList,
-                                    background: 'text-white bg-gradient-to-r from-orange-400 via-orange-500 to-orange-500',
-                                    iconClassName: 'text-whire',
-                                }}
-                            >
-                                <div className="text-2xl font-bold">{formatToRupiah(props.goal.balances_sum_amount)}</div>
-                            </CardStat>
-            
-                            <CardStat
-                                data={{
-                                    title: 'Total Tabungan (Saldo awal + Sudah ditabung)',
-                                    icon: IconReportMoney,
-                                    background: 'text-white bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-500',
-                                    iconClassName: 'text-whire',
-                                }}
-                            >
-                                <div className="text-2xl font-bold">{formatToRupiah(
-                                        Number(props.goal.balances_sum_amount)+ Number(props.goal.beginning_balance)
-                                    )}
-                                </div>
-                            </CardStat>
-            
-                            <CardStat
-                                data={{
-                                    title: 'Realisasi (Tabungan yang dicapai)',
-                                    icon: IconTimeline,
-                                    background: 'text-white bg-gradient-to-r from-blue-400 via-blue-500 to-blue-500',
-                                    iconClassName: 'text-whire',
-                                }}
-                            >
-                                <div className="text-2xl font-bold">{formatToRupiah(
-                                    Math.max(
-                                        0,
-                                        Number(props.goal.nominal) - (Number(props.goal.balances_sum_amount) +
-                                        Number(props.goal.beginning_balance))
-                                    )
-                                )}</div>
-                            </CardStat>
-                        </div>
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
+                <CardStat
+                    data={{
+                        title: 'Saldo Awal',
+                        icon: IconCash,
+                        background: 'text-white bg-gradient-to-r from-red-400 via-red-500 to-red-500',
+                        iconClassName: 'text-whire',
+                    }}
+                >
+                    <div className="text-2xl font-bold">{formatToRupiah(props.goal.beginning_balance)}</div>
+                </CardStat>
 
-                        {/* alert */}
-                        <Alert
-                            variant={props.goal.balances_sum_amount >= props.goal.monthly_saving 
-                                ? 'success' 
-                                : 'destructive'
-                            }
-                        >
-                            <AlertTitle className="dark:text-white">
-                                {props.goal.balances_sum_amount >= props.goal.monthly_saving ? 'Ntapss' : 'Weitss'}
-                                <AlertDescription>
-                                    {props.goal.balances_sum_amount >= props.goal.monthly_saving 
-                                    ? "Anda sudah berhasil mencapai target tabungan bulanan"
-                                    : "Anda belum berhasil mencapai target tabungan bulanan" 
-                                }
-                                </AlertDescription>
-                            </AlertTitle>
-                        </Alert>
+                <CardStat
+                    data={{
+                        title: 'Sudah ditabung',
+                        icon: IconList,
+                        background: 'text-white bg-gradient-to-r from-orange-400 via-orange-500 to-orange-500',
+                        iconClassName: 'text-whire',
+                    }}
+                >
+                    <div className="text-2xl font-bold">{formatToRupiah(props.goal.balances_sum_amount)}</div>
+                </CardStat>
 
-            <div className='grid w-full grid-cols-1 gap-y-4 lg:grid-cols-3 lg:gap-x-6'>
-                <div className='col-span-1 space-y-4'>
+                <CardStat
+                    data={{
+                        title: 'Total Tabungan (Saldo awal + Sudah ditabung)',
+                        icon: IconReportMoney,
+                        background: 'text-white bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-500',
+                        iconClassName: 'text-whire',
+                    }}
+                >
+                    <div className="text-2xl font-bold">
+                        {formatToRupiah(Number(props.goal.balances_sum_amount) + Number(props.goal.beginning_balance))}
+                    </div>
+                </CardStat>
+
+                <CardStat
+                    data={{
+                        title: 'Realisasi (Tabungan yang dicapai)',
+                        icon: IconTimeline,
+                        background: 'text-white bg-gradient-to-r from-blue-400 via-blue-500 to-blue-500',
+                        iconClassName: 'text-whire',
+                    }}
+                >
+                    <div className="text-2xl font-bold">
+                        {formatToRupiah(
+                            Math.max(
+                                0,
+                                Number(props.goal.nominal) -
+                                    (Number(props.goal.balances_sum_amount) + Number(props.goal.beginning_balance)),
+                            ),
+                        )}
+                    </div>
+                </CardStat>
+            </div>
+
+            {/* alert */}
+            <Alert variant={props.goal.balances_sum_amount >= props.goal.monthly_saving ? 'success' : 'destructive'}>
+                <AlertTitle className="dark:text-white">
+                    {props.goal.balances_sum_amount >= props.goal.monthly_saving ? 'Ntapss' : 'Weitss'}
+                    <AlertDescription>
+                        {props.goal.balances_sum_amount >= props.goal.monthly_saving
+                            ? 'Anda sudah berhasil mencapai target tabungan bulanan'
+                            : 'Anda belum berhasil mencapai target tabungan bulanan'}
+                    </AlertDescription>
+                </AlertTitle>
+            </Alert>
+
+            <div className="grid w-full grid-cols-1 gap-y-4 lg:grid-cols-3 lg:gap-x-6">
+                <div className="col-span-1 space-y-4">
                     <Card>
                         <CardHeader>
                             <HeaderTitle
-                                title='Tujuan Menabung'
-                                subtitle='Menampilkan detail tujuan menabung'
+                                title="Tujuan Menabung"
+                                subtitle="Menampilkan detail tujuan menabung"
                                 icon={IconMoneybag}
                             />
                         </CardHeader>
                         <CardContent>
-                            <dl className='-my-3 text-sm leading-6 divide-y
-                            divide-gray-100'>
-                                <div className='flex justify-between py-3 gap-x-4'>
-                                    <dt className='text-foreground'>Tujuan</dt>
-                                    <dd className='font-medium text-foreground'>
-                                        {props.goal.name}
-                                    </dd>
+                            <dl className="-my-3 divide-y divide-gray-100 text-sm leading-6">
+                                <div className="flex justify-between gap-x-4 py-3">
+                                    <dt className="text-foreground">Tujuan</dt>
+                                    <dd className="font-medium text-foreground">{props.goal.name}</dd>
                                 </div>
 
-                                <div className='flex justify-between py-3 gap-x-4'>
-                                    <dt className='text-foreground'>Progress</dt>
-                                    <dd className='font-medium text-foreground'>
+                                <div className="flex justify-between gap-x-4 py-3">
+                                    <dt className="text-foreground">Progress</dt>
+                                    <dd className="font-medium text-foreground">
                                         <Progress value={props.goal.percentage} />
                                         {props.goal.percentage} %
                                     </dd>
                                 </div>
 
-                                <div className='flex justify-between py-3 gap-x-4'>
-                                    <dt className='text-foreground'>Nominal</dt>
-                                    <dd className='font-medium text-foreground'>
+                                <div className="flex justify-between gap-x-4 py-3">
+                                    <dt className="text-foreground">Nominal</dt>
+                                    <dd className="font-medium text-foreground">
                                         {formatToRupiah(props.goal.nominal)}
                                     </dd>
                                 </div>
 
-                                <div className='flex justify-between py-3 gap-x-4'>
-                                    <dt className='text-foreground'>Tabungan per Bulan</dt>
-                                    <dd className='font-medium text-foreground'>
+                                <div className="flex justify-between gap-x-4 py-3">
+                                    <dt className="text-foreground">Tabungan per Bulan</dt>
+                                    <dd className="font-medium text-foreground">
                                         {formatToRupiah(props.goal.monthly_saving)}
                                     </dd>
                                 </div>
 
-                                <div className='flex justify-between py-3 gap-x-4'>
-                                    <dt className='text-foreground'>Saldo Awal</dt>
-                                    <dd className='font-medium text-foreground'>
+                                <div className="flex justify-between gap-x-4 py-3">
+                                    <dt className="text-foreground">Saldo Awal</dt>
+                                    <dd className="font-medium text-foreground">
                                         {formatToRupiah(props.goal.beginning_balance)}
                                     </dd>
                                 </div>
 
-                                <div className='flex justify-between py-3 gap-x-4'>
-                                    <dt className='text-foreground'>Deadline</dt>
-                                    <dd className='font-medium text-foreground'>
+                                <div className="flex justify-between gap-x-4 py-3">
+                                    <dt className="text-foreground">Deadline</dt>
+                                    <dd className="font-medium text-foreground">
                                         {formatDateIndo(props.goal.deadline)}
                                     </dd>
                                 </div>
-
                             </dl>
                         </CardContent>
                     </Card>
                 </div>
 
-                <div className='col-span-2 space-y-4'>
+                <div className="col-span-2 space-y-4">
                     <Card>
-                        <CardHeader className='p-0'>
-                            <div className='flex flex-col items-start 
-                            justify-between p-4 gap-y-4 lg:flex-row 
-                            lg:items-center'>
+                        <CardHeader className="p-0">
+                            <div className="flex flex-col items-start justify-between gap-y-4 p-4 lg:flex-row lg:items-center">
                                 <HeaderTitle
                                     title={props.pageSettings.title}
                                     subtitle={props.pageSettings.subtitle}
                                     icon={IconMoneybag}
                                 />
-                                <Button variant='emerald' size='xl' asChild>
+                                <Button variant="emerald" size="xl" asChild>
                                     <Link href={route('balances.create', props.goal)}>
-                                        <IconPlus className='size-4' />
+                                        <IconPlus className="size-4" />
                                         Tambah
                                     </Link>
                                 </Button>
@@ -209,7 +194,7 @@ export default function Index(props) {
                             <Filter params={params} setParams={setParams} />
                             <ShowFilter params={params} />
                         </CardHeader>
-                        
+
                         <CardContent className="p-0 [&-td]:whitespace-nowrap [&-td]:px-6 [&-th]:px-6">
                             {balances.length === 0 ? (
                                 <EmptyState
@@ -264,7 +249,9 @@ export default function Index(props) {
                                     <TableBody>
                                         {balances.map((balance, index) => (
                                             <TableRow key={index}>
-                                                <TableCell>{index + 1 + (meta.current_page - 1) * meta.per_page}</TableCell>
+                                                <TableCell>
+                                                    {index + 1 + (meta.current_page - 1) * meta.per_page}
+                                                </TableCell>
                                                 <TableCell>{formatToRupiah(balance.amount)}</TableCell>
                                                 <TableCell>{formatDateIndo(balance.created_at)}</TableCell>
                                                 <TableCell>
@@ -275,7 +262,11 @@ export default function Index(props) {
                                                                     <IconTrash className="size-4" />
                                                                 </Button>
                                                             }
-                                                            action={() => deleteAction(route('balances.destroy', [props.goal, balance]))}
+                                                            action={() =>
+                                                                deleteAction(
+                                                                    route('balances.destroy', [props.goal, balance]),
+                                                                )
+                                                            }
                                                         />
                                                     </div>
                                                 </TableCell>
@@ -298,9 +289,6 @@ export default function Index(props) {
                     </Card>
                 </div>
             </div>
-
-
-
         </div>
     );
 }

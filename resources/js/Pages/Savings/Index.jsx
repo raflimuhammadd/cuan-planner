@@ -101,24 +101,23 @@ export default function Index(props) {
             <Card>
                 <CardHeader>
                     <CardTitle>
-                        Kontribusi Menabung pada periode 1 Januari {props.year} - 31 Desember {props.year} 
+                        Kontribusi Menabung pada periode 1 Januari {props.year} - 31 Desember {props.year}
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <Productivity transactions={props.productivityCount}/>
+                    <Productivity transactions={props.productivityCount} />
                 </CardContent>
                 <CardFooter>
-                    <div className='flex flex-col items-center justify-between
-                    w-full gap-2'>
-                        <Link className='text-sm text-muted-foreground'>Pelajari cara kami menghitung kontribusi</Link>
-                        <div className='flex flex-row items-center gap-1.5'>
-                            <span className='mr-2 text-xs text-muted-foreground'>Lebih Sedikit</span>
-                            <Button className="w-5 h-5 rounded-full" variant="outline" size="sm"></Button>
-                            <Button className="w-5 h-5 rounded-full bg-emerald-700" size="sm"></Button>
-                            <Button className="w-5 h-5 rounded-full bg-emerald-600" size="sm"></Button>
-                            <Button className="w-5 h-5 rounded-full bg-emerald-500" size="sm"></Button>
-                            <Button className="w-5 h-5 rounded-full bg-emerald-400" size="sm"></Button>
-                            <span className='ml-2 text-xs text-muted-foreground'>Lebih Banyak</span>
+                    <div className="flex w-full flex-col items-center justify-between gap-2">
+                        <Link className="text-sm text-muted-foreground">Pelajari cara kami menghitung kontribusi</Link>
+                        <div className="flex flex-row items-center gap-1.5">
+                            <span className="mr-2 text-xs text-muted-foreground">Lebih Sedikit</span>
+                            <Button className="h-5 w-5 rounded-full" variant="outline" size="sm"></Button>
+                            <Button className="h-5 w-5 rounded-full bg-emerald-700" size="sm"></Button>
+                            <Button className="h-5 w-5 rounded-full bg-emerald-600" size="sm"></Button>
+                            <Button className="h-5 w-5 rounded-full bg-emerald-500" size="sm"></Button>
+                            <Button className="h-5 w-5 rounded-full bg-emerald-400" size="sm"></Button>
+                            <span className="ml-2 text-xs text-muted-foreground">Lebih Banyak</span>
                         </div>
                     </div>
                 </CardFooter>
@@ -293,7 +292,7 @@ export default function Index(props) {
                                                 </Button>
 
                                                 <Button variant="blue" size="sm" asChild>
-                                                    <Link href={route('goals.edit', goal)}>
+                                                    <Link href={route('goals.edit', [goal])}>
                                                         <IconPencil className="size-4" />
                                                     </Link>
                                                 </Button>

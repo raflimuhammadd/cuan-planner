@@ -2,16 +2,19 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\PaymentType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rules\Enum;
 
-class GoalRequest extends FormRequest
+class PaymentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::id();
     }
 
     /**
@@ -22,7 +25,6 @@ class GoalRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // cek validasi fieldname
             'name' => [
                 'required',
                 'string',
@@ -30,39 +32,35 @@ class GoalRequest extends FormRequest
                 'max:255',
             ],
 
-            'deadline' => [
+            'type' => [
                 'required',
-                'date',
+                new Enum(PaymentType::class),
             ],
 
-            'nominal' => [
-                'required',
-                'numeric',
-                'min:0',
+            'account_number' => [
+                'nullable',
+                'string',
+                'min:3',
+                'max:255',
             ],
 
-            'monthly_saving' => [
-                'required',
-                'numeric',
-                'min:0',
+            'account_owner' => [
+                'nullable',
+                'string',
+                'min:3',
+                'max:255',
             ],
-
-            'beginning_balance' => [
-                'required',
-                'numeric',
-                'min:0',
-            ]
         ];
     }
 
     public function attributes(): array
     {
         return [
-            'name' => 'Tujuan',
-            'deadline' => 'Tenggat',
-            'nominal' => 'Nominal',
-            'monthly_saving' => 'Tabungan Bulanan',
-            'beginning_balance' => 'Saldo Awal'
+            'name' => 'Nama',
+            'type' => 'Tipe',
+            'account_number' => 'Nomor Rekening',
+            'account_owner' => 'Nama Rekening',
+
         ];
     }
 }

@@ -25,7 +25,7 @@ enum MonthEnum: string
             ->filter(fn ($item) => ! in_array($item->name, $exclude))
             ->map(fn ($item) => [
                 'value' => $item->value,
-                'label' => $item->label,
+                'label' => $item->value,
             ])
             ->values()
             ->toArray();

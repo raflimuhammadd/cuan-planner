@@ -10,7 +10,7 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/Components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import { UseFilter } from '@/Hooks/UseFilter';
 import AppLayout from '@/Layouts/AppLayout';
-import { formatDateIndo } from '@/lib/utils';
+import { deleteAction, formatDateIndo } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { IconArrowsDownUp, IconCreditCardPay, IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
@@ -169,7 +169,8 @@ export default function Index(props) {
                                                             <IconTrash className="size-4" />
                                                         </Button>
                                                     }
-                                                    action={() => console.log('hapus pembayaran')}
+                                                    // Delete
+                                                    action={() => deleteAction(route('payments.destroy', [payment]))}
                                                 />
                                             </div>
                                         </TableCell>

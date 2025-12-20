@@ -5,18 +5,20 @@ import PaginationTable from '@/Components/Datatable/PaginationTable';
 import ShowFilter from '@/Components/Datatable/ShowFilter';
 import EmptyState from '@/Components/EmptyState';
 import HeaderTitle from '@/Components/HeaderTitle';
+import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/Components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import { UseFilter } from '@/Hooks/UseFilter';
 import AppLayout from '@/Layouts/AppLayout';
-import { deleteAction, formatDateIndo } from '@/lib/utils';
+import { BUDGETTYPEVARIANT, deleteAction, formatDateIndo, formatToRupiah, MONTHTYPEVARIANT } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
-import { IconArrowsDownUp, IconCreditCardPay, IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
+import { IconArrowsDownUp, IconChartArrowsVertical, IconCreditCardPay, IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 
 export default function Index(props) {
-    const { data: payments, meta, links } = props.payments;
+    const { data: budgets, meta, links } = props.budgets;
     const [params, setParams] = useState(props.state);
 
     const onSortable = (field) => {
@@ -28,9 +30,9 @@ export default function Index(props) {
     };
 
     UseFilter({
-        route: route('payments.index'),
+        route: route('budgets.index'),
         values: params,
-        only: ['payments'],
+        only: ['budgets'],
     });
 
     return (
@@ -43,11 +45,11 @@ export default function Index(props) {
                         <HeaderTitle
                             title={props.pageSettings.title}
                             subtitle={props.pageSettings.subtitle}
-                            icon={IconCreditCardPay}
+                            icon={IconChartArrowsVertical}
                         />
 
                         <Button variant="emerald" size="xl" asChild>
-                            <Link href={route('payments.create')}>
+                            <Link href={route('budgets.create')}>
                                 <IconPlus size="4" />
                                 Tambah
                             </Link>
@@ -56,19 +58,56 @@ export default function Index(props) {
 
                     <Filter 
                     params={params} 
-                    setParams={setParams} 
+                    setParams={setParams}
                     state={props.state}
-                    />
+                    >
+                        <Select value={params?.type} onValueChange={(e) => setParams({ ...params, type: e })}>
+                            <SelectTrigger className="w-full sm:w-24">
+                                <SelectValue placeholder="Tipe" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {props.types.map((type, index) => (
+                                    <SelectItem key={index} value={type.value}>
+                                        {type.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <Select value={params?.month} onValueChange={(e) => setParams({ ...params, month: e })}>
+                            <SelectTrigger className="w-full sm:w-24">
+                                <SelectValue placeholder="Bulan" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {props.months.map((month, index) => (
+                                    <SelectItem key={index} value={month.value}>
+                                        {month.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <Select value={params?.year.toString()} onValueChange={(e) => setParams({ ...params, year: e.toString() })}>
+                            <SelectTrigger className="w-full sm:w-24">
+                                <SelectValue placeholder="Tahun" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {props.years.map((year, index) => (
+                                    <SelectItem key={index} value={year.toString()}>
+                                        {year}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </Filter>
 
                     <ShowFilter params={params} />
                 </CardHeader>
 
                 <CardContent className="p-0 [&-td]:whitespace-nowrap [&-td]:px-6 [&-th]:px-6">
-                    {payments.length === 0 ? (
+                    {budgets.length === 0 ? (
                         <EmptyState
-                            icon={IconCreditCardPay}
-                            title="Tidak ada metode pembayaran"
-                            subtitle="Mulailah dengan membuat metode pembayaran baru"
+                            icon={IconChartArrowsVertical}
+                            title="Tidak ada anggaran"
+                            subtitle="Mulailah dengan membuat anggaran baru"
                         />
                     ) : (
                         <Table className="w-full">
@@ -90,18 +129,6 @@ export default function Index(props) {
                                         <Button
                                             variant="ghost"
                                             className="group inline-flex"
-                                            onClick={() => onSortable('name')}
-                                        >
-                                            Nama
-                                            <span className="ml-2 flex-none rounded text-muted-foreground">
-                                                <IconArrowsDownUp className="size-4" />
-                                            </span>
-                                        </Button>
-                                    </TableHead>
-                                    <TableHead>
-                                        <Button
-                                            variant="ghost"
-                                            className="group inline-flex"
                                             onClick={() => onSortable('type')}
                                         >
                                             Tipe
@@ -114,9 +141,9 @@ export default function Index(props) {
                                         <Button
                                             variant="ghost"
                                             className="group inline-flex"
-                                            onClick={() => onSortable('account_number')}
+                                            onClick={() => onSortable('detail')}
                                         >
-                                            Nomor Rekening
+                                            Rincian
                                             <span className="ml-2 flex-none rounded text-muted-foreground">
                                                 <IconArrowsDownUp className="size-4" />
                                             </span>
@@ -126,9 +153,33 @@ export default function Index(props) {
                                         <Button
                                             variant="ghost"
                                             className="group inline-flex"
-                                            onClick={() => onSortable('account_owner')}
+                                            onClick={() => onSortable('nominal')}
                                         >
-                                            Nama Rekening
+                                            Nominal
+                                            <span className="ml-2 flex-none rounded text-muted-foreground">
+                                                <IconArrowsDownUp className="size-4" />
+                                            </span>
+                                        </Button>
+                                    </TableHead>
+                                    <TableHead>
+                                        <Button
+                                            variant="ghost"
+                                            className="group inline-flex"
+                                            onClick={() => onSortable('month')}
+                                        >
+                                            Bulan
+                                            <span className="ml-2 flex-none rounded text-muted-foreground">
+                                                <IconArrowsDownUp className="size-4" />
+                                            </span>
+                                        </Button>
+                                    </TableHead>
+                                    <TableHead>
+                                        <Button
+                                            variant="ghost"
+                                            className="group inline-flex"
+                                            onClick={() => onSortable('year')}
+                                        >
+                                            Tahun
                                             <span className="ml-2 flex-none rounded text-muted-foreground">
                                                 <IconArrowsDownUp className="size-4" />
                                             </span>
@@ -152,18 +203,31 @@ export default function Index(props) {
                             </TableHeader>
 
                             <TableBody>
-                                {payments.map((payment, index) => (
+                                {budgets.map((budget, index) => (
                                     <TableRow key={index}>
                                         <TableCell>{index + 1 + (meta.current_page - 1) * meta.per_page}</TableCell>
-                                        <TableCell>{payment.name}</TableCell>
-                                        <TableCell>{payment.type}</TableCell>
-                                        <TableCell>{payment.account_number}</TableCell>
-                                        <TableCell>{payment.account_owner}</TableCell>
-                                        <TableCell>{formatDateIndo(payment.created_at)}</TableCell>
+                                        <TableCell>
+                                            <Badge
+                                                variant={BUDGETTYPEVARIANT[budget.type]
+                                                }>
+                                                {budget.type}
+                                            </Badge>
+                                        </TableCell>
+                                        <TableCell>{budget.detail}</TableCell>
+                                        <TableCell>{formatToRupiah(budget.nominal)}</TableCell>
+                                        <TableCell>
+                                            <Badge
+                                                variant={MONTHTYPEVARIANT[budget.month]
+                                                }>
+                                                {budget.month}
+                                            </Badge>
+                                        </TableCell>
+                                        <TableCell>{budget.year}</TableCell>
+                                        <TableCell>{formatDateIndo(budget.created_at)}</TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-x-1">
                                                 <Button variant="blue" size="sm" asChild>
-                                                    <Link href={route('payments.edit', [payment])}>
+                                                    <Link href={route('budgets.edit', [budget])}>
                                                         <IconPencil className="size-4" />
                                                     </Link>
                                                 </Button>
@@ -174,7 +238,7 @@ export default function Index(props) {
                                                         </Button>
                                                     }
                                                     // Delete
-                                                    action={() => deleteAction(route('payments.destroy', [payment]))}
+                                                    action={() => consol.log('delete budget')}
                                                 />
                                             </div>
                                         </TableCell>
@@ -188,7 +252,7 @@ export default function Index(props) {
                 <CardFooter className="flex w-full flex-col items-center justify-between gap-y-2 border-t py-3 lg:flex-row">
                     <p className="text-sm text-muted-foreground">
                         Menampilkan <span className="font-medium text-emerald-600">{meta.from ?? 0}</span> dari{' '}
-                        {meta.total} metode pembayaran
+                        {meta.total} anggaran
                     </p>
                     <div className="overflow-x-auto">
                         {meta.has_pages && <PaginationTable meta={meta} links={links} />}

@@ -2,14 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\BudgetType;
+use App\Enums\MessageType;
 use App\Enums\MonthEnum;
+use App\Http\Requests\IncomeRequest;
 use App\Http\Resources\IncomeResource;
+use App\Models\Budget;
 use App\Models\Income;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
+use Throwable;
 
 class IncomeController extends Controller implements HasMiddleware
 {
@@ -27,7 +33,7 @@ class IncomeController extends Controller implements HasMiddleware
             ->select([
                 'id',
                 'user_id',
-                'search_id',
+                'source_id',
                 'date',
                 'nominal',
                 'notes',
@@ -70,5 +76,64 @@ class IncomeController extends Controller implements HasMiddleware
             'years' => fn() => range(start: 2020, end: now()->year),
 
         ]);
+    }
+
+    // method create
+    public function create(): Response
+    {
+        return inertia('Incomes/Create', [
+            'pageSettings' => fn() => [
+                'title' => 'Tambah Pemasukan',
+                'subtitle' => 'Buat pemasukan baru disini. Klik simpan setelah selesai.',
+                'method' => 'POST',
+                'action' => route('incomes.store'),
+            ],
+            'items' => fn() => [
+                ['label' => 'Cuan+', 'href' => route('dashboard')],
+                ['label' => 'Pemasukan', 'href' => route('incomes.index')],
+                ['label' => 'Tambah Pemasukan'],
+            ],
+            'months' => fn() => MonthEnum::options(),
+            'years' => fn() => range(start: 2020, end: now()->year),
+            'sources' => fn() => Budget::query()
+                ->select(['id', 'detail', 'month', 'year', 'type'])
+                ->where([
+                    ['user_id', Auth::id()],
+                    ['month', MonthEnum::month(now()->month)->value],
+                    ['year', now()->year],
+                    ['type', BudgetType::INCOME->value],
+                ])
+                ->orderByDesc('year')
+                ->orderByDesc('month')
+                ->get()
+                ->map(fn($item)=> [
+                    'value' => $item->id,
+                    'label' => $item->detail. ' - '.$item->type->value. '( '.$item->month->value.' - '
+                    .$item->year,
+                ])
+        ]);
+    }
+
+
+    // method store
+    public function store(IncomeRequest $request): RedirectResponse
+    {
+        try {
+            Income::create([
+                'user_id' => Auth::id(),
+                'source_id' => $request->source_id,
+                'date' => $request->date,
+                'nominal' => $request->nominal,
+                'notes' => $request->notes,
+                'month' => $request->month,
+                'year' => $request->year,
+            ]);
+
+            flashMessage(MessageType::CREATED->message('Pemasukan'));
+            return to_route('incomes.index');
+        } catch (Throwable $e) {
+            flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
+            return to_route('incomes.index');
+        }
     }
 }

@@ -72,7 +72,7 @@ class PaymentController extends Controller implements HasMiddleware
         ]);
     }
 
-        // method create
+    // method create
     public function create(): Response
     {
         return inertia('Payments/Create', [
@@ -115,7 +115,7 @@ class PaymentController extends Controller implements HasMiddleware
         }
     }
 
-       // method edit
+     // method edit
     public function edit(Payment $payment): Response
     {
         return inertia('Payments/Edit', [
@@ -159,7 +159,7 @@ class PaymentController extends Controller implements HasMiddleware
         }
     }
 
-        // method delete
+    // method delete
     public function destroy(Payment $payment): RedirectResponse
     {
         try {

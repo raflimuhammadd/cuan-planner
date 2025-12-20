@@ -118,4 +118,47 @@ class BudgetController extends Controller implements HasMiddleware
         }
     }
 
+        // method create
+    public function edit(Budget $budget): Response
+    {
+        return inertia('Budgets/Edit', [
+            'pageSettings' => fn() => [
+                'title' => 'Ubah Anggaran',
+                'subtitle' => 'Ubah anggaran disini. Klik simpan setelah selesai.',
+                'method' => 'PUT',
+                'action' => route('budgets.update', $budget),
+            ],
+            'items' => fn() => [
+                ['label' => 'Cuan+', 'href' => route('dashboard')],
+                ['label' => 'Anggaran', 'href' => route('budgets.index')],
+                ['label' => 'Ubah Anggaran'],
+            ],
+            'months' => fn() => MonthEnum::options(),
+            'types' => fn() => BudgetType::options(),
+            'years' => fn() => range(2020, end: now()->year),
+            'budget' => fn() => $budget,
+        ]);
+    }
+
+
+    // method store
+    public function update(Budget $budget, BudgetRequest $request): RedirectResponse
+    {
+        try {
+            $budget->update([
+                'detail' => $request->detail,
+                'nominal' => $request->nominal,
+                'month' => $request->month,
+                'year' => $request->year,
+                'type' => $request->type,
+            ]);
+
+            flashMessage(MessageType::UPDATED->message('Anggaran'));
+            return to_route('budgets.index');
+        } catch (Throwable $e) {
+            flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
+            return to_route('budgets.index');
+        }
+    }
+
 }

@@ -12,21 +12,21 @@ import { Link, useForm } from '@inertiajs/react';
 import { IconArrowBack, IconChartArrowsVertical, IconCheck } from '@tabler/icons-react';
 import { toast } from 'sonner';
 
-export default function Create(props) {
+export default function Edit(props) {
     // destruct
-    const { data, setData, errors, post, processing, reset } = useForm({
-        detail: '',
-        nominal: '',
-        month: null,
-        year: null,
-        type: null,
+    const { data, setData, errors, put, processing, reset } = useForm({
+        detail: props.budget.detail ?? '',
+        nominal: props.budget.nominal ?? '',
+        month: props.budget.month ?? null,
+        year: props.budget.year ?? null,
+        type: props.budget.type ?? null,
         method: props.pageSettings.method,
     });
 
     const onHandleChange = (e) => setData(e.target.name, e.target.value);
     const onHandleSubmit = (e) => {
         e.preventDefault();
-        post(props.pageSettings.action, {
+        put(props.pageSettings.action, {
             preserveScroll: true,
             preserveState: true,
             onSuccess: (success) => {
@@ -98,7 +98,7 @@ export default function Create(props) {
                                 name="nominal"
                                 id="nominal"
                                 placeholder="Masukkan nominal"
-                                value={data.account_number}
+                                value={data.nominal}
                                 onChange={onHandleChange}
                             />
                             {errors.nominal && <InputError message={errors.nominal} />}
@@ -159,4 +159,4 @@ export default function Create(props) {
     );
 }
 
-Create.layout = (page) => <AppLayout title={page.props.pageSettings.title} children={page} />;
+Edit.layout = (page) => <AppLayout title={page.props.pageSettings.title} children={page} />;

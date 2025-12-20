@@ -62,7 +62,12 @@ export default function Sidebar({ auth, url }) {
                     icon={IconChartArrowsVertical}
                 />
 
-                <NavLink url="#" active={url.startsWith('/incomes')} title="Pemasukan" icon={IconDoorEnter} />
+                <NavLink
+                    url={route('incomes.index')}
+                    active={url.startsWith('/incomes')}
+                    title="Pemasukan"
+                    icon={IconDoorEnter}
+                />
 
                 <NavLink url="#" active={url.startsWith('/expenses')} title="Pengeluaran" icon={IconCreditCardPay} />
 

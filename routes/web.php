@@ -4,6 +4,7 @@ use App\Http\Controllers\BalanceController;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GoalController;
+use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -48,7 +49,7 @@ Route::controller(GoalController::class)->group(function () {
     Route::delete('goals/{goal}/destroy', 'destroy')->name('goals.destroy');
 });
 
-// Controller:Balance Controller
+// Controller:Balance
 Route::controller(BalanceController::class)->group(function () {
     Route::get('goals/{goal}/balances', 'index')->name(name: 'balances.index');
     Route::get('goals/{goal}/balances/create', 'create')->name('balances.create');
@@ -66,7 +67,17 @@ Route::controller(BudgetController::class)->group(function () {
     Route::delete('budgets/{budget}/destroy', 'destroy')->name('budgets.destroy');
 });
 
+// Controller:Income
+Route::controller(IncomeController::class)->group(function () {
+    Route::get('incomes', 'index')->name(name: 'incomes.index');
+    Route::get('incomes/create', 'create')->name('incomes.create');
+    Route::post('incomes/create', 'store')->name(name: 'incomes.store');
+    Route::get('incomes/{income}/edit', 'edit')->name('incomes.edit');
+    Route::put('incomes/{income}/edit', 'update')->name('incomes.update');
+    Route::delete('incomes/{income}/destroy', 'destroy')->name('incomes.destroy');
+});
 
+// middleware
 Route::middleware('auth')->group(function () {
     Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('profile', [ProfileController::class, 'update'])->name('profile.update');

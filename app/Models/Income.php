@@ -46,7 +46,7 @@ class Income extends Model
     public function scopeFilter(Builder $query, array $filters):void
     {
         $query->when($filters['search'] ?? null, function($query, $search) {
-            $query->whereAny(['detail', 'month'], 'REGEXP', $search);
+            $query->whereAny(['notes', 'month'], 'REGEXP', $search);
         })->when($filters['month'] ?? null, function($query, $month) {
             $query->where('month', $month);
         })->when($filters['year'] ?? null, function($query, $year) {

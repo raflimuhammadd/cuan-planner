@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class ExpenseResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'data' => $this->data,
+            'description' => $this->description,
+            'nominal' => $this->nominal,
+            'type' => $this->type,
+            'notes' => $this->notes,
+            'month' => $this->month,
+            'year' => $this->year,
+            'created_at' => $this->created_at,
+            'payment' => $this->whenLoaded('payment', value:[
+                'id' => $this->payment?->id,
+                'name' => $this->payment?->name,
+            ]),
+            'typeDetail' => $this->whenLoaded('typeDetail', value:[
+                'id' => $this->typeDetail?->id,
+                'detail' => $this->typeDetail?->detail,
+            ]),
+        ];
+    }
+}

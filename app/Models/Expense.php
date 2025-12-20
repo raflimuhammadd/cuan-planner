@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\BudgetType;
 use App\Enums\MonthEnum;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -26,6 +27,11 @@ class Expense extends Model
         'year',
     ];
 
+    
+    public function user(): BelongsTo 
+    {
+        return $this->belongsTo(User::class);
+    }
 
     // casting
     public function casts():array
@@ -44,6 +50,30 @@ class Expense extends Model
 
     // define relation
     public function typeDetail(): BelongsTo {
-        return $this->belongsTo(related: Budget::class, foreignKey:'type_detail_id', ownerKey: 'id');
+        return $this->belongsTo(
+            related: Budget::class, 
+            foreignKey:'type_detail_id', 
+            ownerKey: 'id'
+        );
+    }
+
+    // filter
+    public function scopeFilter(Builder $query, array $filters):void
+    {
+        $query->when($filters['search'] ?? null, function($query, $search) {
+            $query->whereAny(['description', 'month'], 'REGEXP', $search);
+        })->when($filters['month'] ?? null, function($query, $month) {
+            $query->where('month', $month);
+        })->when($filters['year'] ?? null, function($query, $year) {
+            $query->where('year', $year);
+        });
+    }
+
+    // sorting
+    public function scopeSorting(Builder $query, array $sorts):void
+    {
+        $query->when($sorts['field'] ?? null && $sorts['direction'], function($query) use($sorts){
+            $query->orderBy($sorts['field'], $sorts['direction']);
+        });
     }
 }

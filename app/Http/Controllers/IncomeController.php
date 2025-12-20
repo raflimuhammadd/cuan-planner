@@ -23,6 +23,8 @@ class IncomeController extends Controller implements HasMiddleware
     {
         return [
             new Middleware('auth'),
+            new Middleware('can:update,income', only:['edit', 'update']),
+            new Middleware('can:delete, income', only:['destroy']),
         ];
     }
 
@@ -130,6 +132,78 @@ class IncomeController extends Controller implements HasMiddleware
             ]);
 
             flashMessage(MessageType::CREATED->message('Pemasukan'));
+            return to_route('incomes.index');
+        } catch (Throwable $e) {
+            flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
+            return to_route('incomes.index');
+        }
+    }
+
+    // method edit
+    public function edit(Income $income): Response
+    {
+        return inertia('Incomes/Edit', [
+            'pageSettings' => fn() => [
+                'title' => 'Ubat Pemasukan',
+                'subtitle' => 'Ubah pemasukan baru disini. Klik simpan setelah selesai.',
+                'method' => 'PUT',
+                'action' => route('incomes.update', $income),
+            ],
+            'items' => fn() => [
+                ['label' => 'Cuan+', 'href' => route('dashboard')],
+                ['label' => 'Pemasukan', 'href' => route('incomes.index')],
+                ['label' => 'Ubah Pemasukan'],
+            ],
+            'income' => fn() => $income->load('source'),
+            'months' => fn() => MonthEnum::options(),
+            'years' => fn() => range(start: 2020, end: now()->year),
+            'sources' => fn() => Budget::query()
+                ->select(['id', 'detail', 'month', 'year', 'type'])
+                ->where([
+                    ['user_id', Auth::id()],
+                    ['month', MonthEnum::month(now()->month)->value],
+                    ['year', now()->year],
+                    ['type', BudgetType::INCOME->value],
+                ])
+                ->orderByDesc('year')
+                ->orderByDesc('month')
+                ->get()
+                ->map(fn($item)=> [
+                    'value' => $item->id,
+                    'label' => $item->detail. ' - '.$item->type->value. '( '.$item->month->value.' - '
+                    .$item->year,
+                ])
+        ]);
+    }
+
+
+    // method update
+    public function update(Income $income, IncomeRequest $request): RedirectResponse
+    {
+        try {
+            $income->update([
+                'source_id' => $request->source_id,
+                'date' => $request->date,
+                'nominal' => $request->nominal,
+                'notes' => $request->notes,
+                'month' => $request->month,
+                'year' => $request->year,
+            ]);
+
+            flashMessage(MessageType::UPDATED->message('Pemasukan'));
+            return to_route('incomes.index');
+        } catch (Throwable $e) {
+            flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
+            return to_route('incomes.index');
+        }
+    }
+
+    // method delete
+    public function destroy(Income $income): RedirectResponse
+    {
+        try {
+            $income->delete();
+            flashMessage(MessageType::DELETED->message('Pemasukan'));
             return to_route('incomes.index');
         } catch (Throwable $e) {
             flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');

@@ -11,7 +11,7 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/Components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import { UseFilter } from '@/Hooks/UseFilter';
 import AppLayout from '@/Layouts/AppLayout';
-import { formatDateIndo, formatToRupiah, MONTHTYPEVARIANT } from '@/lib/utils';
+import { deleteAction, formatDateIndo, formatToRupiah, MONTHTYPEVARIANT } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { IconArrowsDownUp, IconDoorEnter, IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
@@ -201,7 +201,7 @@ export default function Index(props) {
                                                         </Button>
                                                     }
                                                     // Delete
-                                                    action={() => console.log('delete income')}
+                                                    action={() => deleteAction(route('incomes.destroy', [income]))}
                                                 />
                                             </div>
                                         </TableCell>

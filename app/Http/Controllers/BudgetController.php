@@ -22,8 +22,8 @@ class BudgetController extends Controller implements HasMiddleware
     {
         return [
             new Middleware('auth'),
-            new Middleware('can:update-budget', only:['edit', 'update']),
-            new Middleware('can:delete-budget', only:['destroy']),
+            new Middleware('can:update,budget', only:(['edit', 'update'])),
+            new Middleware('can:delete,budget', only:(['destroy']))
         ];
     }
 

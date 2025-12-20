@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import AppLayout from '@/Layouts/AppLayout';
 import { flashMessage } from '@/lib/utils';
 import { Link, useForm } from '@inertiajs/react';
-import { IconArrowBack, IconCheck, IconCreditCardPay, IconMoneybag } from '@tabler/icons-react';
+import { IconArrowBack, IconCheck, IconCreditCardPay } from '@tabler/icons-react';
 import { toast } from 'sonner';
 
 export default function Create(props) {
@@ -58,14 +58,13 @@ export default function Create(props) {
                 </CardHeader>
                 <CardContent>
                     <form className="space-y-4" onSubmit={onHandleSubmit}>
-
                         <div className="flex flex-col gap-2">
                             <Label htmlFor="type">Tipe</Label>
                             <Select value={data.type} onValueChange={(value) => setData('type', value)}>
                                 <SelectTrigger>
                                     <SelectValue>
-                                        {props.paymentTypes.find((type) => type.value == data.type)
-                                            ?.label ?? "Pilih Tipe"}
+                                        {props.paymentTypes.find((type) => type.value == data.type)?.label ??
+                                            'Pilih Tipe'}
                                     </SelectValue>
                                 </SelectTrigger>
                                 <SelectContent>
@@ -74,7 +73,6 @@ export default function Create(props) {
                                             {type.label}
                                         </SelectItem>
                                     ))}
-
                                 </SelectContent>
                             </Select>
                             {errors.type && <InputError message={errors.type} />}
@@ -118,7 +116,6 @@ export default function Create(props) {
                             />
                             {errors.account_onwer && <InputError message={errors.account_onwer} />}
                         </div>
-
 
                         <div className="mt-8 flex flex-col gap-2 lg:flex-row lg:justify-end">
                             <Button type="button" variant="ghost" size="xl" onClick={() => reset()}>

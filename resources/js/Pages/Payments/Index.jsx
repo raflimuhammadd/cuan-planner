@@ -54,11 +54,7 @@ export default function Index(props) {
                         </Button>
                     </div>
 
-                    <Filter 
-                    params={params} 
-                    setParams={setParams} 
-                    state={props.state}
-                    />
+                    <Filter params={params} setParams={setParams} state={props.state} />
 
                     <ShowFilter params={params} />
                 </CardHeader>

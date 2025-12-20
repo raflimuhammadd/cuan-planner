@@ -9,23 +9,24 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import AppLayout from '@/Layouts/AppLayout';
 import { flashMessage } from '@/lib/utils';
 import { Link, useForm } from '@inertiajs/react';
-import { IconArrowBack, IconCheck, IconCreditCardPay } from '@tabler/icons-react';
+import { IconArrowBack, IconChartArrowsVertical, IconCheck } from '@tabler/icons-react';
 import { toast } from 'sonner';
 
-export default function Edit(props) {
+export default function Create(props) {
     // destruct
-    const { data, setData, errors, put, processing, reset } = useForm({
-        name: props.payment.name ?? '',
-        type: props.payment.type ?? '',
-        account_number: '',
-        account_owner: props.payment.account_owner ?? '',
-        method: props.pageSettings.method,
+    const { data, setData, errors, post, processing, reset } = useForm({
+        detail: '',
+        nominal: '',
+        month: null,
+        year: null,
+        type: null,
+        _method: props.pageSettings.method,
     });
 
     const onHandleChange = (e) => setData(e.target.name, e.target.value);
     const onHandleSubmit = (e) => {
         e.preventDefault();
-        put(props.pageSettings.action, {
+        post(props.pageSettings.action, {
             preserveScroll: true,
             preserveState: true,
             onSuccess: (success) => {
@@ -45,11 +46,11 @@ export default function Edit(props) {
                         <HeaderTitle
                             title={props.pageSettings.title}
                             subtitle={props.pageSettings.subtitle}
-                            icon={IconCreditCardPay}
+                            icon={IconChartArrowsVertical}
                         />
 
                         <Button variant="emerald" size="xl" asChild>
-                            <Link href={route('payments.index')}>
+                            <Link href={route('budgets.index')}>
                                 <IconArrowBack size="4" />
                                 Kembali
                             </Link>
@@ -60,15 +61,14 @@ export default function Edit(props) {
                     <form className="space-y-4" onSubmit={onHandleSubmit}>
                         <div className="flex flex-col gap-2">
                             <Label htmlFor="type">Tipe</Label>
-                            <Select value={data.type} onValueChange={(value) => setData('type', value)}>
+                            <Select defaultValue={data.type} onValueChange={(value) => setData('type', value)}>
                                 <SelectTrigger>
                                     <SelectValue>
-                                        {props.paymentTypes.find((type) => type.value == data.type)?.label ??
-                                            'Pilih Tipe'}
+                                        {props.types.find((type) => type.value == data.type)?.label ?? 'Pilih Tipe'}
                                     </SelectValue>
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {props.paymentTypes.map((type, index) => (
+                                    {props.types.map((type, index) => (
                                         <SelectItem key={index} value={type.value}>
                                             {type.label}
                                         </SelectItem>
@@ -79,42 +79,68 @@ export default function Edit(props) {
                         </div>
 
                         <div className="flex flex-col gap-2">
-                            <Label htmlFor="name">Nama</Label>
+                            <Label htmlFor="detail">Rincian</Label>
                             <Input
                                 type="text"
-                                name="name"
-                                id="name"
-                                placeholder="Masukkan nama"
-                                value={data.name}
+                                name="detail"
+                                id="detail"
+                                placeholder="Masukkan rincian"
+                                value={data.detail}
                                 onChange={onHandleChange}
                             />
-                            {errors.name && <InputError message={errors.name} />}
+                            {errors.detail && <InputError message={errors.detail} />}
                         </div>
 
                         <div className="flex flex-col gap-2">
-                            <Label htmlFor="account_number">Nomor Rekening</Label>
+                            <Label htmlFor="nominal">Nominal</Label>
                             <Input
-                                type="text"
-                                name="account_number"
-                                id="account_number"
-                                placeholder="Masukkan nomor rekening"
+                                type="number"
+                                name="nominal"
+                                id="nominal"
+                                placeholder="Masukkan nominal"
                                 value={data.account_number}
                                 onChange={onHandleChange}
                             />
-                            {errors.account_number && <InputError message={errors.account_number} />}
+                            {errors.nominal && <InputError message={errors.nominal} />}
                         </div>
 
                         <div className="flex flex-col gap-2">
-                            <Label htmlFor="account_owner">Nama Rekening</Label>
-                            <Input
-                                type="text"
-                                name="account_owner"
-                                id="account_owner"
-                                placeholder="Masukkan nama rekening"
-                                value={data.account_owner}
-                                onChange={onHandleChange}
-                            />
-                            {errors.account_onwer && <InputError message={errors.account_onwer} />}
+                            <Label htmlFor="month">Bulan</Label>
+                            <Select defaultValue={data.month} onValueChange={(value) => setData('month', value)}>
+                                <SelectTrigger>
+                                    <SelectValue>
+                                        {props.months.find((month) => month.value == data.month)?.label ??
+                                            'Pilih Bulan'}
+                                    </SelectValue>
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {props.months.map((month, index) => (
+                                        <SelectItem key={index} value={month.value}>
+                                            {month.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            {errors.month && <InputError message={errors.month} />}
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                            <Label htmlFor="year">Tahun</Label>
+                            <Select defaultValue={data.year} onValueChange={(value) => setData('year', value)}>
+                                <SelectTrigger>
+                                    <SelectValue>
+                                        {props.years.find((year) => year == data.year) ?? 'Pilih Tahun'}
+                                    </SelectValue>
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {props.years.map((year, index) => (
+                                        <SelectItem key={index} value={year}>
+                                            {year}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            {errors.year && <InputError message={errors.year} />}
                         </div>
 
                         <div className="mt-8 flex flex-col gap-2 lg:flex-row lg:justify-end">
@@ -133,4 +159,4 @@ export default function Edit(props) {
     );
 }
 
-Edit.layout = (page) => <AppLayout title={page.props.pageSettings.title} children={page} />;
+Create.layout = (page) => <AppLayout title={page.props.pageSettings.title} children={page} />;

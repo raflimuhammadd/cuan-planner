@@ -3,14 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Enums\BudgetType;
+use App\Enums\MessageType;
 use App\Enums\MonthEnum;
+use App\Http\Requests\BudgetRequest;
 use App\Http\Resources\BudgetResource;
 use App\Models\Budget;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
+use Throwable;
 
 class BudgetController extends Controller implements HasMiddleware
 {
@@ -70,4 +74,48 @@ class BudgetController extends Controller implements HasMiddleware
 
         ]);
     }
+
+    // method create
+    public function create(): Response
+    {
+        return inertia('Budgets/Create', [
+            'pageSettings' => fn() => [
+                'title' => 'Tambah Anggaran',
+                'subtitle' => 'Buat anggaran baru disini. Klik simpan setelah selesai.',
+                'method' => 'POST',
+                'action' => route('budgets.store'),
+            ],
+            'items' => fn() => [
+                ['label' => 'Cuan+', 'href' => route('dashboard')],
+                ['label' => 'Anggaran', 'href' => route('budgets.index')],
+                ['label' => 'Tambah Anggaran'],
+            ],
+            'months' => fn() => MonthEnum::options(),
+            'types' => fn() => BudgetType::options(),
+            'years' => fn() => range(2020, end: now()->year),
+        ]);
+    }
+
+
+    // method store
+    public function store(BudgetRequest $request): RedirectResponse
+    {
+        try {
+            Budget::create([
+                'user_id' => Auth::id(),
+                'detail' => $request->detail,
+                'nominal' => $request->nominal,
+                'month' => $request->month,
+                'year' => $request->year,
+                'type' => $request->type,
+            ]);
+
+            flashMessage(MessageType::CREATED->message('Anggaran'));
+            return to_route('budgets.index');
+        } catch (Throwable $e) {
+            flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
+            return to_route('budgets.index');
+        }
+    }
+
 }

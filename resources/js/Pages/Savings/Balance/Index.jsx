@@ -98,7 +98,7 @@ export default function Index(props) {
                             Math.max(
                                 0,
                                 Number(props.goal.nominal) -
-                                (Number(props.goal.balances_sum_amount) + Number(props.goal.beginning_balance)),
+                                    (Number(props.goal.balances_sum_amount) + Number(props.goal.beginning_balance)),
                             ),
                         )}
                     </div>
@@ -191,11 +191,7 @@ export default function Index(props) {
                                 </Button>
                             </div>
 
-                            <Filter
-                                params={params}
-                                setParams={setParams}
-                                state={props.state}
-                            />
+                            <Filter params={params} setParams={setParams} state={props.state} />
                             <ShowFilter params={params} />
                         </CardHeader>
 

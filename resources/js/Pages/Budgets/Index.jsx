@@ -12,9 +12,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import { UseFilter } from '@/Hooks/UseFilter';
 import AppLayout from '@/Layouts/AppLayout';
-import { BUDGETTYPEVARIANT, deleteAction, formatDateIndo, formatToRupiah, MONTHTYPEVARIANT } from '@/lib/utils';
+import { BUDGETTYPEVARIANT, formatDateIndo, formatToRupiah, MONTHTYPEVARIANT } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
-import { IconArrowsDownUp, IconChartArrowsVertical, IconCreditCardPay, IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
+import { IconArrowsDownUp, IconChartArrowsVertical, IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 
 export default function Index(props) {
@@ -56,11 +56,7 @@ export default function Index(props) {
                         </Button>
                     </div>
 
-                    <Filter 
-                    params={params} 
-                    setParams={setParams}
-                    state={props.state}
-                    >
+                    <Filter params={params} setParams={setParams} state={props.state}>
                         <Select value={params?.type} onValueChange={(e) => setParams({ ...params, type: e })}>
                             <SelectTrigger className="w-full sm:w-24">
                                 <SelectValue placeholder="Tipe" />
@@ -85,7 +81,10 @@ export default function Index(props) {
                                 ))}
                             </SelectContent>
                         </Select>
-                        <Select value={params?.year.toString()} onValueChange={(e) => setParams({ ...params, year: e.toString() })}>
+                        <Select
+                            value={params?.year.toString()}
+                            onValueChange={(e) => setParams({ ...params, year: e.toString() })}
+                        >
                             <SelectTrigger className="w-full sm:w-24">
                                 <SelectValue placeholder="Tahun" />
                             </SelectTrigger>
@@ -207,20 +206,12 @@ export default function Index(props) {
                                     <TableRow key={index}>
                                         <TableCell>{index + 1 + (meta.current_page - 1) * meta.per_page}</TableCell>
                                         <TableCell>
-                                            <Badge
-                                                variant={BUDGETTYPEVARIANT[budget.type]
-                                                }>
-                                                {budget.type}
-                                            </Badge>
+                                            <Badge variant={BUDGETTYPEVARIANT[budget.type]}>{budget.type}</Badge>
                                         </TableCell>
                                         <TableCell>{budget.detail}</TableCell>
                                         <TableCell>{formatToRupiah(budget.nominal)}</TableCell>
                                         <TableCell>
-                                            <Badge
-                                                variant={MONTHTYPEVARIANT[budget.month]
-                                                }>
-                                                {budget.month}
-                                            </Badge>
+                                            <Badge variant={MONTHTYPEVARIANT[budget.month]}>{budget.month}</Badge>
                                         </TableCell>
                                         <TableCell>{budget.year}</TableCell>
                                         <TableCell>{formatDateIndo(budget.created_at)}</TableCell>

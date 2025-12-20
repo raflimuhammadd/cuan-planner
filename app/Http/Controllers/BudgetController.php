@@ -22,10 +22,12 @@ class BudgetController extends Controller implements HasMiddleware
     {
         return [
             new Middleware('auth'),
+            new Middleware('can:update-budget', only:['edit', 'update']),
+            new Middleware('can:delete-budget', only:['destroy']),
         ];
     }
 
-        public function index(): Response
+    public function index(): Response
     {
         $budgets = Budget::query()
             ->select([
@@ -154,6 +156,20 @@ class BudgetController extends Controller implements HasMiddleware
             ]);
 
             flashMessage(MessageType::UPDATED->message('Anggaran'));
+            return to_route('budgets.index');
+        } catch (Throwable $e) {
+            flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
+            return to_route('budgets.index');
+        }
+    }
+
+        // method store
+    public function destroy(Budget $budget): RedirectResponse
+    {
+        try {
+            $budget->delete();
+
+            flashMessage(MessageType::DELETED->message('Anggaran'));
             return to_route('budgets.index');
         } catch (Throwable $e) {
             flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');

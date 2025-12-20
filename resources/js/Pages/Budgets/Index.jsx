@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import { UseFilter } from '@/Hooks/UseFilter';
 import AppLayout from '@/Layouts/AppLayout';
-import { BUDGETTYPEVARIANT, formatDateIndo, formatToRupiah, MONTHTYPEVARIANT } from '@/lib/utils';
+import { BUDGETTYPEVARIANT, deleteAction, formatDateIndo, formatToRupiah, MONTHTYPEVARIANT } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { IconArrowsDownUp, IconChartArrowsVertical, IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
@@ -229,7 +229,7 @@ export default function Index(props) {
                                                         </Button>
                                                     }
                                                     // Delete
-                                                    action={() => consol.log('delete budget')}
+                                                    action={() => deleteAction(route('budgets.destroy', [budget]))}
                                                 />
                                             </div>
                                         </TableCell>

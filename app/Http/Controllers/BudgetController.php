@@ -73,6 +73,42 @@ class BudgetController extends Controller implements HasMiddleware
             'months' => fn() => MonthEnum::options(),
             'types' => fn() => BudgetType::options(),
             'years' => fn() => range(date('2020'), end: now()->year),
+            'statistics' => fn () => [
+                'incomes' => fn() => Budget::query()
+                    ->where('user_id', Auth::id())
+                    ->when(request()->month, fn($q, $month) => $q->where('month', $month)) 
+                    ->when(request()->year, fn($q, $year) => $q->where('year', $year))
+                    ->where('type', BudgetType::INCOME->value)
+                    ->sum('nominal'),
+
+                'savings' => fn() => Budget::query()
+                    ->where('user_id', Auth::id())
+                    ->when(request()->month, fn($q, $month) => $q->where('month', $month)) 
+                    ->when(request()->year, fn($q, $year) => $q->where('year', $year))
+                    ->where('type', BudgetType::SAVING->value)
+                    ->sum('nominal'),
+
+                'debts' => fn() => Budget::query()
+                    ->where('user_id', Auth::id())
+                    ->when(request()->month, fn($q, $month) => $q->where('month', $month)) 
+                    ->when(request()->year, fn($q, $year) => $q->where('year', $year))
+                    ->where('type', BudgetType::DEBT->value)
+                    ->sum('nominal'),
+
+                'bills' => fn() => Budget::query()
+                    ->where('user_id', Auth::id())
+                    ->when(request()->month, fn($q, $month) => $q->where('month', $month)) 
+                    ->when(request()->year, fn($q, $year) => $q->where('year', $year))
+                    ->where('type', BudgetType::BILL->value)
+                    ->sum('nominal'),
+
+                'shoppings' => fn() => Budget::query()
+                    ->where('user_id', Auth::id())
+                    ->when(request()->month, fn($q, $month) => $q->where('month', $month)) 
+                    ->when(request()->year, fn($q, $year) => $q->where('year', $year))
+                    ->where('type', BudgetType::SHOPPING->value)
+                    ->sum('nominal'),
+            ],
 
         ]);
     }

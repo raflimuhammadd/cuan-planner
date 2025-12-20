@@ -1,5 +1,6 @@
 import AlertAction from '@/Components/AlertAction';
 import BreadcrumbHeader from '@/Components/BreadcrumbHeader';
+import CardStat from '@/Components/CardStat';
 import Filter from '@/Components/Datatable/Filter';
 import PaginationTable from '@/Components/Datatable/PaginationTable';
 import ShowFilter from '@/Components/Datatable/ShowFilter';
@@ -14,7 +15,7 @@ import { UseFilter } from '@/Hooks/UseFilter';
 import AppLayout from '@/Layouts/AppLayout';
 import { BUDGETTYPEVARIANT, deleteAction, formatDateIndo, formatToRupiah, MONTHTYPEVARIANT } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
-import { IconArrowsDownUp, IconChartArrowsVertical, IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
+import { IconArrowsDownUp, IconCash, IconChartArrowsVertical, IconDelta, IconInvoice, IconMoneybag, IconPencil, IconPlus, IconShoppingBag, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 
 export default function Index(props) {
@@ -38,6 +39,63 @@ export default function Index(props) {
     return (
         <div className="flex w-full flex-col gap-y-6 pb-32">
             <BreadcrumbHeader items={props.items} />
+
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
+                <CardStat
+                    data={{
+                        title: 'Penghasilan',
+                        icon: IconCash,
+                        background: 'text-white bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-500',
+                        iconClassName: 'text-whire',
+                    }}
+                >
+                    <div className="text-2xl font-bold">{formatToRupiah(props.statistics.incomes)}</div>
+                </CardStat>
+
+                <CardStat
+                    data={{
+                        title: 'Tabungan dan Investasi',
+                        icon: IconMoneybag,
+                        background: 'text-white bg-gradient-to-r from-orange-400 via-orange-500 to-orange-500',
+                        iconClassName: 'text-whire',
+                    }}
+                >
+                    <div className="text-2xl font-bold">{formatToRupiah(props.statistics.savings)}</div>
+                </CardStat>
+
+                <CardStat
+                    data={{
+                        title: 'Cicilan Hutang',
+                        icon: IconDelta,
+                        background: 'text-white bg-gradient-to-r from-red-400 via-red-500 to-red-500',
+                        iconClassName: 'text-whire',
+                    }}
+                >
+                    <div className="text-2xl font-bold">{formatToRupiah(props.statistics.debts)}</div>
+                </CardStat>
+
+                <CardStat
+                    data={{
+                        title: 'Tagihan',
+                        icon: IconInvoice,
+                        background: 'text-white bg-gradient-to-r from-sky-400 via-sky-500 to-sky-500',
+                        iconClassName: 'text-whire',
+                    }}
+                >
+                    <div className="text-2xl font-bold">{formatToRupiah(props.statistics.bills)}</div>
+                </CardStat>
+
+                <CardStat
+                    data={{
+                        title: 'Belanja',
+                        icon: IconShoppingBag,
+                        background: 'text-white bg-gradient-to-r from-purple-400 via-purple-500 to-purple-500',
+                        iconClassName: 'text-whire',
+                    }}
+                >
+                    <div className="text-2xl font-bold">{formatToRupiah(props.statistics.shoppings)}</div>
+                </CardStat>
+            </div>
 
             <Card>
                 <CardHeader className="p-0">

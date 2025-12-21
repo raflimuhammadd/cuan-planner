@@ -77,7 +77,12 @@ export default function Sidebar({ auth, url }) {
                 />
 
                 <div className="px-3 py-2 text-sm font-medium text-muted-foreground">Aset dan Kewajiban</div>
-                <NavLink url="#" active={url.startsWith('/net-worths')} title="Kekayaan Bersih" icon={IconMenorah} />
+                <NavLink
+                    url={route('net-worths.index')}
+                    active={url.startsWith('/net-worths')}
+                    title="Kekayaan Bersih"
+                    icon={IconMenorah}
+                />
 
                 <div className="px-3 py-2 text-sm font-medium text-muted-foreground">Laporan</div>
                 <NavLink

@@ -72,7 +72,7 @@ class BudgetController extends Controller implements HasMiddleware
             ],
             'months' => fn() => MonthEnum::options(),
             'types' => fn() => BudgetType::options(),
-            'years' => fn() => range(date('2020'), end: now()->year),
+            'years' => fn() => range(now()->year - 5, end: now()->year + 5),
             'statistics' => fn () => [
                 'incomes' => fn() => Budget::query()
                     ->where('user_id', Auth::id())
@@ -130,7 +130,7 @@ class BudgetController extends Controller implements HasMiddleware
             ],
             'months' => fn() => MonthEnum::options(),
             'types' => fn() => BudgetType::options(),
-            'years' => fn() => range(2020, end: now()->year),
+            'years' => fn() => range(now()->year - 5, end: now()->year + 5),
         ]);
     }
 
@@ -173,7 +173,7 @@ class BudgetController extends Controller implements HasMiddleware
             ],
             'months' => fn() => MonthEnum::options(),
             'types' => fn() => BudgetType::options(),
-            'years' => fn() => range(2020, end: now()->year),
+            'years' => fn() => range(now()->year - 5, end: now()->year + 5),
             'budget' => fn() => $budget,
         ]);
     }

@@ -8,6 +8,7 @@ import HeaderTitle from '@/Components/HeaderTitle';
 import { Badge } from '@/Components/ui/badge';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/Components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import { UseFilter } from '@/Hooks/UseFilter';
 import AppLayout from '@/Layouts/AppLayout';
@@ -55,7 +56,35 @@ export default function Index(props) {
                         </Button>
                     </div>
 
-                    <Filter params={params} setParams={setParams} state={props.state} />
+                    <Filter params={params} setParams={setParams} state={props.state}>
+                        <Select value={params?.month} onValueChange={(e) => setParams({ ...params, month: e })}>
+                            <SelectTrigger className="w-full sm:w-24">
+                                <SelectValue placeholder="Bulan" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {props.months.map((month, index) => (
+                                    <SelectItem key={index} value={month.value}>
+                                        {month.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <Select
+                            value={params?.year?.toString()}
+                            onValueChange={(e) => setParams({ ...params, year: e.toString() })}
+                        >
+                            <SelectTrigger className="w-full sm:w-24">
+                                <SelectValue placeholder="Tahun" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {props.years.map((year, index) => (
+                                    <SelectItem key={index} value={year.toString()}>
+                                        {year}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </Filter>
 
                     <ShowFilter params={params} />
                 </CardHeader>

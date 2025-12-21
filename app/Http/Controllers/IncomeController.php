@@ -75,7 +75,7 @@ class IncomeController extends Controller implements HasMiddleware
             ],
             
             'months' => fn() => MonthEnum::options(),
-            'years' => fn() => range(start: 2020, end: now()->year),
+            'years' => fn() => range(start: now()->year - 5, end: now()->year + 5),
 
         ]);
     }
@@ -96,7 +96,7 @@ class IncomeController extends Controller implements HasMiddleware
                 ['label' => 'Tambah Pemasukan'],
             ],
             'months' => fn() => MonthEnum::options(),
-            'years' => fn() => range(start: 2020, end: now()->year),
+            'years' => fn() => range(start: now()->year - 5, end: now()->year + 5),
             'sources' => fn() => Budget::query()
                 ->select(['id', 'detail', 'month', 'year', 'type'])
                 ->where([
@@ -156,7 +156,7 @@ class IncomeController extends Controller implements HasMiddleware
             ],
             'income' => fn() => $income->load('source'),
             'months' => fn() => MonthEnum::options(),
-            'years' => fn() => range(start: 2020, end: now()->year),
+            'years' => fn() => range(start: now()->year - 5, end: now()->year + 5),
             'sources' => fn() => Budget::query()
                 ->select(['id', 'detail', 'month', 'year', 'type'])
                 ->where([

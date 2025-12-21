@@ -27,6 +27,8 @@ class ExpenseController extends Controller implements HasMiddleware
     {
         return [
             new Middleware('auth'),
+            new Middleware('can:update,expense', only:(['edit', 'update'])),
+            new Middleware('can:delete,expense', only:(['destroy']))
         ];
     }
 
@@ -80,7 +82,7 @@ class ExpenseController extends Controller implements HasMiddleware
             ],
             
             'months' => fn() => MonthEnum::options(),
-            'years' => fn() => range(start: 2020, end: now()->year),
+            'years' => fn() => range(start: now()->year - 5, end: now()->year + 5),
         ]);
     }
 
@@ -100,7 +102,7 @@ class ExpenseController extends Controller implements HasMiddleware
                 ['label' => 'Tambah Pengeluaran'],
             ],
             'months' => fn() => MonthEnum::options(),
-            'years' => fn() => range(start: 2020, end: now()->year),
+            'years' => fn() => range(start: now()->year - 5, end: now()->year + 5),
             'types' => fn() => BudgetType::options(['INCOME']),
             'payments' => fn() => Payment::query()
                 ->select(['id', 'name'])
@@ -159,6 +161,101 @@ class ExpenseController extends Controller implements HasMiddleware
             ]);
 
             flashMessage(MessageType::CREATED->message('Pengeluaran'));
+            return to_route('expenses.index');
+        } catch (Throwable $e) {
+            flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
+            return to_route('expenses.index');
+        }
+    }
+
+        // method create
+    public function edit(Expense $expense): Response
+    {
+        return inertia('Expenses/Edit', [
+            'pageSettings' => fn() => [
+                'title' => 'Ubah Pengeluaran',
+                'subtitle' => 'Ubah pengeluaran baru disini. Klik simpan setelah selesai.',
+                'method' => 'PUT',
+                'action' => route('expenses.update', $expense),
+            ],
+            'items' => fn() => [
+                ['label' => 'Cuan+', 'href' => route('dashboard')],
+                ['label' => 'Pengeluaran', 'href' => route('expenses.index')],
+                ['label' => 'Ubah Pengeluaran'],
+            ],
+            'expense' => fn() => $expense,
+            'months' => fn() => MonthEnum::options(),
+            'years' => fn() => range(start: now()->year - 5, end: now()->year + 5),
+            'types' => fn() => BudgetType::options(['INCOME']),
+            'payments' => fn() => Payment::query()
+                ->select(['id', 'name'])
+                ->where('user_id', Auth::id())
+                ->get()
+                ->map(fn($item) => [
+                    'value' => $item->id,
+                    'label' => $item->name,
+                ]),
+                'budgets' => fn() => request()->type
+                ? Budget::query()
+                    ->select([
+                        'id', 
+                        'user_id', 
+                        'type', 
+                        'detail', 
+                        'month', 
+                        'year'
+                    ])
+                    ->where('user_id', Auth::id())
+                    ->where('type', request()->type)
+
+                    ->get()
+                    ->map(fn($item) => [
+                        'value' => $item->id,
+                        'label' => $item->detail,
+                        'month' => $item->month,
+                        'year' => $item->year,
+
+                    ])
+                : [],
+
+                'state' => fn()=> [
+                    'type' => request()->type ?? $expense->type,
+                ]
+
+        ]);
+    }
+
+
+    // method store
+    public function update(ExpenseRequest $request, Expense $expense): RedirectResponse
+    {
+        try {
+            $expense->update([
+                'date' => $request->date,
+                'description' => $request->description,
+                'nominal' => $request->nominal,
+                'type' => $request->type,
+                'type_detail_id' => $request->type_detail_id,
+                'payment_id' => $request->payment_id,
+                'notes' => $request->notes,
+                'month' => $request->month,
+                'year' => $request->year,
+            ]);
+
+            flashMessage(MessageType::UPDATED->message('Pengeluaran'));
+            return to_route('expenses.index');
+        } catch (Throwable $e) {
+            flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
+            return to_route('expenses.index');
+        }
+    }
+
+    // method delete
+    public function destroy(Expense $expense): RedirectResponse
+    {
+        try {
+            $expense->delete();
+            flashMessage(MessageType::DELETED->message('Pengeluaran'));
             return to_route('expenses.index');
         } catch (Throwable $e) {
             flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');

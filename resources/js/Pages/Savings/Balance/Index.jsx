@@ -177,7 +177,10 @@ export default function Index(props) {
                 <div className="col-span-2 space-y-4">
                     <Card>
                         <CardHeader className="p-0">
-                            <div className="flex flex-col items-start justify-between gap-y-4 p-4 lg:flex-row lg:items-center">
+                            <div
+                                className="flex flex-col items-start justify-between gap-y-4 p-4 lg:flex-row
+                                    lg:items-center"
+                            >
                                 <HeaderTitle
                                     title={props.pageSettings.title}
                                     subtitle={props.pageSettings.subtitle}
@@ -277,7 +280,10 @@ export default function Index(props) {
                             )}
                         </CardContent>
 
-                        <CardFooter className="flex w-full flex-col items-center justify-between gap-y-2 border-t py-3 lg:flex-row">
+                        <CardFooter
+                            className="flex w-full flex-col items-center justify-between gap-y-2 border-t py-3
+                                lg:flex-row"
+                        >
                             <p className="text-sm text-muted-foreground">
                                 Menampilkan <span className="font-medium text-emerald-600">{meta.from ?? 0}</span> dari{' '}
                                 {meta.total} saldo

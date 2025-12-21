@@ -16,7 +16,7 @@ class ExpenseResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'data' => $this->data,
+            'date' => $this->date,
             'description' => $this->description,
             'nominal' => $this->nominal,
             'type' => $this->type,

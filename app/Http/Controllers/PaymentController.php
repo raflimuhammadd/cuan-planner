@@ -23,8 +23,8 @@ class PaymentController extends Controller implements HasMiddleware
     {
         return [
             new Middleware('auth'),
-            new Middleware('can:update.payment', only:(['edit', 'update'])),
-            new Middleware('can:delete.payment', only:(['destroy']))
+            new Middleware('can:update,payment', only:(['edit', 'update'])),
+            new Middleware('can:delete,payment', only:(['destroy']))
         ];
     }
 

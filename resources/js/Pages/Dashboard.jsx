@@ -27,7 +27,10 @@ export default function Dashboard() {
                 </BreadcrumbList>
             </Breadcrumb>
 
-            <div className="flex flex-row items-center justify-between gap-2 rounded-xl bg-gradient-to-br from-emerald-500 via-emerald-500 to-yellow-100 p-6 text-white">
+            <div
+                className="flex flex-row items-center justify-between gap-2 rounded-xl bg-gradient-to-br
+                    from-emerald-500 via-emerald-500 to-yellow-100 p-6 text-white"
+            >
                 <div className="flex flex-col">
                     <h2 className="text-2xl font-medium leading-relaxed">H1, {auth.name}</h2>
                     <p className="text-sm">

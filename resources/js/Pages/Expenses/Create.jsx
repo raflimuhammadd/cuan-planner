@@ -1,27 +1,40 @@
 import BreadcrumbHeader from '@/Components/BreadcrumbHeader';
 import HeaderTitle from '@/Components/HeaderTitle';
 import InputError from '@/Components/InputError';
+import { Alert, AlertDescription } from '@/Components/ui/alert';
 import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardHeader } from '@/Components/ui/card';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/Components/ui/select';
+import { UseFilter } from '@/Hooks/UseFilter';
 import AppLayout from '@/Layouts/AppLayout';
 import { flashMessage } from '@/lib/utils';
 import { Textarea } from '@headlessui/react';
 import { Link, useForm } from '@inertiajs/react';
-import { IconArrowBack, IconCheck, IconDoorEnter } from '@tabler/icons-react';
+import { IconArrowBack, IconCheck, IconDoorExit } from '@tabler/icons-react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-export default function Edit(props) {
+export default function Create(props) {
+    const [params, setParams] = useState(props.state);
+    UseFilter({
+        route: route('expenses.create'),
+        values: params,
+        only: ['budgets'],
+    });
+
     // destruct
-    const { data, setData, errors, put, processing, reset } = useForm({
-        source_id: props.income.source_id ?? null,
-        date: props.income.date ?? '',
-        nominal: props.income.nominal ?? '',
-        notes: props.income.notes ?? '',
-        month: props.income.month ?? null,
-        year: props.income.year ?? null,
+    const { data, setData, errors, post, processing, reset } = useForm({
+        date: '',
+        description: '',
+        nominal: '',
+        type: params.type,
+        type_detail_id: null,
+        notes: '',
+        payment_id: null,
+        month: null,
+        year: null,
         method: props.pageSettings.method,
     });
 
@@ -29,7 +42,7 @@ export default function Edit(props) {
     const onHandleSubmit = (e) => {
         e.preventDefault();
         if (processing) return; // Prevent double submit
-        put(props.pageSettings.action, {
+        post(props.pageSettings.action, {
             preserveScroll: true,
             preserveState: true,
             onSuccess: (success) => {
@@ -39,9 +52,22 @@ export default function Edit(props) {
         });
     };
 
+    useEffect(() => {
+        setData('type', params.type);
+    }, [params.type]);
+
     return (
         <div className="flex w-full flex-col gap-y-6 pb-32">
             <BreadcrumbHeader items={props.items} />
+            {/* alert */}
+            {props.budgets.length === 0 && params?.type && (
+                <Alert variant="destructive">
+                    <AlertDescription>
+                        Tipe Detail ditemukan pada tipe <strong>{params?.type}</strong>. Silahkan untuk membuat terlebih
+                        dahulu
+                    </AlertDescription>
+                </Alert>
+            )}
 
             <Card>
                 <CardHeader>
@@ -49,11 +75,11 @@ export default function Edit(props) {
                         <HeaderTitle
                             title={props.pageSettings.title}
                             subtitle={props.pageSettings.subtitle}
-                            icon={IconDoorEnter}
+                            icon={IconDoorExit}
                         />
 
                         <Button variant="emerald" size="xl" asChild>
-                            <Link href={route('incomes.index')}>
+                            <Link href={route('expenses.index')}>
                                 <IconArrowBack size="4" />
                                 Kembali
                             </Link>
@@ -62,26 +88,6 @@ export default function Edit(props) {
                 </CardHeader>
                 <CardContent>
                     <form className="space-y-4" onSubmit={onHandleSubmit}>
-                        <div className="flex flex-col gap-2">
-                            <Label htmlFor="source_id">Sumber</Label>
-                            <Select value={data.source_id} onValueChange={(value) => setData('source_id', value)}>
-                                <SelectTrigger>
-                                    <SelectValue>
-                                        {props.sources.find((source) => source.value == data.source_id)?.label ??
-                                            'Pilih Sumber'}
-                                    </SelectValue>
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {props.sources.map((source, index) => (
-                                        <SelectItem key={index} value={source.value}>
-                                            {source.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            {errors.source_id && <InputError message={errors.source_id} />}
-                        </div>
-
                         <div className="flex flex-col gap-2">
                             <Label htmlFor="date">Tanggal</Label>
                             <Input
@@ -93,6 +99,22 @@ export default function Edit(props) {
                                 onChange={onHandleChange}
                             />
                             {errors.date && <InputError message={errors.date} />}
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                            <Label htmlFor="description">Deskripsi</Label>
+                            <Textarea
+                                name="description"
+                                id="description"
+                                placeholder="Masukkan Deskripsi"
+                                value={data.description}
+                                onChange={onHandleChange}
+                                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3
+                                    py-2 text-sm ring-offset-background placeholder:text-muted-foreground
+                                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+                                    focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            />
+                            {errors.description && <InputError message={errors.description} />}
                         </div>
 
                         <div className="flex flex-col gap-2">
@@ -109,6 +131,78 @@ export default function Edit(props) {
                         </div>
 
                         <div className="flex flex-col gap-2">
+                            <Label htmlFor="type">Tipe</Label>
+                            <Select
+                                defaultValue={data.type_id}
+                                onValueChange={(value) => setParams({ ...params, type: value })}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue>
+                                        {props.types.find((type) => type.value == data.type)?.label ?? 'Pilih Tipe'}
+                                    </SelectValue>
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {props.types.map((type, index) => (
+                                        <SelectItem key={index} value={type.value}>
+                                            {type.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            {errors.type && <InputError message={errors.type} />}
+                        </div>
+
+                        {props.budgets.length > 0 && (
+                            <>
+                                <div className="flex flex-col gap-2">
+                                    <Label htmlFor="type_detail_id">Detail</Label>
+                                    <Select
+                                        defaultValue={data.type_detail_id}
+                                        onValueChange={(value) => setData('type_detail_id', value)}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue>
+                                                {props.budgets.find((budget) => budget.value == data.type_detail_id)
+                                                    ?.label ?? 'Pilih Detail'}
+                                            </SelectValue>
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {props.budgets.map((budget, index) => (
+                                                <SelectItem key={index} value={budget.value}>
+                                                    {budget.label} - ({budget.month}/{budget.year})
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    {errors.type_detail_id && <InputError message={errors.type_detail_id} />}
+                                </div>
+                            </>
+                        )}
+
+                        <div className="flex flex-col gap-2">
+                            <Label htmlFor="payment_id">Metode Pembayaran</Label>
+                            <Select
+                                defaultValue={data.payment_id}
+                                onValueChange={(value) => setData('payment_id', value)}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue>
+                                        {props.payments.find((payment) => payment.value == data.payment_id)?.label ??
+                                            'Pilih Metode Pembayaran'}
+                                    </SelectValue>
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {props.payments.map((payment, index) => (
+                                        <SelectItem key={index} value={payment.value}>
+                                            {payment.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            {errors.payment_id && <InputError message={errors.payment_id} />}
+                        </div>
+
+                        <div className="flex flex-col gap-2">
                             <Label htmlFor="notes">Catatan</Label>
                             <Textarea
                                 name="notes"
@@ -121,7 +215,7 @@ export default function Edit(props) {
                                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
                                     focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                             />
-                            {errors.notes && <InputError message={errors.notes} />}
+                            {errors.description && <InputError message={errors.description} />}
                         </div>
 
                         <div className="flex flex-col gap-2">
@@ -179,4 +273,4 @@ export default function Edit(props) {
     );
 }
 
-Edit.layout = (page) => <AppLayout title={page.props.pageSettings.title} children={page} />;
+Create.layout = (page) => <AppLayout title={page.props.pageSettings.title} children={page} />;

@@ -64,7 +64,10 @@ export default function AppLayout({ title, children }) {
                                         </div>
                                     </Transition.Child>
 
-                                    <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-2 dark:bg-background">
+                                    <div
+                                        className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-2
+                                            dark:bg-background"
+                                    >
                                         {/* Sidebar */}
 
                                         <Sidebar auth={auth} url={url} />
@@ -76,14 +79,20 @@ export default function AppLayout({ title, children }) {
                 </Transition.Root>
 
                 <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
-                    <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-slate-50 px-4 dark:border-r dark:border-r-card dark:bg-background">
+                    <div
+                        className="flex grow flex-col gap-y-5 overflow-y-auto bg-slate-50 px-4 dark:border-r
+                            dark:border-r-card dark:bg-background"
+                    >
                         {/* Sidebar */}
 
                         <Sidebar auth={auth} url={url} />
                     </div>
                 </div>
 
-                <div className="sticky top-0 z-40 flex items-center gap-x-6 bg-white p-4 shadow-sm dark:bg-background sm:px-6 lg:hidden">
+                <div
+                    className="sticky top-0 z-40 flex items-center gap-x-6 bg-white p-4 shadow-sm dark:bg-background
+                        sm:px-6 lg:hidden"
+                >
                     <button
                         type="button"
                         className="m-2.5 p-2.5 text-gray-700 lg:hidden"

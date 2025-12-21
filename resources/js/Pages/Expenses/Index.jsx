@@ -217,6 +217,7 @@ export default function Index(props) {
                                         <TableCell>{formatToRupiah(expense.nominal)}</TableCell>
                                         <TableCell>{expense.type}</TableCell>
                                         <TableCell>{expense.typeDetail.detail}</TableCell>
+                                        <TableCell>{expense.payment.name}</TableCell>
                                         <TableCell>{expense.notes}</TableCell>
                                         <TableCell>
                                             <Badge variant={MONTHTYPEVARIANT[expense.month]}>{expense.month}</Badge>
@@ -248,7 +249,9 @@ export default function Index(props) {
                     )}
                 </CardContent>
 
-                <CardFooter className="flex w-full flex-col items-center justify-between gap-y-2 border-t py-3 lg:flex-row">
+                <CardFooter
+                    className="flex w-full flex-col items-center justify-between gap-y-2 border-t py-3 lg:flex-row"
+                >
                     <p className="text-sm text-muted-foreground">
                         Menampilkan <span className="font-medium text-emerald-600">{meta.from ?? 0}</span> dari{' '}
                         {meta.total} pengeluaran

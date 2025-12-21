@@ -50,7 +50,7 @@ class ExpenseRequest extends FormRequest
 
             'type_detail_id' => [
                 'required',
-                'exists:budgets_id',
+                'exists:budgets,id',
             ],
 
             'notes' => [
@@ -71,7 +71,7 @@ class ExpenseRequest extends FormRequest
 
             'payment_id' => [
                 'required',
-                'exists:payments_id',
+                'exists:payments,id',
             ],
         ];
     }

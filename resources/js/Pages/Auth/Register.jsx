@@ -111,13 +111,17 @@ export default function Register() {
                         <img
                             src="/images/bg.jpg"
                             alt="Image"
-                            className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.75] dark:grayscale"
+                            className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.75]
+                                dark:grayscale"
                         />
                     </div>
                 </CardContent>
             </Card>
 
-            <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
+            <div
+                className="text-balance text-center text-xs text-muted-foreground [&_a]:underline
+                    [&_a]:underline-offset-4 hover:[&_a]:text-primary"
+            >
                 Dengan klik lanjutkan, Anda menyetujui <Link href="#">Persyaratan Layanan</Link> dan{' '}
                 <Link href="#">Kebijakan Privasi Kami</Link>
             </div>

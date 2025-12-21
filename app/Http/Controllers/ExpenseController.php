@@ -2,14 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\BudgetType;
+use App\Enums\MessageType;
 use App\Enums\MonthEnum;
+use App\Http\Requests\ExpenseRequest;
 use App\Http\Resources\ExpenseResource;
+use App\Models\Budget;
 use App\Models\Expense;
+use App\Models\Payment;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
+use Throwable;
+
+use function Laravel\Prompts\select;
+use function PHPSTORM_META\map;
 
 class ExpenseController extends Controller implements HasMiddleware
 {
@@ -72,6 +82,88 @@ class ExpenseController extends Controller implements HasMiddleware
             'months' => fn() => MonthEnum::options(),
             'years' => fn() => range(start: 2020, end: now()->year),
         ]);
+    }
+
+    // method create
+    public function create(): Response
+    {
+        return inertia('Expenses/Create', [
+            'pageSettings' => fn() => [
+                'title' => 'Tambah Pengeluaran',
+                'subtitle' => 'Buat pengeluaran baru disini. Klik simpan setelah selesai.',
+                'method' => 'POST',
+                'action' => route('expenses.store'),
+            ],
+            'items' => fn() => [
+                ['label' => 'Cuan+', 'href' => route('dashboard')],
+                ['label' => 'Pengeluaran', 'href' => route('expenses.index')],
+                ['label' => 'Tambah Pengeluaran'],
+            ],
+            'months' => fn() => MonthEnum::options(),
+            'years' => fn() => range(start: 2020, end: now()->year),
+            'types' => fn() => BudgetType::options(['INCOME']),
+            'payments' => fn() => Payment::query()
+                ->select(['id', 'name'])
+                ->where('user_id', Auth::id())
+                ->get()
+                ->map(fn($item) => [
+                    'value' => $item->id,
+                    'label' => $item->name,
+                ]),
+                'budgets' => fn() => request()->type
+                ? Budget::query()
+                    ->select([
+                        'id', 
+                        'user_id', 
+                        'type', 
+                        'detail', 
+                        'month', 
+                        'year'
+                    ])
+                    ->where('user_id', Auth::id())
+                    ->where('type', request()->type)
+
+                    ->get()
+                    ->map(fn($item) => [
+                        'value' => $item->id,
+                        'label' => $item->detail,
+                        'month' => $item->month,
+                        'year' => $item->year,
+
+                    ])
+                : [],
+
+                'state' => fn()=> [
+                    'type' => request()->type ?? '',
+                ]
+
+        ]);
+    }
+
+
+    // method store
+    public function store(ExpenseRequest $request): RedirectResponse
+    {
+        try {
+            Expense::create([
+                'user_id' => Auth::id(),
+                'date' => $request->date,
+                'description' => $request->description,
+                'nominal' => $request->nominal,
+                'type' => $request->type,
+                'type_detail_id' => $request->type_detail_id,
+                'payment_id' => $request->payment_id,
+                'notes' => $request->notes,
+                'month' => $request->month,
+                'year' => $request->year,
+            ]);
+
+            flashMessage(MessageType::CREATED->message('Pengeluaran'));
+            return to_route('expenses.index');
+        } catch (Throwable $e) {
+            flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
+            return to_route('expenses.index');
+        }
     }
 
 }

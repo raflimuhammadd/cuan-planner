@@ -12,7 +12,7 @@ import { UseFilter } from '@/Hooks/UseFilter';
 import AppLayout from '@/Layouts/AppLayout';
 import { deleteAction, formatDateIndo, formatToRupiah } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
-import { IconArrowsDownUp, IconCreditCardPay, IconMenorah, IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
+import { IconArrowsDownUp, IconCreditCardPay, IconEye, IconMenorah, IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 
 export default function Index(props) {
@@ -171,6 +171,12 @@ export default function Index(props) {
                                         <TableCell>{formatDateIndo(netWorth.created_at)}</TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-x-1">
+                                                <Button variant="emerald" size="sm" asChild>
+                                                    <Link href={route('net-worths.show', [netWorth])}>
+                                                        <IconEye className="size-4" />
+                                                    </Link>
+                                                </Button>
+
                                                 <Button variant="blue" size="sm" asChild>
                                                     <Link href={route('net-worths.edit', [netWorth])}>
                                                         <IconPencil className="size-4" />
@@ -183,7 +189,7 @@ export default function Index(props) {
                                                         </Button>
                                                     }
                                                     // Delete
-                                                    action={() => console.log('delete net-worth')}
+                                                    action={() => deleteAction(route('net-worths.destroy', [netWorth]))}
                                                 />
                                             </div>
                                         </TableCell>

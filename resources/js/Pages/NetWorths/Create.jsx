@@ -15,7 +15,7 @@ import { toast } from 'sonner';
 export default function Create(props) {
     // destruct
     const { data, setData, errors, post, processing, reset } = useForm({
-        net_worth_goal: '',
+        net_worth_goal: 0,
         transaction_per_month: 1,
         year: null,
         method: props.pageSettings.method,
@@ -60,7 +60,7 @@ export default function Create(props) {
                         <div className="flex flex-col gap-2">
                             <Label htmlFor="net_worth_goal">Tujuan Kekayaan Bersih</Label>
                             <Input
-                                type="text"
+                                type="number"
                                 name="net_worth_goal"
                                 id="net_worth_goal"
                                 placeholder="Masukkan tujuan kekayaan bersih"

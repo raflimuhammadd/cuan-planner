@@ -21,6 +21,9 @@ class NetWorthController extends Controller implements HasMiddleware
         return [
             new Middleware('auth'),
             new Middleware('password.confirm'),
+            new Middleware('can:view,netWorth', only:['show']),
+            new Middleware('can:update,netWorth', only:['edit', 'update']),
+            new Middleware('can:delete,netWorth', only:['destroy'])
         ];
 
     }
@@ -89,7 +92,6 @@ class NetWorthController extends Controller implements HasMiddleware
         ]);
     }
 
-
     // method store
     public function store(NetWorthRequest $request): RedirectResponse
     {
@@ -104,6 +106,76 @@ class NetWorthController extends Controller implements HasMiddleware
             ]);
 
             flashMessage(MessageType::CREATED->message('Kekayaan Bersih'));
+            return to_route('net-worths.index');
+        } catch (Throwable $e) {
+            flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
+            return to_route('net-worths.index');
+        }
+    }
+
+    // method show
+    public function show(NetWorth $netWorth): Response
+    {
+        return inertia('NetWorths/Show', [
+            'pageSettings' => fn() => [
+                'title' => 'Detail Kekayaan Bersih',
+                'subtitle' => 'Menampilkan kekayaan bersih yang anda miliki.',
+            ],
+            'items' => fn() => [
+                ['label' => 'Cuan+', 'href' => route('dashboard')],
+                ['label' => 'Kekayaan Bersih', 'href' => route('net-worths.index')],
+                ['label' => $netWorth->id],
+            ],
+            'netWorth' => fn() => $netWorth,
+        ]);
+    }
+
+    // method edit
+    public function edit(NetWorth $netWorth): Response
+    {
+        return inertia('NetWorths/Edit', [
+            'pageSettings' => fn() => [
+                'title' => 'Ubah Kekayaan Bersih',
+                'subtitle' => 'Ubah metode pembayaran disini. Klik simpan setelah selesai.',
+                'method' => 'PUT',
+                'action' => route('net-worths.update', $netWorth),
+            ],
+            'items' => fn() => [
+                ['label' => 'Cuan+', 'href' => route('dashboard')],
+                ['label' => 'Kekayaan Bersih', 'href' => route('net-worths.index')],
+                ['label' => 'Ubah Kekayaan Bersih'],
+            ],
+            'years' => fn() => range(start: now()->year - 5, end: now()->year + 5),
+            'netWorth' => fn() => $netWorth,
+        ]);
+    }
+
+
+    // method update
+    public function update(NetWorthRequest $request, NetWorth $netWorth): RedirectResponse
+    {
+        try {
+            $netWorth->update([
+                'net_worth_goal' => $net_worth_goal = $request->net_worth_goal,
+                'amount_left' => $net_worth_goal,
+                'transaction_per_month' => $request->transaction_per_month,
+            ]);
+
+            flashMessage(MessageType::UPDATED->message('Kekayaan Bersih'));
+            return to_route('net-worths.index');
+        } catch (Throwable $e) {
+            flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
+            return to_route('net-worths.index');
+        }
+    }
+
+    // method delete
+    public function destroy(NetWorth $netWorth): RedirectResponse
+    {
+        try {
+            $netWorth->delete();
+
+            flashMessage(MessageType::DELETED->message('Kekayaan Bersih'));
             return to_route('net-worths.index');
         } catch (Throwable $e) {
             flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');

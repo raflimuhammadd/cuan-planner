@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\AssetType;
 use App\Enums\MessageType;
 use App\Http\Requests\NetWorthRequest;
 use App\Http\Resources\NetWorthResource;
@@ -21,11 +22,10 @@ class NetWorthController extends Controller implements HasMiddleware
         return [
             new Middleware('auth'),
             new Middleware('password.confirm'),
-            new Middleware('can:view,netWorth', only:['show']),
-            new Middleware('can:update,netWorth', only:['edit', 'update']),
-            new Middleware('can:delete,netWorth', only:['destroy'])
+            new Middleware('can:view,netWorth', only: ['show']),
+            new Middleware('can:update,netWorth', only: ['edit', 'update']),
+            new Middleware('can:delete,netWorth', only: ['destroy'])
         ];
-
     }
 
     // create method index
@@ -127,6 +127,7 @@ class NetWorthController extends Controller implements HasMiddleware
                 ['label' => $netWorth->id],
             ],
             'netWorth' => fn() => $netWorth,
+            'assetSum' => fn() => $this->getAssetSummaries($netWorth),
         ]);
     }
 
@@ -181,5 +182,32 @@ class NetWorthController extends Controller implements HasMiddleware
             flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
             return to_route('net-worths.index');
         }
+    }
+
+    // method private function
+    private function getAssetNominalSum(NetWorth $netWorth, AssetType $assetType)
+    {
+        return $netWorth->assets()
+            ->where([
+                ['net_worth_id', $netWorth->id],
+                ['user_id', Auth::id()],
+                ['type', $assetType->value],
+            ])
+            ->with('netWorthAssets')
+            ->get()
+            ->pluck('netWorthAssets')
+            ->flatten()
+            ->sum('nominal');
+    }
+
+    private function getAssetSummaries(NetWorth $netWorth)
+    {
+        return [
+            'assetCashNominalSum' => $this->getAssetNominalSum($netWorth, AssetType::CASH),
+            'assetPersonalNominalSum' => $this->getAssetNominalSum($netWorth, AssetType::PERSONAL),
+            'assetShortTermNominalSum' => $this->getAssetNominalSum($netWorth, AssetType::SHORTTERM),
+            'assetMidTermNominalSum' => $this->getAssetNominalSum($netWorth, AssetType::MIDTERM),
+            'assetLongTermNominalSum' => $this->getAssetNominalSum($netWorth, AssetType::LONGTERM),
+        ];
     }
 }

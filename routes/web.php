@@ -7,9 +7,11 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\GoalController;
 use App\Http\Controllers\IncomeController;
+use App\Http\Controllers\NetWorthAssetController;
 use App\Http\Controllers\NetWorthController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
+use App\Models\NetWorth;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -110,6 +112,9 @@ Route::controller(AssetController::class)->group(function () {
     Route::put('net-worths/{netWorth}/assets/{asset}/edit', 'update')->name('assets.update');
     Route::delete('net-worths/{netWorth}/assets/{asset}/destroy', 'destroy')->name('assets.destroy');
 });
+
+Route::post('net-worths/{netWorth}/assets/{asset}/net-worth-asset', NetWorthAssetController::class)
+    ->name('net-worth-asset');
 
 
 // middleware

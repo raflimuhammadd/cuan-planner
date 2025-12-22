@@ -14,7 +14,7 @@ enum LiabilityType: string
             ->filter(fn ($item) => ! in_array($item->name, $exclude))
             ->map(fn ($item) => [
                 'value' => $item->value,
-                'label' => $item->valu,
+                'label' => $item->value,
             ])
             ->values()
             ->toArray();

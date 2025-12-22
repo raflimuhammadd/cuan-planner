@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\GoalController;
 use App\Http\Controllers\IncomeController;
+use App\Http\Controllers\LiabilityController;
 use App\Http\Controllers\NetWorthAssetController;
 use App\Http\Controllers\NetWorthController;
 use App\Http\Controllers\PaymentController;
@@ -115,6 +116,16 @@ Route::controller(AssetController::class)->group(function () {
 
 Route::post('net-worths/{netWorth}/assets/{asset}/net-worth-asset', NetWorthAssetController::class)
     ->name('net-worth-asset');
+
+// Controller:Liability
+Route::controller(LiabilityController::class)->group(function () {
+    Route::get('net-worths/{netWorth}/liabilities', 'index')->name(name: 'liabilities.index');
+    Route::get('net-worths/{netWorth}/liabilities/create', 'create')->name('liabilities.create');
+    Route::post('net-worths/{netWorth}/liabilities/create', 'store')->name(name: 'liabilities.store');
+    Route::get('net-worths/{netWorth}/liabilities/{liability}/edit', 'edit')->name('liabilities.edit');
+    Route::put('net-worths/{netWorth}/liabilities/{liability}/edit', 'update')->name('liabilities.update');
+    Route::delete('net-worths/{netWorth}/liabilities/{liability}/destroy', 'destroy')->name('liabilities.destroy');
+});
 
 
 // middleware

@@ -103,12 +103,12 @@ Route::controller(NetWorthController::class)->group(function () {
 
 // Controller:Asset
 Route::controller(AssetController::class)->group(function () {
-    Route::get('assets', 'index')->name(name: 'assets.index');
-    Route::get('assets/create', 'create')->name('assets.create');
-    Route::post('assets/create', 'store')->name(name: 'assets.store');
-    Route::get('assets/{asset}/edit', 'edit')->name('assets.edit');
-    Route::put('assets/{asset}/edit', 'update')->name('assets.update');
-    Route::delete('assets/{expense}/destroy', 'destroy')->name('assets.destroy');
+    Route::get('net-worths/{netWorth}/assets', 'index')->name(name: 'assets.index');
+    Route::get('net-worths/{netWorth}/assets/create', 'create')->name('assets.create');
+    Route::post('net-worths/{netWorth}/assets/create', 'store')->name(name: 'assets.store');
+    Route::get('net-worths/{netWorth}/assets/{asset}/edit', 'edit')->name('assets.edit');
+    Route::put('net-worths/{netWorth}/assets/{asset}/edit', 'update')->name('assets.update');
+    Route::delete('net-worths/{netWorth}/assets/{asset}/destroy', 'destroy')->name('assets.destroy');
 });
 
 

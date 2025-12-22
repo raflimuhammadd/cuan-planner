@@ -28,7 +28,7 @@ class NetWorthController extends Controller implements HasMiddleware
 
     }
 
-        // create method index
+    // create method index
     public function index(): Response
     {
         $netWorths = NetWorth::query()

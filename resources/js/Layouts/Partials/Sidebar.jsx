@@ -23,7 +23,7 @@ export default function Sidebar({ auth, url }) {
                 <CardContent className="flex items-center gap-x-3 p-3">
                     <Avatar>
                         <AvatarImage src={auth.avatar} />
-                        <AvatarFallback>{auth.name.substring(0, 1)}</AvatarFallback>
+                        <AvatarFallback>{auth.name.substring(0, 5)}</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
                         <span className="line-clamp-1 text-sm font-medium leading-relaxed tracking-tighter">

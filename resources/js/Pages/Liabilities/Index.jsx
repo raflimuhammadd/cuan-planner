@@ -24,6 +24,7 @@ import {
     IconTrash,
 } from '@tabler/icons-react';
 import { useState } from 'react';
+import NetWorthLiability from './NetWorthLiability';
 
 export default function Index(props) {
     const { data: liabilities, meta, links } = props.liabilities;
@@ -155,6 +156,8 @@ export default function Index(props) {
                                         <TableCell>{formatDateIndo(liability.created_at)}</TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-x-1">
+                                                <NetWorthLiability liability={liability} />
+
                                                 <Button variant="blue" size="sm" asChild>
                                                     <Link href={route('liabilities.edit', [props.netWorth, liability])}>
                                                         <IconPencil className="size-4" />

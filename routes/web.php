@@ -10,6 +10,7 @@ use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\LiabilityController;
 use App\Http\Controllers\NetWorthAssetController;
 use App\Http\Controllers\NetWorthController;
+use App\Http\Controllers\NetWorthLiabilityController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Models\NetWorth;
@@ -126,6 +127,9 @@ Route::controller(LiabilityController::class)->group(function () {
     Route::put('net-worths/{netWorth}/liabilities/{liability}/edit', 'update')->name('liabilities.update');
     Route::delete('net-worths/{netWorth}/liabilities/{liability}/destroy', 'destroy')->name('liabilities.destroy');
 });
+
+Route::post('net-worths/{netWorth}/liabilities/{liability}/net-worth-liability', NetWorthLiabilityController::class)
+    ->name('net-worth-liability');
 
 
 // middleware

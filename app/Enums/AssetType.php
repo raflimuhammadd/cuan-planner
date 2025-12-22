@@ -6,7 +6,7 @@ enum AssetType: string
 {
     case CASH = 'Kas';
     case PERSONAL = 'Personal';
-    case SHORTEN = 'Investasi Jangka Pendek';
+    case SHORTTERM = 'Investasi Jangka Pendek';
     case MIDTERM = 'Investasi Jangka Menengah';
     case LONGTERM = 'Investasi Jangka Panjang';
 

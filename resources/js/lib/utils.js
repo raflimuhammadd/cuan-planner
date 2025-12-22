@@ -109,7 +109,7 @@ const MONTHTYPEVARIANT = {
 const ASSETTYPE = {
     CASH: 'Kas',
     PERSONAL: 'Personal',
-    SHORTERM: 'Investasi Jangka Pendek',
+    SHORTTERM: 'Investasi Jangka Pendek',
     MIDTERM: 'Investasi Jangka Menengah',
     LONGTERM: 'Investasi Jangka Panjang',
 };
@@ -117,26 +117,26 @@ const ASSETTYPE = {
 const ASSETTYPEVARIANT = {
     [ASSETTYPE.CASH]: 'emerald',
     [ASSETTYPE.PERSONAL]: 'orange',
-    [ASSETTYPE.SHORTERM]: 'red',
+    [ASSETTYPE.SHORTTERM]: 'red',
     [ASSETTYPE.MIDTERM]: 'sky',
     [ASSETTYPE.LONGTERM]: 'purple',
 };
 
 // objek liability type
 const LIABILITYTPE = {
-    SHORTERMDEBT: 'Hutang Jangka Pendek',
+    SHORTTERMDEBT: 'Hutang Jangka Pendek',
     MIDTERMDEBT: 'Hutang Jangka Menengah',
     LONGTERMDEBT: 'Hutang Jangka Panjang',
 };
 
 const LIABILITYTPEVARIANT = {
-    [LIABILITYTPE.SHORTERMDEBT]: 'emerald',
+    [LIABILITYTPE.SHORTTERMDEBT]: 'emerald',
     [LIABILITYTPE.MIDTERMDEBT]: 'orange',
     [LIABILITYTPE.LONGTERMDEBT]: 'red',
 };
 
 const LIABILITYDESCRIPTION = {
-    [LIABILITYTPE.SHORTERMDEBT]: 'Tenor 1-5 Tahun',
+    [LIABILITYTPE.SHORTTERMDEBT]: 'Tenor 1-5 Tahun',
     [LIABILITYTPE.MIDTERMDEBT]: 'Tenor 5-10 Tahun',
     [LIABILITYTPE.LONGTERMDEBT]: 'Tenor > 10 Tahun',
 };

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssetController;
 use App\Http\Controllers\BalanceController;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\DashboardController;
@@ -98,6 +99,16 @@ Route::controller(NetWorthController::class)->group(function () {
     Route::get('net-worths/{netWorth}/edit', 'edit')->name('net-worths.edit');
     Route::put('net-worths/{netWorth}/edit', 'update')->name('net-worths.update');
     Route::delete('net-worths/{netWorth}/destroy', 'destroy')->name('net-worths.destroy');
+});
+
+// Controller:Asset
+Route::controller(AssetController::class)->group(function () {
+    Route::get('assets', 'index')->name(name: 'assets.index');
+    Route::get('assets/create', 'create')->name('assets.create');
+    Route::post('assets/create', 'store')->name(name: 'assets.store');
+    Route::get('assets/{asset}/edit', 'edit')->name('assets.edit');
+    Route::put('assets/{asset}/edit', 'update')->name('assets.update');
+    Route::delete('assets/{expense}/destroy', 'destroy')->name('assets.destroy');
 });
 
 

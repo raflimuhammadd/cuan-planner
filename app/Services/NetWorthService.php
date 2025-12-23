@@ -166,7 +166,7 @@ class NetWorthService
                 if (!isset($netWorthAssetSummaries[$assetType][$index])) {
                     $netWorthAssetSummaries[$assetType][$index] = 0;
                 }
-                $netWorthAssetSummaries[$assetType][$index] += [$transaction['nominal']];
+                $netWorthAssetSummaries[$assetType][$index] += $transaction['nominal'];
             }
         }
     }

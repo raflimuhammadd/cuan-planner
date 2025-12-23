@@ -114,6 +114,14 @@ const ASSETTYPE = {
     LONGTERM: 'Investasi Jangka Panjang',
 };
 
+const ASSETDESCRIPTION = {
+    [ASSETTYPE.CASH]: 'Uang tunai yang tersedia untuk kebutuhan operasional sehari-hari',
+    [ASSETTYPE.PERSONAL]: 'Pengelolaan keuangan pribadi, termasuk tabungan dan anggaran untuk mencapai tujuan keuangan jangka pendek maupun panjang',
+    [ASSETTYPE.SHORTTERM]: 'Investasi yang bertujuan untuk memperoleh keuntungan dalam waktu singkat',
+    [ASSETTYPE.MIDTERM]: 'Investasi dengan periode pengembalian antara 1 hingga 5 tahun',
+    [ASSETTYPE.LONGTERM]: 'Investasi dengan horizon lebih dari 5 tahun, bertujuan memperoleh keuntungan maksimal',
+};
+
 const ASSETTYPEVARIANT = {
     [ASSETTYPE.CASH]: 'emerald',
     [ASSETTYPE.PERSONAL]: 'orange',
@@ -176,6 +184,7 @@ const messages = {
 
 export {
     ASSETTYPE,
+    ASSETDESCRIPTION,
     ASSETTYPEVARIANT,
     BUDGETTYPE,
     BUDGETTYPEVARIANT,

@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\AssetType;
 use App\Enums\MessageType;
 use App\Http\Requests\NetWorthRequest;
 use App\Http\Resources\NetWorthResource;
-use App\Models\Asset;
 use App\Models\NetWorth;
-use App\Models\NetWorthAsset;
+use App\Services\NetWorthService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
@@ -19,6 +16,10 @@ use Throwable;
 
 class NetWorthController extends Controller implements HasMiddleware
 {
+    public function __construct(
+        protected NetWorthService $netWorthService
+    ) {}
+
     public static function middleware(): array
     {
         return [
@@ -30,7 +31,6 @@ class NetWorthController extends Controller implements HasMiddleware
         ];
     }
 
-    // create method index
     public function index(): Response
     {
         $netWorths = NetWorth::query()
@@ -59,23 +59,18 @@ class NetWorthController extends Controller implements HasMiddleware
                     'has_pages' => $netWorths->hasPages(),
                 ],
             ]),
-
             'state' => fn() => [
                 'page' => request()->page ?? 1,
                 'search' => request()->search ?? '',
                 'load' => 10,
             ],
-
             'items' => fn() => [
                 ['label' => 'Cuan+', 'href' => route('dashboard')],
                 ['label' => 'Kekayaan Bersih'],
             ],
-
-
         ]);
     }
 
-    // method create
     public function create(): Response
     {
         return inertia('NetWorths/Create', [
@@ -94,7 +89,6 @@ class NetWorthController extends Controller implements HasMiddleware
         ]);
     }
 
-    // method store
     public function store(NetWorthRequest $request): RedirectResponse
     {
         try {
@@ -115,13 +109,8 @@ class NetWorthController extends Controller implements HasMiddleware
         }
     }
 
-    // method show
-    public function show(NetWorth $netWorth):Response
+    public function show(NetWorth $netWorth): Response
     {
-
-        $netWorthAssets = $this->getNetWorthAssets($netWorth);
-        $netWorthAssetSummaries = $this->getNetWorthAssetSummaries($netWorth);
-
         return inertia('NetWorths/Show', [
             'pageSettings' => fn() => [
                 'title' => 'Detail Kekayaan Bersih',
@@ -133,13 +122,12 @@ class NetWorthController extends Controller implements HasMiddleware
                 ['label' => $netWorth->id],
             ],
             'netWorth' => fn() => $netWorth,
-            'assetSum' => fn() => $this->getAssetSummaries($netWorth),
-            'netWorthAssets' => fn() => $netWorthAssets,
-            'netWorthAssetSummaries' => fn() => $netWorthAssetSummaries,
+            'assetSum' => fn() => $this->netWorthService->getAssetSummaries($netWorth),
+            'netWorthAssets' => fn() => $this->netWorthService->getNetWorthAssets($netWorth),
+            'netWorthAssetSummaries' => fn() => $this->netWorthService->getNetWorthAssetSummaries($netWorth),
         ]);
     }
 
-    // method edit
     public function edit(NetWorth $netWorth): Response
     {
         return inertia('NetWorths/Edit', [
@@ -159,8 +147,6 @@ class NetWorthController extends Controller implements HasMiddleware
         ]);
     }
 
-
-    // method update
     public function update(NetWorthRequest $request, NetWorth $netWorth): RedirectResponse
     {
         try {
@@ -178,7 +164,6 @@ class NetWorthController extends Controller implements HasMiddleware
         }
     }
 
-    // method delete
     public function destroy(NetWorth $netWorth): RedirectResponse
     {
         try {
@@ -190,142 +175,5 @@ class NetWorthController extends Controller implements HasMiddleware
             flashMessage(MessageType::ERROR->message(error: $e->getMessage()), 'error');
             return to_route('net-worths.index');
         }
-    }
-
-    // method private function
-    private function getAssetNominalSum(NetWorth $netWorth, AssetType $assetType)
-    {
-        return $netWorth->assets()
-            ->where([
-                ['net_worth_id', $netWorth->id],
-                ['user_id', Auth::id()],
-                ['type', $assetType->value],
-            ])
-            ->with('netWorthAssets')
-            ->get()
-            ->pluck('netWorthAssets')
-            ->flatten()
-            ->sum('nominal');
-    }
-
-    private function getAssetSummaries(NetWorth $netWorth)
-    {
-        return [
-            'assetCashNominalSum' => $this->getAssetNominalSum($netWorth, AssetType::CASH),
-            'assetPersonalNominalSum' => $this->getAssetNominalSum($netWorth, AssetType::PERSONAL),
-            'assetShortTermNominalSum' => $this->getAssetNominalSum($netWorth, AssetType::SHORTTERM),
-            'assetMidTermNominalSum' => $this->getAssetNominalSum($netWorth, AssetType::MIDTERM),
-            'assetLongTermNominalSum' => $this->getAssetNominalSum($netWorth, AssetType::LONGTERM),
-        ];
-    }
-
-    private function getAssetTransactions(Asset $asset)
-    {
-        return NetWorthAsset::query()
-            ->where('asset_id', $asset->id)
-            ->orderBy('transaction_date')
-            ->get();
-    }
-
-    private function prepareTransactionData($transactions, $transaction_per_month = 1)
-    {
-        $transactionData = $transactions->map(function ($transaction) {
-            return [
-                'transaction_date' => $transaction->transaction_date,
-                'nominal' => $transaction->nominal ?? null,
-            ];
-        })->toArray();
-
-        $transactionCount = $transaction_per_month * 12;
-        if (count($transactionData) < $transactionCount) {
-            $transactionData = array_merge($transactionData, array_fill(
-                0,
-                $transactionCount - count($transactionData),
-                [
-                    'transaction_date' => null,
-                    'nominal' => null,
-                ]
-            ));
-        }
-        return $transactionData;
-    }
-
-    private function accumulateTransactionSummaries($transactionData, $netWorthAssetSummaries, $assetType)
-    {
-        foreach ($transactionData as $index => $transaction) {
-            if ($transaction['nominal'] !== null) {
-                if (!isset($netWorthAssetSummaries[$assetType][$index])) {
-                    $netWorthAssetSummaries[$assetType][$index] = 0;
-                }
-                $netWorthAssetSummaries[$assetType][$index] += [$transaction['nominal']];
-            }
-        }
-    }
-
-
-    private function getNetWorthAssets(NetWorth $netWorth)
-    {
-        $assetTypes = AssetType::cases();
-        $netWorthAssets = [];
-
-        foreach ($assetTypes as $assetType) {
-            $assets = Asset::query()
-                ->where([
-                    ['net_worth_id', $netWorth->id],
-                    ['user_id', Auth::id()],
-                    ['type', $assetType->value]
-                ])
-                ->get();
-
-            $assetData = [];
-            foreach ($assets as $asset) {
-                $transactions = $this->getAssetTransactions($asset);
-                $transactionData = $this->prepareTransactionData(
-                    $transactions,
-                    $asset->netWorth->transaction_per_month
-                );
-
-                $assetData[] = [
-                    'detail' => $asset->detail,
-                    'goal' => $asset->goal,
-                    'transactions' => $transactionData,
-                ];
-            }
-
-            $netWorthAssets[$assetType->value] = $assetData;
-        }
-        return $netWorthAssets;
-    }
-
-    private function getNetWorthAssetSummaries(NetWorth $netWorth)
-    {
-        $assetTypes = AssetType::cases();
-        $netWorthAssetSummaries = [];
-
-        foreach ($assetTypes as $assetType) {
-            $assets = Asset::query()
-                ->where([
-                    ['net_worth_id', $netWorth->id],
-                    ['user_id', Auth::id()],
-                    ['type', $assetType->value]
-                ])
-                ->get();
-
-            foreach ($assets as $asset) {
-                $transactions = $this->getAssetTransactions($asset);
-                $transactionData = $this->prepareTransactionData(
-                    $transactions,
-                    $asset->netWorth->transaction_per_month
-                );
-
-                $this->accumulateTransactionSummaries(
-                    $transactionData,
-                    $netWorthAssetSummaries,
-                    $assetType->value
-                );
-            }
-        }
-
-        return $netWorthAssetSummaries;
     }
 }

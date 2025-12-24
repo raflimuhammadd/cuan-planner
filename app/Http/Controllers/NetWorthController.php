@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\LiabilityType;
 use App\Enums\MessageType;
 use App\Http\Requests\NetWorthRequest;
 use App\Http\Resources\NetWorthResource;
@@ -125,6 +126,7 @@ class NetWorthController extends Controller implements HasMiddleware
             'assetSum' => fn() => $this->netWorthService->getAssetSummaries($netWorth),
             'netWorthAssets' => fn() => $this->netWorthService->getNetWorthAssets($netWorth),
             'netWorthAssetSummaries' => fn() => $this->netWorthService->getNetWorthAssetSummaries($netWorth),
+            'liabilitySum' => fn() => $this->netWorthService->getLiabilitySummaries($netWorth),
         ]);
     }
 

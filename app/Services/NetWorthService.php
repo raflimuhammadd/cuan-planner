@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\AssetType;
+use App\Enums\LiabilityType;
 use App\Models\Asset;
 use App\Models\NetWorth;
 use App\Models\NetWorthAsset;
@@ -151,6 +152,37 @@ class NetWorthService
         }
 
         return $netWorthAssetSummaries;
+    }
+
+
+    /**
+     * Get liability nominal sum by type
+     */
+    public function getLiabilityNominalSum(NetWorth $netWorth, LiabilityType $liabilityType): int
+    {
+        return $netWorth->liabilities()
+            ->where([
+                ['net_worth_id', $netWorth->id],
+                ['user_id', Auth::id()],
+                ['type', $liabilityType->value],
+            ])
+            ->with('netWorthLiabilities')
+            ->get()
+            ->pluck('netWorthLiabilities')
+            ->flatten()
+            ->sum('nominal');
+    }
+
+    /**
+     * Get all liability summaries grouped by type
+     */
+    public function getLiabilitySummaries(NetWorth $netWorth): array
+    {
+        return [
+            'liabilityShortTermDebtNominalSum' => $this->getLiabilityNominalSum($netWorth, LiabilityType::SHORTTERMDEBT),
+            'liabilityMidTermDebtNominalSum' => $this->getLiabilityNominalSum($netWorth, LiabilityType::MIDTERMDEBT),
+            'liabilityLongTermDebtNominalSum' => $this->getLiabilityNominalSum($netWorth, LiabilityType::LONGTERMDEBT)
+        ];
     }
 
     /**

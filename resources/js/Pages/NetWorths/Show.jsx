@@ -240,6 +240,52 @@ export default function Show(props) {
                     )}
                 </Card>
             ))}
+
+            <Alert variant="info">
+                <IconInfoCircle className="size-6" />
+                <AlertTitle>Liabilitas</AlertTitle>
+                <AlertDescription>
+                    Liabilitas adalah kewajiban atau hutang yang harus dibayar oleh individu atau perusahaan kepada
+                    pihak lain pada masa depan.
+                </AlertDescription>
+            </Alert>
+
+            {/* NEW FEAT: */}
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                <CardStat
+                    data={{
+                        title: 'Total Hutang Jangka Pendek',
+                        icon: IconCash,
+                        background: 'text-white bg-gradient-to-r from-blue-400 via-blue-500 to-blue-500',
+                    }}
+                >
+                    <div className="text-2xl font-bold">
+                        {formatToRupiah(props.liabilitySum.liabilityShortTermDebtNominalSum)}
+                    </div>
+                </CardStat>
+                <CardStat
+                    data={{
+                        title: 'Total Hutang Jangka Menengah',
+                        icon: IconCash,
+                        background: 'text-white bg-gradient-to-r from-orange-400 via-orange-500 to-orange-500',
+                    }}
+                >
+                    <div className="text-2xl font-bold">
+                        {formatToRupiah(props.liabilitySum.liabilityMidTermDebtNominalSum)}
+                    </div>
+                </CardStat>
+                <CardStat
+                    data={{
+                        title: 'Total Hutang Jangka Panjang',
+                        icon: IconCash,
+                        background: 'text-white bg-gradient-to-r from-red-400 via-red-500 to-red-500',
+                    }}
+                >
+                    <div className="text-2xl font-bold">
+                        {formatToRupiah(props.liabilitySum.liabilityLongTermDebtNominalSum)}
+                    </div>
+                </CardStat>
+            </div>
         </div>
     );
 }

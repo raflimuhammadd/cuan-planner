@@ -13,7 +13,6 @@ import { Link } from '@inertiajs/react';
 import { IconArrowBack, IconCash, IconInfoCircle, IconMenorah, IconX } from '@tabler/icons-react';
 
 export default function Show(props) {
-
     const netWorthAssets = props.netWorthAssets;
 
     return (
@@ -130,34 +129,33 @@ export default function Show(props) {
                         <CardTitle>
                             <Badge variant={ASSETTYPEVARIANT[netWorthAsset]}>{netWorthAsset}</Badge>
                         </CardTitle>
-                            <CardDescription>{ASSETDESCRIPTION[netWorthAsset]}</CardDescription>
+                        <CardDescription>{ASSETDESCRIPTION[netWorthAsset]}</CardDescription>
                     </CardHeader>
                     {netWorthAssets[netWorthAsset].length === 0 ? (
-                        <EmptyState 
+                        <EmptyState
                             icon={IconMenorah}
                             title={`Tidak ada aset kekayaan bersih (${netWorthAsset})`}
                             subtitle={`Mulailah dengan memuat aset (${netWorthAsset}) baru`}
                         />
-                    ): (
-                        <CardContent className="p-0 [&-td]:whitespace-nowrap 
-                        [&-td]:px-6 [&-th]:px-6">
+                    ) : (
+                        <CardContent className="p-0 [&-td]:whitespace-nowrap [&-td]:px-6 [&-th]:px-6">
                             <Table className="w-full">
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead className="border" rowSpan='2'>
+                                        <TableHead className="border" rowSpan="2">
                                             #
                                         </TableHead>
-                                        <TableHead className="border" rowSpan='2'>
+                                        <TableHead className="border" rowSpan="2">
                                             Detail
                                         </TableHead>
-                                        <TableHead className="border" rowSpan='2'>
+                                        <TableHead className="border" rowSpan="2">
                                             Tujuan
                                         </TableHead>
                                         {Array.from(
                                             {
                                                 length: Math.max(
                                                     ...netWorthAssets[netWorthAsset].map(
-                                                        (asset)=>asset.transactions.length,
+                                                        (asset) => asset.transactions.length,
                                                     ),
                                                 ),
                                             },
@@ -165,7 +163,7 @@ export default function Show(props) {
                                                 <TableHead className="border" key={idx}>
                                                     {idx + 1}
                                                 </TableHead>
-                                            )
+                                            ),
                                         )}
                                     </TableRow>
                                     <TableRow>
@@ -173,21 +171,23 @@ export default function Show(props) {
                                             {
                                                 length: Math.max(
                                                     ...netWorthAssets[netWorthAsset].map(
-                                                        (asset)=>asset.transactions.length,
+                                                        (asset) => asset.transactions.length,
                                                     ),
                                                 ),
                                             },
                                             (_, idx) => (
                                                 <TableHead className="border" key={`transactions-${idx}`}>
-                                                   {netWorthAssets[netWorthAsset]
-                                                        .map((asset) => 
-                                                            formatDateIndo(asset.transactions[idx]?.
-                                                                transaction_date
+                                                    {
+                                                        netWorthAssets[netWorthAsset]
+                                                            .map((asset) =>
+                                                                formatDateIndo(
+                                                                    asset.transactions[idx]?.transaction_date,
+                                                                ),
                                                             )
-                                                        ).filter(Boolean)[0] // '-'
-                                                   }
+                                                            .filter(Boolean)[0] // '-'
+                                                    }
                                                 </TableHead>
-                                            )
+                                            ),
                                         )}
                                     </TableRow>
                                 </TableHeader>
@@ -202,34 +202,36 @@ export default function Show(props) {
                                                     {transaction.transaction_date && transaction.nominal !== null ? (
                                                         formatToRupiah(transaction.nominal)
                                                     ) : (
-                                                        <IconX className="size-4 text-red-500"/>
+                                                        <IconX className="size-4 text-red-500" />
                                                     )}
                                                 </TableCell>
                                             ))}
                                         </TableRow>
                                     ))}
                                 </TableBody>
-                                <TableFooter className="bg-gradient-to-br from-emerald-500 via-emerald-500 to-yellow-100
-                                font-bold text-white">
+                                <TableFooter
+                                    className="bg-gradient-to-br from-emerald-500 via-emerald-500 to-yellow-100
+                                        font-bold text-white"
+                                >
                                     <TableRow>
                                         <TableCell colSpan="3">Total</TableCell>
                                         {Array.from(
                                             {
                                                 length: Math.max(
                                                     ...netWorthAssets[netWorthAsset].map(
-                                                        (asset) => asset.transactions.length
+                                                        (asset) => asset.transactions.length,
                                                     ),
                                                 ),
                                             },
                                             (_, idx) => (
                                                 <TableCell key={`Total-${idx}`}>
                                                     {props.netWorthAssetSummaries[netWorthAsset]?.[idx]
-                                                    ? formatToRupiah(
-                                                        props.netWorthAssetSummaries[netWorthAsset][idx]
-                                                    )
-                                                    : formatToRupiah(0)}
+                                                        ? formatToRupiah(
+                                                              props.netWorthAssetSummaries[netWorthAsset][idx],
+                                                          )
+                                                        : formatToRupiah(0)}
                                                 </TableCell>
-                                            )
+                                            ),
                                         )}
                                     </TableRow>
                                 </TableFooter>
@@ -238,7 +240,6 @@ export default function Show(props) {
                     )}
                 </Card>
             ))}
-
         </div>
     );
 }

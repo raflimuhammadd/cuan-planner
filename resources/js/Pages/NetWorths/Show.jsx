@@ -227,8 +227,8 @@ export default function Show(props) {
                                                 <TableCell key={`Total-${idx}`}>
                                                     {props.netWorthAssetSummaries[netWorthAsset]?.[idx]
                                                         ? formatToRupiah(
-                                                              props.netWorthAssetSummaries[netWorthAsset][idx],
-                                                          )
+                                                            props.netWorthAssetSummaries[netWorthAsset][idx],
+                                                        )
                                                         : formatToRupiah(0)}
                                                 </TableCell>
                                             ),
@@ -278,7 +278,7 @@ export default function Show(props) {
                     data={{
                         title: 'Total Hutang Jangka Panjang',
                         icon: IconCash,
-                        background: 'text-white bg-gradient-to-r from-red-400 via-red-500 to-red-500',
+                        background: 'text-white bg-gradient-to-r from-purple-400 via-purple-500 to-purple-500',
                     }}
                 >
                     <div className="text-2xl font-bold">

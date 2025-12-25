@@ -5,8 +5,10 @@ namespace App\Services;
 use App\Enums\AssetType;
 use App\Enums\LiabilityType;
 use App\Models\Asset;
+use App\Models\Liability;
 use App\Models\NetWorth;
 use App\Models\NetWorthAsset;
+use App\Models\NetWorthLiability;
 use Illuminate\Support\Facades\Auth;
 
 class NetWorthService
@@ -14,7 +16,7 @@ class NetWorthService
     /**
      * Get asset nominal sum by type
      */
-    public function getAssetNominalSum(NetWorth $netWorth, AssetType $assetType): int
+    private function getAssetNominalSum(NetWorth $netWorth, AssetType $assetType): int
     {
         return $netWorth->assets()
             ->where([
@@ -46,7 +48,7 @@ class NetWorthService
     /**
      * Get transactions for a specific asset
      */
-    public function getAssetTransactions(Asset $asset)
+    private function getAssetTransactions(Asset $asset)
     {
         return NetWorthAsset::query()
             ->where('asset_id', $asset->id)
@@ -57,7 +59,7 @@ class NetWorthService
     /**
      * Prepare transaction data with padding for empty months
      */
-    public function prepareTransactionData($transactions, int $transactionPerMonth = 1): array
+    private function prepareTransactionData($transactions, int $transactionPerMonth = 1): array
     {
         $transactionData = $transactions->map(function ($transaction) {
             return [
@@ -158,7 +160,7 @@ class NetWorthService
     /**
      * Get liability nominal sum by type
      */
-    public function getLiabilityNominalSum(NetWorth $netWorth, LiabilityType $liabilityType): int
+    private function getLiabilityNominalSum(NetWorth $netWorth, LiabilityType $liabilityType): int
     {
         return $netWorth->liabilities()
             ->where([
@@ -201,5 +203,97 @@ class NetWorthService
                 $netWorthAssetSummaries[$assetType][$index] += $transaction['nominal'];
             }
         }
+    }
+
+
+
+
+    /**
+     * Get transactions for a specific asset
+     */
+    private function getLiabilityTransactions(Liability $liability)
+    {
+        return NetWorthLiability::query()
+            ->where('liability_id', $liability->id)
+            ->orderBy('transaction_date')
+            ->get();
+    }
+
+
+     /**
+     * Get all net worth assets grouped by type
+     */
+    public function getNetworthLiability(NetWorth $netWorth): array
+    {
+        $liabilityTypes = LiabilityType::cases();
+        $netWorthLiabilities = [];
+
+        foreach ($liabilityTypes as $liabilityType) {
+            $liabilities = Liability::query()
+                ->where([
+                    ['net_worth_id', $netWorth->id],
+                    ['user_id', Auth::id()],
+                    ['type', $liabilityType->value]
+                ])
+                ->get();
+
+            $liabilityData = [];
+
+            foreach ($liabilities as $liability) {
+                $transactions = $this->getLiabilityTransactions($liability);
+                $transactionData = $this->prepareTransactionData(
+                    $transactions,
+                    $liability->netWorth->transaction_per_month
+                );
+
+                $liabilitytData[] = [
+                    'detail' => $liability->detail,
+                    'goal' => $liability->goal,
+                    'transactions' => $transactionData,
+                ];
+            }
+
+            $netWorthLiabilities[$liabilityType->value] = $liabilityData;
+        }
+
+        return $netWorthLiabilities;
+    }
+
+    /**
+     * Get net worth asset summaries
+     */
+    public function getNetWorthLiabilitySummaries(NetWorth $netWorth): array
+    {
+        $assetTypes = AssetType::cases();
+        $netWorthAssetSummaries = [];
+
+        $liabilityTypes = LiabilityType::cases();
+        $netWorthLiabilitySummaries = [];
+
+        foreach ($liabilityTypes as $liabilityType) {
+            $liabilities = Liability::query()
+                ->where([
+                    ['net_worth_id', $netWorth->id],
+                    ['user_id', Auth::id()],
+                    ['type', $liabilityType->value]
+                ])
+                ->get();
+
+            $liabilityData = [];
+
+            foreach ($liabilities as $liability) {
+                $transactions = $this->getLiabilityTransactions($liability);
+                $transactionData = $this->prepareTransactionData(
+                $transactions,
+                $liability->netWorth->transaction_per_month);
+                $this->accumulateTransactionSummaries($transactionData, $netWorthLiabilitySummaries,
+                $liabilityType->value);
+
+            }
+
+            $netWorthLiabilities[$liabilityType->value] = $liabilityData;
+        }
+
+        return $netWorthLiabilities;
     }
 }

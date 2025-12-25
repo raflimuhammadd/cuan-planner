@@ -109,9 +109,13 @@ class NetWorthController extends Controller implements HasMiddleware
             return to_route('net-worths.index');
         }
     }
+    
 
     public function show(NetWorth $netWorth): Response
     {
+        // $netWorthAssets = $this->getNetWorthAssets($netWorth);
+        // $netWorthAssetSummaries = $this->getNetWorthAssetSummaries($netWorth);
+
         return inertia('NetWorths/Show', [
             'pageSettings' => fn() => [
                 'title' => 'Detail Kekayaan Bersih',

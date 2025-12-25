@@ -13,6 +13,7 @@ use App\Http\Controllers\NetWorthController;
 use App\Http\Controllers\NetWorthLiabilityController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportTrackingController;
 use App\Models\NetWorth;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -131,6 +132,8 @@ Route::controller(LiabilityController::class)->group(function () {
 Route::post('net-worths/{netWorth}/liabilities/{liability}/net-worth-liability', NetWorthLiabilityController::class)
     ->name('net-worth-liability');
 
+// Controller:ReportTracking
+Route::get('report-trackings', ReportTrackingController::class)->name(name: 'report-trackings');
 
 // middleware
 Route::middleware('auth')->group(function () {

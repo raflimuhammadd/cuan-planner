@@ -113,8 +113,11 @@ class NetWorthController extends Controller implements HasMiddleware
 
     public function show(NetWorth $netWorth): Response
     {
-        // $netWorthAssets = $this->getNetWorthAssets($netWorth);
-        // $netWorthAssetSummaries = $this->getNetWorthAssetSummaries($netWorth);
+        $netWorthAssets = $this->netWorthService->getNetWorthAssets($netWorth);
+        $netWorthAssetSummaries = $this->netWorthService->getNetWorthAssetSummaries($netWorth);
+
+        $netWorthLiabilities = $this->netWorthService->getNetworthLiabilities($netWorth);
+        $netWorthLiabilitySummaries = $this->netWorthService->getNetWorthLiabilitySummaries($netWorth);
 
         return inertia('NetWorths/Show', [
             'pageSettings' => fn() => [
@@ -131,6 +134,8 @@ class NetWorthController extends Controller implements HasMiddleware
             'netWorthAssets' => fn() => $this->netWorthService->getNetWorthAssets($netWorth),
             'netWorthAssetSummaries' => fn() => $this->netWorthService->getNetWorthAssetSummaries($netWorth),
             'liabilitySum' => fn() => $this->netWorthService->getLiabilitySummaries($netWorth),
+            'netWorthLiabilities' => fn() => $netWorthLiabilities,
+            'netWorthLiabilitySummaries' => fn() => $netWorthLiabilitySummaries,
         ]);
     }
 

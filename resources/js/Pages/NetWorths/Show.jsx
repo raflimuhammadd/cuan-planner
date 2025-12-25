@@ -8,12 +8,20 @@ import { Button } from '@/Components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/ui/card';
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/Components/ui/table';
 import AppLayout from '@/Layouts/AppLayout';
-import { ASSETDESCRIPTION, ASSETTYPEVARIANT, formatDateIndo, formatToRupiah } from '@/lib/utils';
+import {
+    ASSETDESCRIPTION,
+    ASSETTYPEVARIANT,
+    formatDateIndo,
+    formatToRupiah,
+    LIABILITYDESCRIPTION,
+    LIABILITYTPEVARIANT,
+} from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { IconArrowBack, IconCash, IconInfoCircle, IconMenorah, IconX } from '@tabler/icons-react';
 
 export default function Show(props) {
     const netWorthAssets = props.netWorthAssets;
+    const netWorthLiabilities = props.netWorthLiabilities;
 
     return (
         <div className="flex w-full flex-col gap-y-6 pb-32">
@@ -123,6 +131,7 @@ export default function Show(props) {
                 </CardStat>
             </div>
 
+            {/* Assets */}
             {Object.keys(netWorthAssets).map((netWorthAsset, index) => (
                 <Card key={index}>
                     <CardHeader>
@@ -227,8 +236,8 @@ export default function Show(props) {
                                                 <TableCell key={`Total-${idx}`}>
                                                     {props.netWorthAssetSummaries[netWorthAsset]?.[idx]
                                                         ? formatToRupiah(
-                                                            props.netWorthAssetSummaries[netWorthAsset][idx],
-                                                        )
+                                                              props.netWorthAssetSummaries[netWorthAsset][idx],
+                                                          )
                                                         : formatToRupiah(0)}
                                                 </TableCell>
                                             ),
@@ -286,6 +295,125 @@ export default function Show(props) {
                     </div>
                 </CardStat>
             </div>
+
+            {/* Liabilities */}
+            {Object.keys(netWorthLiabilities).map((netWorthLiability, index) => (
+                <Card key={index}>
+                    <CardHeader>
+                        <CardTitle>
+                            <Badge variant={LIABILITYTPEVARIANT[netWorthLiability]}>{netWorthLiability}</Badge>
+                        </CardTitle>
+                        <CardDescription>{LIABILITYDESCRIPTION[netWorthLiability]}</CardDescription>
+                    </CardHeader>
+                    {netWorthLiabilities[netWorthLiability].length === 0 ? (
+                        <EmptyState
+                            icon={IconMenorah}
+                            title={`Tidak ada kewajiban (${netWorthLiability})`}
+                            subtitle={`Mulailah dengan memuat kewajiban (${netWorthLiability}) baru`}
+                        />
+                    ) : (
+                        <CardContent className="p-0 [&-td]:whitespace-nowrap [&-td]:px-6 [&-th]:px-6">
+                            <Table className="w-full">
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="border" rowSpan="2">
+                                            #
+                                        </TableHead>
+                                        <TableHead className="border" rowSpan="2">
+                                            Detail
+                                        </TableHead>
+                                        <TableHead className="border" rowSpan="2">
+                                            Tujuan
+                                        </TableHead>
+                                        {Array.from(
+                                            {
+                                                length: Math.max(
+                                                    ...netWorthLiabilities[netWorthLiability].map(
+                                                        (liability) => liability.transactions.length,
+                                                    ),
+                                                ),
+                                            },
+                                            (_, idx) => (
+                                                <TableHead className="border" key={idx}>
+                                                    {idx + 1}
+                                                </TableHead>
+                                            ),
+                                        )}
+                                    </TableRow>
+                                    <TableRow>
+                                        {Array.from(
+                                            {
+                                                length: Math.max(
+                                                    ...netWorthLiabilities[netWorthLiability].map(
+                                                        (liability) => liability.transactions.length,
+                                                    ),
+                                                ),
+                                            },
+                                            (_, idx) => (
+                                                <TableHead className="border" key={`transactions-${idx}`}>
+                                                    {
+                                                        netWorthLiabilities[netWorthLiability]
+                                                            .map((liability) =>
+                                                                formatDateIndo(
+                                                                    liability.transactions[idx]?.transaction_date,
+                                                                ),
+                                                            )
+                                                            .filter(Boolean)[0] // '-'
+                                                    }
+                                                </TableHead>
+                                            ),
+                                        )}
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {netWorthLiabilities[netWorthLiability].map((liability, nwlIdx) => (
+                                        <TableRow key={nwlIdx}>
+                                            <TableCell>{nwlIdx + 1}</TableCell>
+                                            <TableCell>{liability.detail}</TableCell>
+                                            <TableCell>{liability.goal}</TableCell>
+                                            {liability.transactions.map((transaction, tIdx) => (
+                                                <TableCell key={tIdx}>
+                                                    {transaction.transaction_date && transaction.nominal !== null ? (
+                                                        formatToRupiah(transaction.nominal)
+                                                    ) : (
+                                                        <IconX className="size-4 text-red-500" />
+                                                    )}
+                                                </TableCell>
+                                            ))}
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                                <TableFooter
+                                    className="bg-gradient-to-br from-emerald-500 via-emerald-500 to-yellow-100
+                                        font-bold text-white"
+                                >
+                                    <TableRow>
+                                        <TableCell colSpan="3">Total</TableCell>
+                                        {Array.from(
+                                            {
+                                                length: Math.max(
+                                                    ...netWorthLiabilities[netWorthLiability].map(
+                                                        (liability) => liability.transactions.length,
+                                                    ),
+                                                ),
+                                            },
+                                            (_, idx) => (
+                                                <TableCell key={`Total-${idx}`}>
+                                                    {props.netWorthLiabilitySummaries[netWorthLiability]?.[idx]
+                                                        ? formatToRupiah(
+                                                              props.netWorthLiabilitySummaries[netWorthLiability][idx],
+                                                          )
+                                                        : formatToRupiah(0)}
+                                                </TableCell>
+                                            ),
+                                        )}
+                                    </TableRow>
+                                </TableFooter>
+                            </Table>
+                        </CardContent>
+                    )}
+                </Card>
+            ))}
         </div>
     );
 }

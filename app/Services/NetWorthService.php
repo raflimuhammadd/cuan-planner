@@ -223,7 +223,7 @@ class NetWorthService
      /**
      * Get all net worth assets grouped by type
      */
-    public function getNetworthLiability(NetWorth $netWorth): array
+    public function getNetworthLiabilities(NetWorth $netWorth): array
     {
         $liabilityTypes = LiabilityType::cases();
         $netWorthLiabilities = [];
@@ -246,7 +246,7 @@ class NetWorthService
                     $liability->netWorth->transaction_per_month
                 );
 
-                $liabilitytData[] = [
+                $liabilityData[] = [
                     'detail' => $liability->detail,
                     'goal' => $liability->goal,
                     'transactions' => $transactionData,
@@ -294,6 +294,6 @@ class NetWorthService
             $netWorthLiabilities[$liabilityType->value] = $liabilityData;
         }
 
-        return $netWorthLiabilities;
+        return $netWorthLiabilitySummaries;
     }
 }

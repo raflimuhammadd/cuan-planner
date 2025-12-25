@@ -31,57 +31,83 @@ class ReportTrackingController extends Controller implements HasMiddleware
     public function __invoke(Request $request): Response
     {
         $budgetIncomes = $this->prepareBudgetData(
-            $request, 
-            BudgetType::INCOME->value, 
-            Income::class, 'source_id'
+            $request,
+            BudgetType::INCOME->value,
+            Income::class,
+            'source_id'
         );
 
         $budgetSavings = $this->prepareBudgetData(
-            $request, 
-            BudgetType::SAVING->value, 
-            Expense::class, 'type_detail_id',
+            $request,
+            BudgetType::SAVING->value,
+            Expense::class,
+            'type_detail_id',
             BudgetType::SAVING->value
 
         );
 
         $budgetDebts = $this->prepareBudgetData(
-            $request, 
-            BudgetType::DEBT->value, 
-            Expense::class, 'type_detail_id',
+            $request,
+            BudgetType::DEBT->value,
+            Expense::class,
+            'type_detail_id',
             BudgetType::DEBT->value
         );
 
         $budgetBills = $this->prepareBudgetData(
-            $request, 
-            BudgetType::BILL->value, 
-            Expense::class, 'type_detail_id',
+            $request,
+            BudgetType::BILL->value,
+            Expense::class,
+            'type_detail_id',
             BudgetType::BILL->value
         );
 
         $budgetShoppings = $this->prepareBudgetData(
-            $request, 
-            BudgetType::SHOPPING->value, 
-            Expense::class, 'type_detail_id',
+            $request,
+            BudgetType::SHOPPING->value,
+            Expense::class,
+            'type_detail_id',
             BudgetType::SHOPPING->value
         );
 
+        // INCOME TRACKERS
         $incomeTrackers = Income::query()
-            ->select(['id', 'user_id', 'source_id', 
-                'date', 'nominal', 'notes', 'month', 'year', 'created_at'])
-            ->when($request->month ?? null, function($query, $month){
+            ->select([
+                'id',
+                'user_id',
+                'source_id',
+                'date',
+                'nominal',
+                'notes',
+                'month',
+                'year',
+                'created_at'
+            ])
+            ->when($request->month ?? null, function ($query, $month) {
                 $query->where('month', $month);
             })
-            ->when($request->year ?? null, function($query, $year){
+            ->when($request->year ?? null, function ($query, $year) {
                 $query->where('year', $year);
             })
             ->where('user_id', Auth::id())
             ->get();
-    
 
+
+        // EXPENSE TRACKERS
         $expenseTrackers = Expense::query()
-            ->select(['id', 'user_id', 'date', 'description', 'nominal', 'type', 
-            'type_detail_id', 'payment_id', 'notes', 'created_at'])
-            ->when($request->month ?? null, function($query, $month){
+            ->select([
+                'id',
+                'user_id',
+                'date',
+                'description',
+                'nominal',
+                'type',
+                'type_detail_id',
+                'payment_id',
+                'notes',
+                'created_at'
+            ])
+            ->when($request->month ?? null, function ($query, $month) {
                 $query->where('month', $month);
             })
             ->when($request->year ?? null, function($query, $year){
@@ -89,6 +115,54 @@ class ReportTrackingController extends Controller implements HasMiddleware
             })
             ->where('user_id', Auth::id())
             ->get();
+
+
+        // OVERVIEWS
+        $overviews = collect([
+            'Cicilan Hutang' => $budgetDebts,
+            'Tabungan dan Investasi' => $budgetSavings,
+            'Tagihan' => $budgetBills,
+            'Belanja' => $budgetShoppings,
+        ])->mapWithKeys(function ($items, $category) {
+            return [
+                $category => [
+                    'plan' => $items->sum('plan'),
+                    'actual' => $items->sum('actual'),
+                    'difference' => $items->sum('difference'),
+                ],
+            ];
+        });
+
+
+        // CASHFLOWS
+        $cashflows = collect([
+            'Total Penghasilan' => $budgetIncomes,
+            'Total Pengeluaran' => $budgetDebts,
+        ])->mapWithKeys(function($item, $category) use($budgetIncomes, $overviews) {
+                if($category == 'Total Penghasilan') {
+                    return [
+                        $category => [
+                            'plan' => $budgetIncomes->sum('plan'),
+                            'actual' => $budgetIncomes->sum('actual'),
+                            'difference' => $budgetIncomes->sum('difference'),
+                        ],
+                    ];
+                } elseif ($category == 'Total Pengeluaran') {
+                    return [
+                        $category => [
+                            'plan' => $overviews->sum('plan'),
+                            'actual' => $overviews->sum('actual'),
+                            'difference' => $overviews->sum('difference'),
+                        ],
+                    ];
+                }
+        })->merge([
+            'Net Cash Flow' => [
+                'plan' => abs($budgetIncomes->sum('plan') - $overviews->sum('plan')),
+                'actual' => abs($budgetIncomes->sum('actual') - $overviews->sum('actual')),
+                'difference' => 'Net Cash Flow',
+            ],
+        ]);
 
 
 
@@ -117,6 +191,8 @@ class ReportTrackingController extends Controller implements HasMiddleware
 
             'incomeTrackers' => fn() => IncomeResource::collection($incomeTrackers),
             'expenseTrackers' => fn() => ExpenseResource::collection($expenseTrackers),
+            'overviews' => fn() => $overviews,
+            'cashflows' => fn() => $cashflows,
         ]);
     }
 }

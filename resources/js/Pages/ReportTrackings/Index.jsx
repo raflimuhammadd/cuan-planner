@@ -16,6 +16,7 @@ import AppLayout from '@/Layouts/AppLayout';
 import { BUDGETTYPEVARIANT, deleteAction, formatDateIndo, formatToRupiah } from '@/lib/utils';
 import {
     IconCash,
+    IconCategory,
     IconDelta,
     IconDoorEnter,
     IconDoorExit,
@@ -27,6 +28,8 @@ import {
 import { useState } from 'react';
 
 export default function Index(props) {
+    const overviews = props.overviews;
+    const cashflows = props.cashflows;
     const budgetIncomes = props.reports.budgetIncomes.data;
     const budgetSavings = props.reports.budgetSavings.data;
     const budgetDebts = props.reports.budgetDebts.data;
@@ -144,6 +147,80 @@ export default function Index(props) {
             </div>
 
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                {/* Overview */}
+                <div className="col-span-1">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Overview</CardTitle>
+                            <CardDescription>Menyajikan ringkasan keuangan anda secara menyeluruh.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="p-0 [&-td]:whitespace-nowrap [&-td]:px-6 [&-th]:px-6">
+                            <Table className="w-full">
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Kategori</TableHead>
+                                        <TableHead>Rencana</TableHead>
+                                        <TableHead>Sebenarnya</TableHead>
+                                        <TableHead>Perbedaan</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {Object.entries(overviews).map(([category, data], index) => (
+                                        <TableRow key={category}>
+                                            <TableCell>
+                                                <Badge variant={BUDGETTYPEVARIANT[category]}>{category}</Badge>
+                                            </TableCell>
+                                            <TableCell>{formatToRupiah(data.plan)}</TableCell>
+                                            <TableCell>{formatToRupiah(data.actual)}</TableCell>
+                                            <TableCell>{formatToRupiah(data.difference)}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Cashflow */}
+                <div className="col-span-1">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Arus Kas</CardTitle>
+                            <CardDescription>
+                                Melacak pergerakan uang masuk dan keluar dalam periode tertentu untuk membantu dan
+                                memahami pola keuangan anda.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="p-0 [&-td]:whitespace-nowrap [&-td]:px-6 [&-th]:px-6">
+                            <Table className="w-full">
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Arus Kas</TableHead>
+                                        <TableHead>Rencana</TableHead>
+                                        <TableHead>Sebenarnya</TableHead>
+                                        <TableHead>Perbedaan</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {Object.entries(cashflows).map(([category, data], index) => (
+                                        <TableRow key={category}>
+                                            <TableCell>{category}</TableCell>
+                                            <TableCell>{formatToRupiah(data.plan)}</TableCell>
+                                            <TableCell>{formatToRupiah(data.actual)}</TableCell>
+                                            <TableCell>
+                                                {typeof data.difference === 'string'
+                                                    ? data.difference
+                                                    : formatToRupiah(data.difference)}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Penghasilan */}
                 <div className="col-span-full">
                     <Card>
                         <CardHeader>
@@ -191,6 +268,230 @@ export default function Index(props) {
                                             </TableCell>
                                             <TableCell>
                                                 {formatToRupiah(props.reports.budgetIncomes.total.difference)}
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableFooter>
+                                </Table>
+                            )}
+                        </CardContent>
+                    </Card>
+                </div>
+                {/* Cicilan Hutang */}
+                <div className="col-span-1">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Cicilan Hutang</CardTitle>
+                            <CardDescription>
+                                Mengelola dan memantau status pembayaran cicilan hutang, termasuk jumlah yang telah
+                                dibayar dan yang masih harus dilunasi.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="p-0 [&-td]:whitespace-nowrap [&-td]:px-6 [&-th]:px-6">
+                            {budgetDebts.length === 0 ? (
+                                <EmptyState
+                                    icon={IconDelta}
+                                    title="Tidak ada cicilan hutang"
+                                    subtitle="Mulailah dengan membuat cicilan hutang baru"
+                                />
+                            ) : (
+                                <Table className="w-full">
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Sumber</TableHead>
+                                            <TableHead>Rencana</TableHead>
+                                            <TableHead>Sebenarnya</TableHead>
+                                            <TableHead>Perbedaan</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {budgetDebts.map((debt, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell>{debt.detail}</TableCell>
+                                                <TableCell>{formatToRupiah(debt.plan)}</TableCell>
+                                                <TableCell>{formatToRupiah(debt.actual)}</TableCell>
+                                                <TableCell>{formatToRupiah(debt.difference)}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                    <TableFooter className="bg-emerald-500 font-bold text-white">
+                                        <TableRow>
+                                            <TableCell>Total</TableCell>
+                                            <TableCell>
+                                                {formatToRupiah(props.reports.budgetDebts.total.plan)}
+                                            </TableCell>
+                                            <TableCell>
+                                                {formatToRupiah(props.reports.budgetDebts.total.actual)}
+                                            </TableCell>
+                                            <TableCell>
+                                                {formatToRupiah(props.reports.budgetDebts.total.difference)}
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableFooter>
+                                </Table>
+                            )}
+                        </CardContent>
+                    </Card>
+                </div>
+                {/* Tabungan dan Investasi */}
+                <div className="col-span-1">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Tabungan dan Investasi</CardTitle>
+                            <CardDescription>
+                                Memberikan gambaran mengenai jumlah tabungan anda dan portfolio investasi yang sedang
+                                berjalan.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="p-0 [&-td]:whitespace-nowrap [&-td]:px-6 [&-th]:px-6">
+                            {budgetSavings.length === 0 ? (
+                                <EmptyState
+                                    icon={IconMoneybag}
+                                    title="Tidak ada tabungan dan investasi"
+                                    subtitle="Mulailah dengan membuat tabungan dan investasi baru"
+                                />
+                            ) : (
+                                <Table className="w-full">
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Sumber</TableHead>
+                                            <TableHead>Rencana</TableHead>
+                                            <TableHead>Sebenarnya</TableHead>
+                                            <TableHead>Perbedaan</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {budgetSavings.map((budgetSaving, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell>{budgetSaving.detail}</TableCell>
+                                                <TableCell>{formatToRupiah(budgetSaving.plan)}</TableCell>
+                                                <TableCell>{formatToRupiah(budgetSaving.actual)}</TableCell>
+                                                <TableCell>{formatToRupiah(budgetSaving.difference)}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                    <TableFooter className="bg-emerald-500 font-bold text-white">
+                                        <TableRow>
+                                            <TableCell>Total</TableCell>
+                                            <TableCell>
+                                                {formatToRupiah(props.reports.budgetSavings.total.plan)}
+                                            </TableCell>
+                                            <TableCell>
+                                                {formatToRupiah(props.reports.budgetSavings.total.actual)}
+                                            </TableCell>
+                                            <TableCell>
+                                                {formatToRupiah(props.reports.budgetDebts.total.difference)}
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableFooter>
+                                </Table>
+                            )}
+                        </CardContent>
+                    </Card>
+                </div>
+                {/* Tagihan */}
+                <div className="col-span-1">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Tagihan</CardTitle>
+                            <CardDescription>
+                                Mencatat tagihan rutin seperti listrik, internet, dan lain-lain, serta memberikan
+                                pengingat untuk pembayaran.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="p-0 [&-td]:whitespace-nowrap [&-td]:px-6 [&-th]:px-6">
+                            {budgetBills.length === 0 ? (
+                                <EmptyState
+                                    icon={IconInvoice}
+                                    title="Tidak ada tagihan"
+                                    subtitle="Mulailah dengan membuat tagihan baru"
+                                />
+                            ) : (
+                                <Table className="w-full">
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Sumber</TableHead>
+                                            <TableHead>Rencana</TableHead>
+                                            <TableHead>Sebenarnya</TableHead>
+                                            <TableHead>Perbedaan</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {budgetBills.map((budgetBill, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell>{budgetBill.detail}</TableCell>
+                                                <TableCell>{formatToRupiah(budgetBill.plan)}</TableCell>
+                                                <TableCell>{formatToRupiah(budgetBill.actual)}</TableCell>
+                                                <TableCell>{formatToRupiah(budgetBill.difference)}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                    <TableFooter className="bg-emerald-500 font-bold text-white">
+                                        <TableRow>
+                                            <TableCell>Total</TableCell>
+                                            <TableCell>
+                                                {formatToRupiah(props.reports.budgetBills.total.plan)}
+                                            </TableCell>
+                                            <TableCell>
+                                                {formatToRupiah(props.reports.budgetBills.total.actual)}
+                                            </TableCell>
+                                            <TableCell>
+                                                {formatToRupiah(props.reports.budgetBills.total.difference)}
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableFooter>
+                                </Table>
+                            )}
+                        </CardContent>
+                    </Card>
+                </div>
+                {/* Belanja */}
+                <div className="col-span-1">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Belanja</CardTitle>
+                            <CardDescription>
+                                Melacak pengeluaran untuk kebutuhan sehari-hari, seperti makanan, pakaian, atau barang
+                                lainnya.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="p-0 [&-td]:whitespace-nowrap [&-td]:px-6 [&-th]:px-6">
+                            {budgetShoppings.length === 0 ? (
+                                <EmptyState
+                                    icon={IconShoppingBag}
+                                    title="Tidak ada belanja"
+                                    subtitle="Mulailah dengan membuat belanja baru"
+                                />
+                            ) : (
+                                <Table className="w-full">
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Sumber</TableHead>
+                                            <TableHead>Rencana</TableHead>
+                                            <TableHead>Sebenarnya</TableHead>
+                                            <TableHead>Perbedaan</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {budgetShoppings.map((budgetShopping, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell>{budgetShopping.detail}</TableCell>
+                                                <TableCell>{formatToRupiah(budgetShopping.plan)}</TableCell>
+                                                <TableCell>{formatToRupiah(budgetShopping.actual)}</TableCell>
+                                                <TableCell>{formatToRupiah(budgetShopping.difference)}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                    <TableFooter className="bg-emerald-500 font-bold text-white">
+                                        <TableRow>
+                                            <TableCell>Total</TableCell>
+                                            <TableCell>
+                                                {formatToRupiah(props.reports.budgetShoppings.total.plan)}
+                                            </TableCell>
+                                            <TableCell>
+                                                {formatToRupiah(props.reports.budgetShoppings.total.actual)}
+                                            </TableCell>
+                                            <TableCell>
+                                                {formatToRupiah(props.reports.budgetShoppings.total.difference)}
                                             </TableCell>
                                         </TableRow>
                                     </TableFooter>

@@ -2,12 +2,121 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\BudgetType;
+use App\Enums\MonthEnum;
+use App\Http\Resources\ExpenseResource;
+use App\Http\Resources\IncomeResource;
+use App\Models\Expense;
+use App\Models\Income;
+use App\Traits\BudgetTrait;
+use App\Traits\FormatReportTrait;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Response;
 
-class ReportTrackingController extends Controller
+class ReportTrackingController extends Controller implements HasMiddleware
 {
-    public function __invoke()
+    use BudgetTrait, FormatReportTrait;
+
+    public static function middleware(): array
     {
-        throw new \Exception('Not implemented');
+        return [
+            new Middleware('auth'),
+            new Middleware('password.confirm'),
+        ];
+    }
+
+    public function __invoke(Request $request): Response
+    {
+        $budgetIncomes = $this->prepareBudgetData(
+            $request, 
+            BudgetType::INCOME->value, 
+            Income::class, 'source_id'
+        );
+
+        $budgetSavings = $this->prepareBudgetData(
+            $request, 
+            BudgetType::SAVING->value, 
+            Expense::class, 'type_detail_id',
+            BudgetType::SAVING->value
+
+        );
+
+        $budgetDebts = $this->prepareBudgetData(
+            $request, 
+            BudgetType::DEBT->value, 
+            Expense::class, 'type_detail_id',
+            BudgetType::DEBT->value
+        );
+
+        $budgetBills = $this->prepareBudgetData(
+            $request, 
+            BudgetType::BILL->value, 
+            Expense::class, 'type_detail_id',
+            BudgetType::BILL->value
+        );
+
+        $budgetShoppings = $this->prepareBudgetData(
+            $request, 
+            BudgetType::SHOPPING->value, 
+            Expense::class, 'type_detail_id',
+            BudgetType::SHOPPING->value
+        );
+
+        $incomeTrackers = Income::query()
+            ->select(['id', 'user_id', 'source_id', 
+                'date', 'nominal', 'notes', 'month', 'year', 'created_at'])
+            ->when($request->month ?? null, function($query, $month){
+                $query->where('month', $month);
+            })
+            ->when($request->year ?? null, function($query, $year){
+                $query->where('year', $year);
+            })
+            ->where('user_id', Auth::id())
+            ->get();
+    
+
+        $expenseTrackers = Expense::query()
+            ->select(['id', 'user_id', 'date', 'description', 'nominal', 'type', 
+            'type_detail_id', 'payment_id', 'notes', 'created_at'])
+            ->when($request->month ?? null, function($query, $month){
+                $query->where('month', $month);
+            })
+            ->when($request->year ?? null, function($query, $year){
+                $query->where('year', $year);
+            })
+            ->where('user_id', Auth::id())
+            ->get();
+
+
+
+        return inertia('ReportTrackings/Index', [
+            'pageSettings' => fn() => [
+                'title' => 'Laporan Pelacakan',
+                'subtitle' => 'Menampilkan semua data Laporan Pelacakan yang tersedia pada akun anda',
+            ],
+            'items' => fn() => [
+                ['label' => 'Cuan+', 'href' => route('dashboard')],
+                ['label' => 'Laporan Pelacakan', 'href' => route('report-trackings')],
+            ],
+            'state' => fn() => [
+                'month' => $request->month ?? MonthEnum::month(now()->month)->value,
+                'year' => $request->year ?? now()->year,
+            ],
+            'months' => fn() => MonthEnum::options(),
+            'years' => fn() => range(2020, now()->year + 5),
+            'reports' => fn() => [
+                'budgetIncomes' => fn() => $this->formatReport($budgetIncomes),
+                'budgetSavings' => fn() => $this->formatReport($budgetSavings),
+                'budgetDebts' => fn() => $this->formatReport($budgetDebts),
+                'budgetBills' => fn() => $this->formatReport($budgetBills),
+                'budgetShoppings' => fn() => $this->formatReport($budgetShoppings),
+            ],
+
+            'incomeTrackers' => fn() => IncomeResource::collection($incomeTrackers),
+            'expenseTrackers' => fn() => ExpenseResource::collection($expenseTrackers),
+        ]);
     }
 }

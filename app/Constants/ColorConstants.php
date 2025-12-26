@@ -7,13 +7,13 @@ namespace App\Constants;
 class ColorConstants
 {
     const COLORS = [
-        '#10b981', // green
-        '#06b6d4', // cyan
+        '#10b981', // green (Emerald)
         '#3b82f6', // blue
-        '#6366f1', // indigo
-        '#d946ef', // purple
+        '#f59e0b', // amber/orange
+        '#8b5cf6', // violet
+        '#ec4899', // pink
         '#06b6d4', // cyan
-        '#f43f5e', // merah
-        '#84cc16', // kuning
+        '#ef4444', // red
+        '#84cc16', // lime
     ];
 }

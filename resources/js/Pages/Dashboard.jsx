@@ -1,4 +1,5 @@
 import CardStatTwo from '@/Components/CardStatTwo';
+import PieChartCustom from '@/Components/Chart/PieChartCustom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/Components/ui/avatar';
 import {
     Breadcrumb,
@@ -15,6 +16,7 @@ import { IconDoorEnter, IconDoorExit, IconMenorah, IconMoneybag } from '@tabler/
 
 export default function Dashboard(props) {
     const auth = usePage().props.auth.user;
+    const { budgets, chartConfigBudget } = props.budgetChart;
 
     return (
         <div className="flex w-full flex-col gap-y-4 pb-32">
@@ -48,7 +50,7 @@ export default function Dashboard(props) {
             </div>
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-                <div className="col-span-8 space-y-6">
+                <div className="col-span-full space-y-6 lg:col-span-8">
                     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                         {/* Pemasukan */}
                         <div className="col-span-1">
@@ -115,7 +117,18 @@ export default function Dashboard(props) {
                         </div>
                     </div>
                 </div>
-                <div className="col-span-4"></div>
+
+                {/* Tabs & Pie Chart */}
+                <div className="col-span-full space-y-6 lg:col-span-4">
+                    {/* Tabs */}
+                    {/* Pie Chart */}
+                    <PieChartCustom
+                        title="Anggaran"
+                        year={props.year}
+                        budgets={budgets}
+                        chartConfig={chartConfigBudget}
+                    />
+                </div>
             </div>
         </div>
     );

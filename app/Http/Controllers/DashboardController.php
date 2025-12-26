@@ -91,7 +91,7 @@ class DashboardController extends Controller implements HasMiddleware
             ->get()
             ->map(function ($budget) {
                 return [
-                    'type' => $budget->type,
+                    'type' => strtolower(str_replace(' ', '_', $budget->type->value)),
                     'nominals' => (int) $budget->total_nominal,
                     'fill' => self::getColor($budget->type->value, ColorConstants::COLORS),
                 ];

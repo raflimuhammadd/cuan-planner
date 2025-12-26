@@ -41,7 +41,6 @@ trait BudgetTrait
             $actual = $actualData[$key]->total_nominal ?? 0;
             $difference = abs($item->nominal - $actual);
 
-            $item->detail = $item->detail;
             $item->plan = $item->nominal;
             $item->actual = $actual;
             $item->difference = $difference;

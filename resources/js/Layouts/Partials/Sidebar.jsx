@@ -93,7 +93,7 @@ export default function Sidebar({ auth, url }) {
                 />
 
                 <NavLink
-                    url="#"
+                    url={route('annual-reports')}
                     active={url.startsWith('/annual-reports')}
                     title="Laporan Tahunan"
                     icon={IconCalendarEvent}

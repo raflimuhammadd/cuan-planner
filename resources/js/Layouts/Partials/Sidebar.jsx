@@ -36,9 +36,16 @@ export default function Sidebar({ auth, url }) {
 
             <ul role="list" className="flex flex-1 flex-col gap-y-2">
                 <div className="px-3 py-2 text-sm font-medium text-muted-foreground">General</div>
-                <NavLink url="#" active={url.startsWith('/dashboard')} title="Dashboard" icon={IconBox} />
+                {/* Dashboard */}
+                <NavLink
+                    url={route('dashboard')}
+                    active={url.startsWith('/dashboard')}
+                    title="Dashboard"
+                    icon={IconBox}
+                />
 
                 <div className="px-3 py-2 text-sm font-medium text-muted-foreground">Master</div>
+                {/* Metode Pembayaran */}
                 <NavLink
                     url={route('payments.index')}
                     active={url.startsWith('/payment')}
@@ -47,6 +54,7 @@ export default function Sidebar({ auth, url }) {
                 />
 
                 <div className="px-3 py-2 text-sm font-medium text-muted-foreground">Rencana</div>
+                {/* Tujuan */}
                 <NavLink
                     url={route('goals.index')}
                     active={url.startsWith('/goals')}
@@ -55,6 +63,7 @@ export default function Sidebar({ auth, url }) {
                 />
 
                 <div className="px-3 py-2 text-sm font-medium text-muted-foreground">Pelacakan</div>
+                {/* Anggaran */}
                 <NavLink
                     url={route('budgets.index')}
                     active={url.startsWith('/budgets')}
@@ -62,6 +71,7 @@ export default function Sidebar({ auth, url }) {
                     icon={IconChartArrowsVertical}
                 />
 
+                {/* Pemasukan */}
                 <NavLink
                     url={route('incomes.index')}
                     active={url.startsWith('/incomes')}
@@ -69,6 +79,7 @@ export default function Sidebar({ auth, url }) {
                     icon={IconDoorEnter}
                 />
 
+                {/* Pengeluaran */}
                 <NavLink
                     url={route('expenses.index')}
                     active={url.startsWith('/expenses')}
@@ -76,6 +87,7 @@ export default function Sidebar({ auth, url }) {
                     icon={IconCreditCardPay}
                 />
 
+                {/* Kekayaan Bersih */}
                 <div className="px-3 py-2 text-sm font-medium text-muted-foreground">Aset dan Kewajiban</div>
                 <NavLink
                     url={route('net-worths.index')}
@@ -84,6 +96,7 @@ export default function Sidebar({ auth, url }) {
                     icon={IconMenorah}
                 />
 
+                {/* Laporan */}
                 <div className="px-3 py-2 text-sm font-medium text-muted-foreground">Laporan</div>
                 <NavLink
                     url={route('report-trackings')}
@@ -92,6 +105,7 @@ export default function Sidebar({ auth, url }) {
                     icon={IconLogs}
                 />
 
+                {/* Laporan Tahunan */}
                 <NavLink
                     url={route('annual-reports')}
                     active={url.startsWith('/annual-reports')}
@@ -99,6 +113,7 @@ export default function Sidebar({ auth, url }) {
                     icon={IconCalendarEvent}
                 />
 
+                {/* Lainnya */}
                 <div className="px-3 py-2 text-sm font-medium text-muted-foreground">Lainnya</div>
                 <NavLink
                     as="button"

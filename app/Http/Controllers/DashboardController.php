@@ -55,6 +55,47 @@ class DashboardController extends Controller implements HasMiddleware
                 ['year', now()->year],
             ])
             ->pluck('amount_left');
+        
+        // Tabs Goals
+        $goals = Goal::query()
+            ->select(['id', 'user_id', 'name', 
+                'percentage', 
+                'nominal', 
+                'beginning_balance', 
+                'deadline', 'created_at'])
+            ->where('user_id', Auth::id())
+            ->latest('deadline')
+            ->withSum('balances', 'amount')
+            ->limit(5)
+            ->get();
+
+        // Tabs Incomes
+        $incomes = Income::query()
+            ->select(['id', 'user_id', 'source_id',
+                'nominal', 'month', 'year', 'created_at'])
+            ->where([
+                ['user_id', Auth::id()],
+                ['year', now()->year],
+            ])
+            ->with(['source'])
+            ->latest('created_at')
+            ->limit(5)
+            ->get();
+        
+        // Tabs Expenses
+        $expenses = Expense::query()
+            ->select(['id', 'user_id', 'date',
+                'description', 'nominal', 'type', 'type_detail_id', 
+                'payment_id', 'notes', 'year', 'created_at'])
+            ->where([
+                ['user_id', Auth::id()],
+                ['year', now()->year],
+            ])
+            ->with(['typeDetail', 'payment'])
+            ->latest('created_at')
+            ->limit(5)
+            ->get();
+
 
 
 
@@ -68,6 +109,9 @@ class DashboardController extends Controller implements HasMiddleware
             'budgetChart' => fn() => $this->budgetChart(),
             'incomeExpenseChart' => fn() => $this->incomeExpenseChart(),
             'year' => fn() => now()->year,
+            'goals' => fn() => $goals,
+            'incomes' => fn() => $incomes,
+            'expenses' => fn() => $expenses,
         ]);
     }
 

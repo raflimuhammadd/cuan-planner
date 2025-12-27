@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/ui/card';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/Components/ui/chart';
-import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
+import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from '@/Components/ui/chart';
+import { Bar, BarChart, XAxis } from 'recharts';
 
 export default function BarChartCustom({ title, year, chartData }) {
     const chartConfig = {
@@ -23,7 +23,6 @@ export default function BarChartCustom({ title, year, chartData }) {
             <CardContent>
                 <ChartContainer config={chartConfig}>
                     <BarChart accessibilityLayer data={chartData}>
-                        <CartesianGrid vertical={false} />
                         <XAxis
                             dataKey="month"
                             tickLine={false}
@@ -32,8 +31,19 @@ export default function BarChartCustom({ title, year, chartData }) {
                             tickFormatter={(value) => value.slice(0, 3)}
                         />
                         <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" />} />
-                        <Bar dataKey="pemasukan" fill="var(--color-pemasukan)" radius={[10, 10, 0, 0]} />
-                        <Bar dataKey="pengeluaran" fill="var(--color-pengeluaran)" radius={[10, 10, 0, 0]} />
+                        <ChartLegend content={<ChartLegendContent />} />
+                        <Bar
+                            dataKey="pemasukan"
+                            fill="var(--color-pemasukan)"
+                            fillOpacity={0.9}
+                            radius={[8, 8, 0, 0]}
+                        />
+                        <Bar
+                            dataKey="pengeluaran"
+                            fill="var(--color-pengeluaran)"
+                            fillOpacity={0.9}
+                            radius={[8, 8, 0, 0]}
+                        />
                     </BarChart>
                 </ChartContainer>
             </CardContent>

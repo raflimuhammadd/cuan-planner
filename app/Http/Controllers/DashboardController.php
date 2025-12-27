@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Constants\ColorConstants;
 use App\Enums\BudgetType;
+use App\Enums\MonthEnum;
 use App\Models\Budget;
 use App\Models\Expense;
 use App\Models\Goal;
@@ -65,6 +66,8 @@ class DashboardController extends Controller implements HasMiddleware
                 'netWorthSum' => $netWorthSum,
             ],
             'budgetChart' => fn() => $this->budgetChart(),
+            'incomeExpenseChart' => fn() => $this->incomeExpenseChart(),
+            'year' => fn() => now()->year,
         ]);
     }
 
@@ -115,5 +118,50 @@ class DashboardController extends Controller implements HasMiddleware
             'budgets' => $budgets,
             'chartConfigBudget' => $chartConfigBudget,
         ];
+    }
+
+    private function incomeExpenseChart()
+    {
+        $incomeData = Income::query()
+            ->selectRaw('month, year, SUM(nominal) as pemasukan')
+            ->where([
+                ['user_id', Auth::id()],
+                ['year', now()->year],
+            ])
+            ->groupBy('month', 'year')
+            ->get();
+
+        $expenseData = Expense::query()
+            ->selectRaw('month, year, SUM(nominal) as pengeluaran')
+            ->where([
+                ['user_id', Auth::id()],
+                ['year', now()->year],
+            ])
+            ->groupBy('month', 'year')
+            ->get();
+
+            $chartData = [];
+
+            foreach(MonthEnum::cases() as $monthEnum) {
+                $month = $monthEnum->value;
+                $year = date('Y');
+                $incomes = $incomeData->where('month', $month)
+                    ->where('year', $year)
+                    ->first()
+                    ->pemasukan ?? 0;
+                $expenses = $expenseData->where('month', $month)
+                    ->where('year', $year)
+                    ->first()
+                    ->pengeluaran ?? 0;
+                
+                
+                $chartData[] = [
+                    'month' => $month,
+                    'pemasukan' => $incomes,
+                    'pengeluaran' => $expenses,
+                ];
+            }
+
+            return $chartData;
     }
 }

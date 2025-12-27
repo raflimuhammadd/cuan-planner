@@ -12,7 +12,7 @@ export default function CardStatTwo({ data, children }) {
                     <div className="flex flex-col">
                         <CardTitle className="line-clamp-1 text-wrap text-xl font-semibold">{title}</CardTitle>
                         <CardDescription className="line-clamp-2 text-sm leading-relaxed text-white">
-                             {description}
+                            {description}
                         </CardDescription>
                     </div>
                 </div>

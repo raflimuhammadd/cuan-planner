@@ -1,4 +1,5 @@
 import CardStatTwo from '@/Components/CardStatTwo';
+import BarChartCustom from '@/Components/Chart/BarChartCustom';
 import PieChartCustom from '@/Components/Chart/PieChartCustom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/Components/ui/avatar';
 import {
@@ -116,6 +117,13 @@ export default function Dashboard(props) {
                             </CardStatTwo>
                         </div>
                     </div>
+
+                    {/* Bar Chart */}
+                    <BarChartCustom
+                        title="Pemasukan & Pengeluaran"
+                        year={props.year}
+                        chartData={props.incomeExpenseChart}
+                    />
                 </div>
 
                 {/* Tabs & Pie Chart */}

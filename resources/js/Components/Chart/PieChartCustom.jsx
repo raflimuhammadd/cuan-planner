@@ -1,5 +1,11 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/ui/card';
-import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from '@/Components/ui/chart';
+import {
+    ChartContainer,
+    ChartLegend,
+    ChartLegendContent,
+    ChartTooltip,
+    ChartTooltipContent,
+} from '@/Components/ui/chart';
 import { formatToRupiah } from '@/lib/utils';
 import { useMemo } from 'react';
 import { Label, Pie, PieChart } from 'recharts';
@@ -13,7 +19,7 @@ export default function PieChartCustom({ title, year, budgets, chartConfig }) {
         <Card className="flex flex-col">
             <CardHeader className="items-center pb-0">
                 <CardTitle>{title}</CardTitle>
-                <CardDescription>Periode Januari - Desember</CardDescription>
+                <CardDescription>Periode Januari - Desember {year}</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 pb-6">
                 <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[300px]">
@@ -31,9 +37,15 @@ export default function PieChartCustom({ title, year, budgets, chartConfig }) {
                                                     '--color-bg': `var(--color - ${name})`,
                                                 }}
                                             />
-                                            <div className="flex min-w-[130px] items-center gap-2 text-xs text-muted-foreground">
+                                            <div
+                                                className="flex min-w-[130px] items-center gap-2 text-xs
+                                                    text-muted-foreground"
+                                            >
                                                 {chartConfig[name]?.label || name}
-                                                <div className="ml-auto flex items-baseline gap-0.5 font-mono font-medium tabular-nums text-foreground">
+                                                <div
+                                                    className="ml-auto flex items-baseline gap-0.5 font-mono font-medium
+                                                        tabular-nums text-foreground"
+                                                >
                                                     {formatToRupiah(value)}
                                                 </div>
                                             </div>
@@ -42,13 +54,7 @@ export default function PieChartCustom({ title, year, budgets, chartConfig }) {
                                 />
                             }
                         />
-                        <Pie
-                            data={budgets}
-                            dataKey="nominals"
-                            nameKey="type"
-                            innerRadius={70}
-                            strokeWidth={5}
-                        >
+                        <Pie data={budgets} dataKey="nominals" nameKey="type" innerRadius={70} strokeWidth={5}>
                             <Label
                                 content={({ viewBox }) => {
                                     if (viewBox && 'cx' in viewBox && 'cy' in viewBox) {
@@ -87,10 +93,7 @@ export default function PieChartCustom({ title, year, budgets, chartConfig }) {
                         return (
                             <div key={index} className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                    <div
-                                        className="h-3 w-3 rounded-full"
-                                        style={{ backgroundColor: item.fill }}
-                                    />
+                                    <div className="h-3 w-3 rounded-full" style={{ backgroundColor: item.fill }} />
                                     <span className="text-sm text-muted-foreground">
                                         {chartConfig[item.type]?.label || item.type}
                                     </span>

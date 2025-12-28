@@ -20,7 +20,7 @@ import { usePage } from '@inertiajs/react';
 import { IconDoorEnter, IconDoorExit, IconMenorah, IconMoneybag } from '@tabler/icons-react';
 import { useState } from 'react';
 
-function ExpandableList({ items, renderItem, emptyState, limit = 1, className = "space-y-4" }) {
+function ExpandableList({ items, renderItem, emptyState, limit = 1, className = 'space-y-4' }) {
     const [isExpanded, setIsExpanded] = useState(false);
 
     if (items.length === 0) {
@@ -31,13 +31,12 @@ function ExpandableList({ items, renderItem, emptyState, limit = 1, className = 
 
     return (
         <div className="space-y-2">
-            <div className={className}>
-                {displayedItems.map((item, index) => renderItem(item, index))}
-            </div>
+            <div className={className}>{displayedItems.map((item, index) => renderItem(item, index))}</div>
             {items.length > limit && (
                 <button
                     onClick={() => setIsExpanded(!isExpanded)}
-                    className="w-full text-center text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 mt-2 hover:underline transition-all py-2"
+                    className="mt-2 w-full py-2 text-center text-sm font-medium text-gray-500 transition-all
+                        hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-gray-100"
                 >
                     {isExpanded ? 'Sembunyikan' : 'Lihat Semua'}
                 </button>
@@ -160,24 +159,34 @@ export default function Dashboard(props) {
                 {/* Tabs & Pie Chart */}
                 <div className="col-span-full space-y-6 lg:col-span-4">
                     {/* Tabs */}
-                    <div className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100 dark:bg-card dark:border-0">
+                    <div
+                        className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-0 dark:bg-card"
+                    >
                         <Tabs defaultValue="goal" className="w-full">
-                            <TabsList className="grid w-full grid-cols-3 rounded-xl bg-gray-100/50 p-1 dark:bg-gray-900/50">
+                            <TabsList
+                                className="grid w-full grid-cols-3 rounded-xl bg-gray-100/50 p-1 dark:bg-gray-900/50"
+                            >
                                 <TabsTrigger
                                     value="goal"
-                                    className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-violet-600 data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-800 dark:data-[state=active]:text-violet-400"
+                                    className="rounded-lg data-[state=active]:bg-white
+                                        data-[state=active]:text-violet-600 data-[state=active]:shadow-sm
+                                        dark:data-[state=active]:bg-gray-800 dark:data-[state=active]:text-violet-400"
                                 >
                                     Tujuan
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value="income"
-                                    className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-emerald-600 data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-800 dark:data-[state=active]:text-emerald-400"
+                                    className="rounded-lg data-[state=active]:bg-white
+                                        data-[state=active]:text-emerald-600 data-[state=active]:shadow-sm
+                                        dark:data-[state=active]:bg-gray-800 dark:data-[state=active]:text-emerald-400"
                                 >
                                     Pemasukan
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value="expense"
-                                    className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-red-600 data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-800 dark:data-[state=active]:text-red-400"
+                                    className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-red-600
+                                        data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-800
+                                        dark:data-[state=active]:text-red-400"
                                 >
                                     Pengeluaran
                                 </TabsTrigger>
@@ -201,31 +210,59 @@ export default function Dashboard(props) {
                                         />
                                     }
                                     renderItem={(goal, index) => {
-                                        const currentAmount = Number(goal.balances_sum_amount) + Number(goal.beginning_balance);
+                                        const currentAmount =
+                                            Number(goal.balances_sum_amount) + Number(goal.beginning_balance);
                                         return (
-                                            <div key={index} className="group flex flex-col gap-3 rounded-xl border border-gray-100 bg-gray-50/50 p-4 transition-all hover:bg-white hover:shadow-md dark:border-gray-800 dark:bg-gray-800/50 dark:hover:bg-gray-800">
+                                            <div
+                                                key={index}
+                                                className="group flex flex-col gap-3 rounded-xl border border-gray-100
+                                                    bg-gray-50/50 p-4 transition-all hover:bg-white hover:shadow-md
+                                                    dark:border-gray-800 dark:bg-gray-800/50 dark:hover:bg-gray-800"
+                                            >
                                                 <div className="flex items-center justify-between">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-violet-100 text-violet-600 dark:bg-violet-900/30 dark:text-violet-400">
+                                                        <div
+                                                            className="flex h-10 w-10 items-center justify-center
+                                                                rounded-full bg-violet-100 text-violet-600
+                                                                dark:bg-violet-900/30 dark:text-violet-400"
+                                                        >
                                                             <IconMoneybag size={20} />
                                                         </div>
                                                         <div>
-                                                            <p className="font-semibold text-gray-900 dark:text-gray-100">{goal.name}</p>
-                                                            <p className="text-xs text-gray-500 dark:text-gray-400">Target: {formatToRupiah(goal.nominal)}</p>
+                                                            <p
+                                                                className="font-semibold text-gray-900
+                                                                    dark:text-gray-100"
+                                                            >
+                                                                {goal.name}
+                                                            </p>
+                                                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                                Target: {formatToRupiah(goal.nominal)}
+                                                            </p>
                                                         </div>
                                                     </div>
                                                     <div className="text-right">
-                                                        <span className="text-sm font-bold text-violet-600 dark:text-violet-400">
+                                                        <span
+                                                            className="text-sm font-bold text-violet-600
+                                                                dark:text-violet-400"
+                                                        >
                                                             {goal.percentage}%
                                                         </span>
                                                     </div>
                                                 </div>
                                                 <div className="space-y-1.5">
                                                     <div className="flex justify-between text-xs">
-                                                        <span className="text-gray-500 dark:text-gray-400">Tercapai</span>
-                                                        <span className="font-medium text-gray-900 dark:text-gray-100">{formatToRupiah(currentAmount)}</span>
+                                                        <span className="text-gray-500 dark:text-gray-400">
+                                                            Tercapai
+                                                        </span>
+                                                        <span className="font-medium text-gray-900 dark:text-gray-100">
+                                                            {formatToRupiah(currentAmount)}
+                                                        </span>
                                                     </div>
-                                                    <Progress value={goal.percentage} className="h-2 bg-gray-200 dark:bg-gray-700" indicatorClassName="bg-violet-500 dark:bg-violet-400" />
+                                                    <Progress
+                                                        value={goal.percentage}
+                                                        className="h-2 bg-gray-200 dark:bg-gray-700"
+                                                        indicatorClassName="bg-violet-500 dark:bg-violet-400"
+                                                    />
                                                 </div>
                                             </div>
                                         );
@@ -234,7 +271,9 @@ export default function Dashboard(props) {
                             </TabsContent>
                             <TabsContent value="income" className="mt-6 space-y-6">
                                 <div className="space-y-1">
-                                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">Riwayat Pemasukan</h3>
+                                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">
+                                        Riwayat Pemasukan
+                                    </h3>
                                     <p className="text-sm text-gray-500 dark:text-gray-400">
                                         Daftar pemasukan terbaru anda.
                                     </p>
@@ -252,15 +291,25 @@ export default function Dashboard(props) {
                                     renderItem={(income, index) => (
                                         <div
                                             key={index}
-                                            className="flex items-center justify-between rounded-xl border border-transparent p-3 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
+                                            className="flex items-center justify-between rounded-xl border
+                                                border-transparent p-3 transition-colors hover:bg-gray-50
+                                                dark:hover:bg-gray-800"
                                         >
                                             <div className="flex items-center gap-3">
-                                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400">
+                                                <div
+                                                    className="flex h-10 w-10 items-center justify-center rounded-full
+                                                        bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30
+                                                        dark:text-emerald-400"
+                                                >
                                                     <IconDoorEnter size={20} />
                                                 </div>
                                                 <div className="space-y-0.5">
-                                                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{income.source.detail}</p>
-                                                    <p className="text-xs text-gray-500 capitalize dark:text-gray-400">{income.source.type}</p>
+                                                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                                        {income.source.detail}
+                                                    </p>
+                                                    <p className="text-xs capitalize text-gray-500 dark:text-gray-400">
+                                                        {income.source.type}
+                                                    </p>
                                                 </div>
                                             </div>
                                             <p className="font-semibold text-emerald-600 dark:text-emerald-400">
@@ -272,7 +321,9 @@ export default function Dashboard(props) {
                             </TabsContent>
                             <TabsContent value="expense" className="mt-6 space-y-6">
                                 <div className="space-y-1">
-                                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">Riwayat Pengeluaran</h3>
+                                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">
+                                        Riwayat Pengeluaran
+                                    </h3>
                                     <p className="text-sm text-gray-500 dark:text-gray-400">
                                         Pantau pengeluaran anda disini.
                                     </p>
@@ -290,15 +341,24 @@ export default function Dashboard(props) {
                                     renderItem={(expense, index) => (
                                         <div
                                             key={index}
-                                            className="flex items-center justify-between rounded-xl border border-transparent p-3 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
+                                            className="flex items-center justify-between rounded-xl border
+                                                border-transparent p-3 transition-colors hover:bg-gray-50
+                                                dark:hover:bg-gray-800"
                                         >
                                             <div className="flex items-center gap-3">
-                                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400">
+                                                <div
+                                                    className="flex h-10 w-10 items-center justify-center rounded-full
+                                                        bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"
+                                                >
                                                     <IconDoorExit size={20} />
                                                 </div>
                                                 <div className="space-y-0.5">
-                                                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{expense.description}</p>
-                                                    <p className="text-xs text-gray-500 capitalize dark:text-gray-400">{expense.type}</p>
+                                                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                                        {expense.description}
+                                                    </p>
+                                                    <p className="text-xs capitalize text-gray-500 dark:text-gray-400">
+                                                        {expense.type}
+                                                    </p>
                                                 </div>
                                             </div>
                                             <p className="font-semibold text-red-600 dark:text-red-400">

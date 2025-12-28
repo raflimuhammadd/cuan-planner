@@ -17,14 +17,17 @@
 ## 📸 Gallery
 
 ### Dark Mode
+
 Experience the elegant dark theme designed for focus and clarity.
 ![Dashboard Dark](public/screenshots/dashboard-dark.png)
 
 ### Budget Management
+
 Manage your monthly allocations effortlessly.
 ![Budget List](public/screenshots/budget-list.png)
 
 ### Reports
+
 Detailed annual reports and breakdowns.
 ![Annual Report](public/screenshots/annual-report.png)
 
@@ -36,7 +39,7 @@ Detailed annual reports and breakdowns.
 - **Icons**: [Tabler Icons](https://tabler-icons.io)
 - **Charts**: [Recharts](https://recharts.org)
 
-## 🚀 Getting Started
+<!-- ## 🚀 Getting Started
 
 1.  **Clone the repository**
     ```bash
@@ -68,7 +71,7 @@ Detailed annual reports and breakdowns.
     ```bash
     php artisan serve
     npm run dev
-    ```
+    ``` -->
 
 ## 📄 License
 

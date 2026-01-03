@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ['php82', 'nodejs_20', 'postgresql']
+nixPkgs = ['php84', 'nodejs_20', 'postgresql']
 
 [phases.install]
 cmds = [

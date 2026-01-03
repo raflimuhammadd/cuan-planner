@@ -23,5 +23,10 @@ class AppServiceProvider extends ServiceProvider
     {
         Vite::prefetch(concurrency: 3);
         JsonResource::withoutWrapping();
+
+        // Force HTTPS in production (for Railway and other platforms)
+        if ($this->app->environment('production')) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
     }
 }

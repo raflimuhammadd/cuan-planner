@@ -33,8 +33,8 @@ Detailed annual reports and breakdowns.
 
 ## 🛠️ Tech Stack
 
-- **Framework**: [Laravel 10](https://laravel.com)
-- **Frontend**: [React](https://reactjs.org) with [Inertia.js](https://inertiajs.com)
+- **Framework**: [Laravel 12](https://laravel.com)
+- **Frontend**: [React 18](https://reactjs.org) with [Inertia.js](https://inertiajs.com)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com) & [Shadcn UI](https://ui.shadcn.com)
 - **Icons**: [Tabler Icons](https://tabler-icons.io)
 - **Charts**: [Recharts](https://recharts.org)

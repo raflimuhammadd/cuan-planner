@@ -1,10 +1,10 @@
-# Cuan+ 💰
+# Cuan+
 
 **Cuan+** is a modern, elegant personal finance planner designed to help you track your income, expenses, and financial goals with ease. Built with a focus on user experience and visual appeal, it helps you manage your wealth effectively.
 
 ![Dashboard Light](public/screenshots/dashboard-light.png)
 
-## ✨ Features
+## Features
 
 - **Dashboard**: A comprehensive overview of your financial health, including Income, Expenses, and Savings summaries.
 - **Budgeting**: Create and manage monthly budgets to stay on track.
@@ -14,7 +14,7 @@
 - **Dark Mode**: A sleek, fully optimized dark theme for comfortable night-time usage.
 - **Responsive Design**: Works perfectly on desktop and mobile devices.
 
-## 📸 Gallery
+## Gallery
 
 ### Dark Mode
 
@@ -31,7 +31,7 @@ Manage your monthly allocations effortlessly.
 Detailed annual reports and breakdowns.
 ![Annual Report](public/screenshots/annual-report.png)
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Framework**: [Laravel 12](https://laravel.com)
 - **Frontend**: [React 18](https://reactjs.org) with [Inertia.js](https://inertiajs.com)
@@ -73,6 +73,6 @@ Detailed annual reports and breakdowns.
     npm run dev
     ``` -->
 
-## 📄 License
+## License
 
 This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
